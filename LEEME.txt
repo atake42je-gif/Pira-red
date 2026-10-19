@@ -1,0 +1,12 @@
+PIRARED — PROTOTIPO DE INTERFAZ
+
+Cómo probar:
+1. Descomprimí el ZIP.
+2. Abrí index.html en el navegador.
+3. Mantené la carpeta img junto a index.html para que aparezcan las imágenes.
+
+IMPORTANTE: esta es una interfaz navegable, no una app lista para producción. Funcionan la navegación y los filtros con datos de muestra. El registro, inicio de sesión, aprobación de usuarios, publicaciones reales y mensajes privados NO están conectados a un servidor. No ingreses contraseñas reales ni recolectes datos personales con esta versión.
+
+Para publicarla con seguridad y costo inicial cero, el siguiente paso es configurar autenticación de correo, base de datos y permisos del lado del servidor (por ejemplo, en un plan gratuito de Supabase sujeto a sus límites vigentes). Las cuentas deben comenzar como pendientes; solo administración puede aprobarlas. Las publicaciones y mensajes deberán estar restringidos a cuentas aprobadas. Nunca guardar contraseñas manualmente ni incluir claves secretas en el navegador.
+
+Archivos: index.html (interfaz) y img/ (imágenes proporcionadas para PiraRed).

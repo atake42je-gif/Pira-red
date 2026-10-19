@@ -3,236 +3,434 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07559b">
-<title>PiraRed | Pirané</title>
+<meta name="theme-color" content="#101820">
+<title>PiraRed</title>
 
 <style>
-:root {
-  --azul:#0759a5;
-  --celeste:#28baff;
-  --vidrio:rgba(255,255,255,.78);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  color:#123b65;
-  background:#dceeff;
+
+body {
+  font-family: Arial, sans-serif;
+  color: white;
+  background: #101820;
+  min-height: 100vh;
 }
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-#app{
-  max-width:520px;
-  min-height:100vh;
-  margin:auto;
-  position:relative;
-  overflow:hidden;
+
+.app {
+  max-width: 600px;
+  min-height: 100vh;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
   background:
-    linear-gradient(180deg,rgba(4,43,82,.30),rgba(4,35,67,.58)),
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.30),
+      rgba(0,0,0,.78)
+    ),
     url("https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1000&q=85")
-    center/cover fixed;
+    center / cover fixed;
 }
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:17px;
-  color:white;
+
+header {
+  padding: 28px 22px;
+  text-align: center;
 }
-.logo{font-size:27px;font-weight:900;letter-spacing:-1px}
-.logo span{color:#51c6ff}
-.iconbtn{
-  background:transparent;border:0;color:white;font-size:27px;
+
+.logo {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 3px 15px #000;
 }
-.screen{padding:0 15px 100px}
-.search{
-  display:flex;gap:8px;background:rgba(255,255,255,.93);
-  padding:5px 13px;border-radius:40px;margin:10px 0 20px;
-  box-shadow:0 5px 18px #001b3a33;
+
+.logo span {
+  color: #54d6ff;
 }
-.search input{
-  border:0;background:transparent;outline:none;
-  width:100%;padding:12px 5px;color:#183e63;
+
+.slogan {
+  margin-top: 8px;
+  font-size: 13px;
+  letter-spacing: 1px;
 }
-.search button{border:0;background:none;font-size:23px}
-.grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;margin:18px 0 25px;
+
+main {
+  padding: 15px 20px 35px;
 }
-.tile{
-  min-height:112px;border:1px solid #ffffffbd;
-  background:rgba(255,255,255,.78);backdrop-filter:blur(8px);
-  border-radius:20px;color:#0759a5;font-weight:700;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:8px;padding:9px 3px;
-  box-shadow:0 4px 10px #001d3b24;
+
+.bienvenida {
+  margin: 35px 0 28px;
+  text-align: center;
 }
-.tile .emoji{font-size:31px}
-h2{font-size:19px;color:white;margin:22px 0 12px}
-.sectionhead{display:flex;justify-content:space-between;align-items:center}
-.linkbtn{border:0;background:transparent;color:white}
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.card{
-  background:rgba(255,255,255,.91);border-radius:17px;
-  overflow:hidden;box-shadow:0 4px 15px #001d3b30;
+
+.bienvenida h1 {
+  font-size: 27px;
+  text-shadow: 0 2px 10px #000;
 }
-.card img{width:100%;height:130px;object-fit:cover;display:block}
-.cardbody{padding:10px}
-.price{font-size:18px;color:#0759a5;font-weight:900}
-.title{font-weight:700;margin:6px 0}
-.small{font-size:13px;color:#58718b;margin-top:5px}
-.heart{float:right;border:0;background:none;font-size:23px;color:#0759a5}
-.nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(5,44,78,.84);backdrop-filter:blur(12px);
-  border-top:1px solid #ffffff70;padding:10px 4px max(10px,env(safe-area-inset-bottom));
-  z-index:5;
+
+.bienvenida p {
+  margin-top: 10px;
+  color: #eee;
+  line-height: 1.5;
 }
-.nav button{border:0;background:transparent;color:white;font-size:12px}
-.nav b{display:block;font-size:24px;margin-bottom:3px}
-.panel{
-  background:rgba(255,255,255,.87);backdrop-filter:blur(12px);
-  padding:18px;border-radius:20px;margin:15px 0;
+
+.opciones {
+  display: grid;
+  gap: 16px;
 }
-.field{width:100%;padding:13px;border:1px solid #b9d2e7;
-  border-radius:12px;margin:7px 0 13px;background:white;color:#123b65}
-.primary{
-  background:linear-gradient(135deg,#0874ce,#22baff);color:white;
-  border:0;border-radius:13px;padding:14px 18px;font-weight:bold;width:100%;
+
+.boton {
+  width: 100%;
+  padding: 22px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.45);
+  background: rgba(255,255,255,.12);
+  color: white;
+  text-align: left;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: .2s;
 }
-.secondary{
-  background:#ffffffd9;border:1px solid #aacbe8;color:#0759a5;
-  border-radius:12px;padding:10px;
+
+.boton:active {
+  transform: scale(.98);
+  background: rgba(84,214,255,.25);
 }
-.back{color:white;background:transparent;border:0;font-size:16px;padding:10px 0}
-.empty{background:#ffffffdf;border-radius:16px;padding:22px;text-align:center}
-.profilehead{text-align:center;color:white;padding:24px 0}
-.avatar{font-size:70px}
-.hidden{display:none!important}
-.notice{font-size:12px;color:#54718d}
-footer{text-align:center;color:white;font-size:12px;padding:20px}
+
+.boton strong {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 7px;
+}
+
+.boton small {
+  font-size: 13px;
+  color: #eee;
+}
+
+.icono {
+  float: right;
+  font-size: 29px;
+}
+
+.pie {
+  text-align: center;
+  padding: 22px;
+  font-size: 12px;
+  color: #ddd;
+}
+
+.pantalla {
+  display: none;
+  padding: 20px;
+}
+
+.pantalla h2 {
+  margin-bottom: 20px;
+}
+
+.volver {
+  margin-bottom: 25px;
+  padding: 10px 16px;
+  border: 1px solid white;
+  border-radius: 12px;
+  background: #ffffff18;
+  color: white;
+  font-size: 15px;
+}
+
+input, textarea, select {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ffffff66;
+  background: #101820cc;
+  color: white;
+}
+
+.publicacion {
+  padding: 17px;
+  margin: 12px 0;
+  border-radius: 15px;
+  background: #ffffff18;
+  border: 1px solid #ffffff55;
+}
+
+.publicacion h3 {
+  margin-bottom: 8px;
+}
+
+.precio {
+  color: #75e3ff;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.accion {
+  width: 100%;
+  border: 1px solid #8de8ff;
+  border-radius: 12px;
+  padding: 14px;
+  color: white;
+  background: #087bea99;
+  font-weight: bold;
+  margin-top: 10px;
+}
 </style>
 </head>
 
 <body>
-<div id="app">
+
+<div class="app">
+
 <header>
-  <button class="iconbtn" onclick="menu()">☰</button>
-  <div class="logo">📍Pira<span>Red</span></div>
-  <button class="iconbtn" onclick="alert('¡Bienvenido a PiraRed!')">♧</button>
+  <div class="logo">Pira<span>Red</span></div>
+  <div class="slogan">Pirané capital provincial del folklore</div>
 </header>
 
-<main id="main" class="screen"></main>
+<main id="inicio">
 
-<nav class="nav">
-  <button onclick="home()"><b>⌂</b>Inicio</button>
-  <button onclick="publish()"><b>⊕</b>Publicar</button>
-  <button onclick="favorites()"><b>♡</b>Favoritos</button>
-  <button onclick="profile()"><b>♙</b>Perfil</button>
-</nav>
+  <div class="bienvenida">
+    <h1>Todo cerca de vos</h1>
+    <p>Comprá, vendé y encontrá oportunidades<br>
+    en Pirané y localidades cercanas.</p>
+  </div>
+
+  <div class="opciones">
+
+    <button class="boton" onclick="abrir('mercado')">
+      <span class="icono">🛍️</span>
+      <strong>Compra / Venta</strong>
+      <small>Productos, vehículos, terrenos y mucho más.</small>
+    </button>
+
+    <button class="boton" onclick="abrir('trabajos')">
+      <span class="icono">🔨</span>
+      <strong>Trabajos y Changas</strong>
+      <small>Encontrá trabajo u ofrecé tus servicios.</small>
+    </button>
+
+    <button class="boton" onclick="abrir('crear')">
+      <span class="icono">➕</span>
+      <strong>Crear publicación</strong>
+      <small>Publicá un producto o servicio.</small>
+    </button>
+
+    <button class="boton" onclick="abrir('cuenta')">
+      <span class="icono">👤</span>
+      <strong>Mi cuenta</strong>
+      <small>Tu perfil y tus publicaciones.</small>
+    </button>
+
+  </div>
+
+</main>
+
+<section class="pantalla" id="mercado">
+  <button class="volver" onclick="inicio()">← Volver</button>
+  <h2>🛍️ Compra / Venta</h2>
+  <input id="buscarMercado" placeholder="Buscar publicaciones..."
+    oninput="mostrar('mercado')">
+  <div id="listaMercado"></div>
+</section>
+
+<section class="pantalla" id="trabajos">
+  <button class="volver" onclick="inicio()">← Volver</button>
+  <h2>🔨 Trabajos y Changas</h2>
+  <input id="buscarTrabajos" placeholder="Buscar trabajos..."
+    oninput="mostrar('trabajos')">
+  <div id="listaTrabajos"></div>
+</section>
+
+<section class="pantalla" id="crear">
+  <button class="volver" onclick="inicio()">← Volver</button>
+  <h2>➕ Crear publicación</h2>
+
+  <form id="formulario">
+    <input id="titulo" placeholder="Título de la publicación" required>
+
+    <select id="tipo">
+      <option value="mercado">Compra / Venta</option>
+      <option value="trabajos">Trabajos y Changas</option>
+    </select>
+
+    <textarea id="descripcion" placeholder="Descripción" required></textarea>
+
+    <input id="precio" type="number" min="0"
+      placeholder="Precio en pesos (0 si es un servicio gratuito)" required>
+
+    <input id="foto" type="file" accept="image/*">
+
+    <button class="accion" type="submit">Publicar</button>
+  </form>
+</section>
+
+<section class="pantalla" id="cuenta">
+  <button class="volver" onclick="inicio()">← Volver</button>
+  <h2>👤 Mi cuenta</h2>
+
+  <form id="perfil">
+    <input id="nombre" placeholder="Tu nombre" required>
+    <input id="telefono" placeholder="Tu teléfono">
+    <textarea id="bio" placeholder="Contanos algo sobre vos"></textarea>
+    <button class="accion" type="submit">Guardar perfil</button>
+  </form>
+
+  <p id="estadoPerfil" style="margin-top:15px"></p>
+</section>
+
+<div class="pie">
+  PiraRed · Pirané, Formosa, Argentina
+</div>
+
 </div>
 
 <script>
-const $=s=>document.querySelector(s);
-const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const clave = "pirared_publicaciones_v1";
+const perfilClave = "pirared_perfil_v1";
 
-let posts=get('pirared_posts',[
- {id:1,title:'Yamaha XTZ 125',price:'450000',category:'Vehículos',location:'Pirané',desc:'Moto en venta. Consultar detalles.',img:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=700&q=80'},
- {id:2,title:'Volkswagen Gol 2010',price:'3200000',category:'Vehículos',location:'Pirané',desc:'Vehículo en venta. Consultar detalles.',img:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=700&q=80'},
- {id:3,title:'Casa en Pirané',price:'Consultar',category:'Inmuebles',location:'Pirané',desc:'Consulta por esta propiedad.',img:'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=700&q=80'},
- {id:4,title:'Jardinero',price:'Consultar',category:'Trabajos y Changas',location:'Pirané',desc:'Mantenimiento de jardines y patios.',img:'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=700&q=80'}
-]);
-let favs=get('pirared_favs',[]);
-let user=get('pirared_user',{name:'',phone:'',bio:''});
-let current='Inicio',query='',category='Todos';
+let publicaciones = JSON.parse(localStorage.getItem(clave) || "[]");
 
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function money(v){return v&&v!=='Consultar'?'$ '+Number(v).toLocaleString('es-AR'):'Consultar precio'}
-function tile(icon,label,fn){return `<button class="tile" onclick="${fn}"><span class="emoji">${icon}</span><span>${label}</span></button>`}
-function searchbox(){return `<div class="search"><input id="q" placeholder="Buscar en PiraRed..." value="${esc(query)}" oninput="searchChanged(this.value)"><button onclick="filters()">⌕</button></div>`}
-function card(p){
-return `<article class="card">
-<img src="${esc(p.img)}" alt="${esc(p.title)}" onerror="this.style.display='none'">
-<div class="cardbody">
-<button class="heart" onclick="toggleFav(${p.id})">${favs.includes(p.id)?'♥':'♡'}</button>
-<div class="price">${esc(money(p.price))}</div>
-<div class="title">${esc(p.title)}</div>
-<div class="small">📍 ${esc(p.location||'Pirané')}</div>
-<button class="secondary" style="width:100%;margin-top:9px" onclick="detail(${p.id})">Ver publicación</button>
-</div></article>`
+function guardar() {
+  localStorage.setItem(clave, JSON.stringify(publicaciones));
 }
-function cards(list){return list.length?`<div class="cards">${list.map(card).join('')}</div>`:`<div class="empty">Todavía no hay publicaciones para mostrar.</div>`}
-function heading(title,action=''){return `<div class="sectionhead"><h2>${title}</h2>${action}</div>`}
-function home(){
-current='Inicio';
-let m=$('#main');
-m.innerHTML=`
-${searchbox()}
-<div class="grid">
-${tile('🛒','Compra / Venta',"openCategory('Compra / Venta')")}
-${tile('💼','Trabajos y Changas',"openCategory('Trabajos y Changas')")}
-${tile('🚘','Vehículos',"openCategory('Vehículos')")}
-${tile('⌂','Inmuebles',"openCategory('Inmuebles')")}
-${tile('⚙️','Servicios',"openCategory('Servicios')")}
-${tile('👥','Comunidad',"openCategory('Comunidad')")}
-</div>
-${heading('Publicaciones destacadas',`<button class="linkbtn" onclick="allPosts()">Ver todas ›</button>`)}
-${cards(posts.slice(0,4))}
-<footer>PiraRed · Pirané, Formosa<br>Todo cerca. Todo conectado.</footer>`;
+
+function abrir(id) {
+  document.getElementById("inicio").style.display = "none";
+
+  document.querySelectorAll(".pantalla").forEach(p => {
+    p.style.display = "none";
+  });
+
+  document.getElementById(id).style.display = "block";
+
+  if (id === "mercado" || id === "trabajos") {
+    mostrar(id);
+  }
 }
-function searchChanged(v){query=v}
-function allPosts(){current='Publicaciones';renderList(posts,'Todas las publicaciones')}
-function openCategory(c){category=c;renderList(posts.filter(p=>c==='Compra / Venta'?['Compra / Venta','Vehículos','Inmuebles','Electrónica','Hogar','Ropa'].includes(p.category):p.category===c),c)}
-function renderList(list,title){
-current=title;
-const filtered=list.filter(p=>(!query||(p.title+' '+p.desc+' '+p.category).toLowerCase().includes(query.toLowerCase())));
-$('#main').innerHTML=`<button class="back" onclick="home()">‹ Volver al inicio</button><h2>${esc(title)}</h2>${searchbox()}${cards(filtered)}`
+
+function inicio() {
+  document.querySelectorAll(".pantalla").forEach(p => {
+    p.style.display = "none";
+  });
+
+  document.getElementById("inicio").style.display = "block";
 }
-function filters(){
-current='Filtros';
-$('#main').innerHTML=`<button class="back" onclick="home()">‹ Volver</button><h2>Filtros de búsqueda</h2><div class="panel"><label>Categoría</label><select id="cat" class="field">
-${['Todos','Compra / Venta','Trabajos y Changas','Vehículos','Inmuebles','Servicios','Comunidad','Electrónica','Hogar','Ropa'].map(c=>`<option>${c}</option>`).join('')}
-</select><label>Buscar</label><input id="fq" class="field" placeholder="¿Qué estás buscando?"><button class="primary" onclick="query=$('#fq').value;openCategory($('#cat').value)">Aplicar filtros</button></div>`;
+
+function escapar(texto) {
+  return String(texto).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[c]);
 }
-function publish(){
-current='Publicar';
-$('#main').innerHTML=`<button class="back" onclick="home()">‹ Volver</button><h2>Crear publicación</h2>
-<div class="panel"><label>Título</label><input id="pt" class="field" placeholder="Ej.: Vendo moto">
-<label>Categoría</label><select id="pc" class="field">${['Compra / Venta','Trabajos y Changas','Vehículos','Inmuebles','Servicios','Comunidad','Electrónica','Hogar','Ropa'].map(c=>`<option>${c}</option>`).join('')}</select>
-<label>Precio (en pesos, o escribir Consultar)</label><input id="pp" class="field" placeholder="Ej.: 450000">
-<label>Ubicación</label><input id="pl" class="field" value="Pirané">
-<label>Descripción</label><textarea id="pd" class="field" rows="4" placeholder="Contá los detalles de tu publicación"></textarea>
-<label>Enlace de foto (opcional)</label><input id="pi" class="field" placeholder="https://...">
-<p class="notice">Esta versión guarda las publicaciones en este dispositivo.</p>
-<button class="primary" onclick="createPost()">Publicar</button></div>`;
+
+function mostrar(tipo) {
+  const campo = document.getElementById(
+    tipo === "mercado" ? "buscarMercado" : "buscarTrabajos"
+  );
+
+  const lista = document.getElementById(
+    tipo === "mercado" ? "listaMercado" : "listaTrabajos"
+  );
+
+  const busqueda = (campo.value || "").toLowerCase();
+
+  const resultados = publicaciones.filter(p =>
+    p.tipo === tipo &&
+    (p.titulo + " " + p.descripcion).toLowerCase().includes(busqueda)
+  );
+
+  lista.innerHTML = resultados.length
+    ? resultados.map(p => `
+      <article class="publicacion">
+        <h3>${escapar(p.titulo)}</h3>
+        ${p.foto ? `<img src="${p.foto}" alt=""
+          style="width:100%;border-radius:10px;margin:10px 0">` : ""}
+        <p>${escapar(p.descripcion)}</p>
+        <p class="precio">$${Number(p.precio).toLocaleString("es-AR")}</p>
+      </article>
+    `).join("")
+    : "<p>Todavía no hay publicaciones. ¡Podés crear la primera!</p>";
 }
-function createPost(){
-let title=$('#pt').value.trim();
-if(!title){alert('Escribí un título para la publicación.');return}
-let price=$('#pp').value.trim()||'Consultar';
-let raw=Number(price.replace(/[.$ ]/g,''));
-if(price.toLowerCase()!=='consultar'&&(!Number.isFinite(raw)||raw<0)){alert('Ingresá un precio válido o escribí Consultar.');return}
-posts.unshift({id:Date.now(),title,price:price.toLowerCase()==='consultar'?'Consultar':String(raw),category:$('#pc').value,location:$('#pl').value.trim()||'Pirané',desc:$('#pd').value.trim(),img:$('#pi').value.trim()});
-save('pirared_posts',posts);alert('¡Publicación guardada!');home();
+
+document.getElementById("formulario").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const archivo = document.getElementById("foto").files[0];
+  let foto = "";
+
+  if (archivo) {
+    if (archivo.size > 700000) {
+      alert("Elegí una foto de menos de 700 KB para evitar problemas de almacenamiento.");
+      return;
+    }
+
+    foto = await new Promise((resolve, reject) => {
+      const lector = new FileReader();
+      lector.onload = () => resolve(lector.result);
+      lector.onerror = reject;
+      lector.readAsDataURL(archivo);
+    });
+  }
+
+  publicaciones.unshift({
+    titulo: document.getElementById("titulo").value.trim(),
+    tipo: document.getElementById("tipo").value,
+    descripcion: document.getElementById("descripcion").value.trim(),
+    precio: document.getElementById("precio").value,
+    foto
+  });
+
+  try {
+    guardar();
+  } catch (error) {
+    publicaciones.shift();
+    alert("No se pudo guardar. Probá con una foto más pequeña.");
+    return;
+  }
+
+  e.target.reset();
+  alert("¡Publicación guardada en este dispositivo!");
+  inicio();
+});
+
+document.getElementById("perfil").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const datos = {
+    nombre: document.getElementById("nombre").value,
+    telefono: document.getElementById("telefono").value,
+    bio: document.getElementById("bio").value
+  };
+
+  localStorage.setItem(perfilClave, JSON.stringify(datos));
+
+  document.getElementById("estadoPerfil").textContent =
+    "¡Perfil guardado correctamente!";
+});
+
+try {
+  const datos = JSON.parse(localStorage.getItem(perfilClave) || "null");
+
+  if (datos) {
+    document.getElementById("nombre").value = datos.nombre || "";
+    document.getElementById("telefono").value = datos.telefono || "";
+    document.getElementById("bio").value = datos.bio || "";
+  }
+} catch (error) {
+  console.log("No se pudo cargar el perfil.");
 }
-function detail(id){
-let p=posts.find(x=>x.id===id);if(!p)return;
-current='Detalle';
-$('#main').innerHTML=`<button class="back" onclick="home()">‹ Volver</button><div class="panel">${p.img?`<img src="${esc(p.img)}" style="width:100%;border-radius:14px" onerror="this.style.display='none'">`:''}<h2 style="color:#0759a5">${esc(p.title)}</h2><div class="price">${esc(money(p.price))}</div><p>📍 ${esc(p.location)}</p><p>${esc(p.desc)}</p><p class="small">Categoría: ${esc(p.category)}</p><button class="primary" onclick="toggleFav(${p.id});detail(${p.id})">${favs.includes(p.id)?'♥ Quitar de favoritos':'♡ Agregar a favoritos'}</button></div>`;
-}
-function toggleFav(id){favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];save('pirared_favs',favs);if(current==='Favoritos')favorites();else if(current==='Inicio')home()}
-function favorites(){current='Favoritos';$('#main').innerHTML=`<h2>♡ Mis favoritos</h2>${cards(posts.filter(p=>favs.includes(p.id)))}`}
-function profile(){
-current='Perfil';
-$('#main').innerHTML=`<div class="profilehead"><div class="avatar">👤</div><h2>Mi perfil</h2></div><div class="panel"><label>Nombre</label><input id="un" class="field" value="${esc(user.name)}" placeholder="Tu nombre"><label>Teléfono</label><input id="up" class="field" value="${esc(user.phone)}" placeholder="Tu teléfono"><label>Sobre mí</label><textarea id="ub" class="field" rows="3" placeholder="Contá algo sobre vos">${esc(user.bio)}</textarea><button class="primary" onclick="saveProfile()">Guardar perfil</button><p class="notice">Los datos quedan guardados en este dispositivo.</p></div>`;
-}
-function saveProfile(){user={name:$('#un').value.trim(),phone:$('#up').value.trim(),bio:$('#ub').value.trim()};save('pirared_user',user);alert('Perfil guardado.');profile()}
-function menu(){
-$('#main').innerHTML=`<h2>Menú PiraRed</h2><div class="panel">${['Inicio','Compra / Venta','Trabajos y Changas','Vehículos','Inmuebles','Servicios','Comunidad','Publicar','Favoritos','Perfil'].map(x=>`<button class="secondary" style="width:100%;margin:4px 0" onclick="${x==='Inicio'?'home()':x==='Publicar'?'publish()':x==='Favoritos'?'favorites()':x==='Perfil'?'profile()':`openCategory('${x}')`}">${x}</button>`).join('')}</div>`;
-}
-home();
 </script>
+
 </body>
 </html>

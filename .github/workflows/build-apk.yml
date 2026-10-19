@@ -43,6 +43,11 @@ jobs:
           mkdir -p app/src/main/java/ar/pirared/app
           mkdir -p app/src/main/assets/www/img
           mkdir -p app/src/main/res/drawable
+          mkdir -p app/src/main/res/mipmap-mdpi
+          mkdir -p app/src/main/res/mipmap-hdpi
+          mkdir -p app/src/main/res/mipmap-xhdpi
+          mkdir -p app/src/main/res/mipmap-xxhdpi
+          mkdir -p app/src/main/res/mipmap-xxxhdpi
 
           cp MainActivity.java \
             app/src/main/java/ar/pirared/app/

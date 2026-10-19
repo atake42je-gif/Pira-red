@@ -42,6 +42,7 @@ jobs:
 
           mkdir -p app/src/main/java/ar/pirared/app
           mkdir -p app/src/main/assets/www/img
+          mkdir -p app/src/main/res/drawable
 
           cp MainActivity.java \
             app/src/main/java/ar/pirared/app/
@@ -49,6 +50,7 @@ jobs:
           cp AndroidManifest.xml app/src/main/
 
           cp index.html app/src/main/assets/www/
+          cp logo-pirared.png app/src/main/res/drawable/logo_pirared.png
 
           cp ./*.jpg app/src/main/assets/www/img/
 

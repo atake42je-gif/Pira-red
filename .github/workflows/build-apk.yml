@@ -1,25 +1,22 @@
 name: Build PiraRed APK
 
 on:
-  push:
-    branches:
-      - main
-      - master
   workflow_dispatch:
+  push:
+    branches: [main, master]
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -27,36 +24,35 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
 
-      - name: Install Android SDK packages
+      - name: Install SDK packages
         run: |
           sdkmanager --install \
             "platform-tools" \
             "platforms;android-35" \
-            "platforms;android-36" \
-            "build-tools;35.0.0" \
-            "build-tools;36.0.0"
+            "build-tools;35.0.0"
 
-      - name: Find Android project
+      - name: Locate Gradle project
         id: project
         run: |
-          if [ -f "./gradlew" ]; then
+          if [ -f gradlew ]; then
             echo "dir=." >> "$GITHUB_OUTPUT"
-          elif [ -f "./android/gradlew" ]; then
+          elif [ -f android/gradlew ]; then
             echo "dir=android" >> "$GITHUB_OUTPUT"
           else
-            echo "ERROR: No Gradle wrapper found."
-            echo "Check that gradlew is included in the repository."
+            echo "No Gradle wrapper found"
             exit 1
           fi
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
+      - name: Build APK
         working-directory: ${{ steps.project.outputs.dir }}
         run: |
-          chmod +x ./gradlew
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
@@ -65,4 +61,3 @@ jobs:
           name: PiraRed-APK
           path: '**/build/outputs/apk/debug/*.apk'
           if-no-files-found: error
-          retention-days: 7

@@ -151,4 +151,65 @@ function submitListing(e){e.preventDefault();let title=document.getElementById('
 function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
 document.querySelectorAll('[data-sort]').forEach(b=>b.classList.toggle('active',b.dataset.sort==='recent'));renderFeatured();renderMarket();renderJobs();
 </script>
-</body></html>
+</body><section id="acceso-pirared" style="padding:20px;margin:20px;background:#fff;border-radius:15px;color:#222">
+  <h2>Ingresar a PiraRed</h2>
+  <p>Creá tu cuenta o iniciá sesión con tu correo.</p>
+
+  <input id="auth-email" type="email" placeholder="Tu correo electrónico"
+    style="width:100%;padding:12px;margin:6px 0;box-sizing:border-box">
+
+  <input id="auth-password" type="password" placeholder="Contraseña (mínimo 6 caracteres)"
+    style="width:100%;padding:12px;margin:6px 0;box-sizing:border-box">
+
+  <button onclick="registrarPiraRed()" style="padding:12px;margin:5px">
+    Crear cuenta
+  </button>
+
+  <button onclick="ingresarPiraRed()" style="padding:12px;margin:5px">
+    Iniciar sesión
+  </button>
+
+  <p id="auth-mensaje"></p>
+</section>
+
+<script>
+async function registrarPiraRed() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const mensaje = document.getElementById('auth-mensaje');
+
+  if (!supabaseClient) {
+    mensaje.textContent = 'No se pudo cargar el servicio. Revisá tu conexión.';
+    return;
+  }
+
+  if (!email || password.length < 6) {
+    mensaje.textContent = 'Ingresá un correo válido y una contraseña de al menos 6 caracteres.';
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+  mensaje.textContent = error
+    ? 'Error: ' + error.message
+    : 'Registro enviado. Revisá tu correo para confirmar la cuenta.';
+}
+
+async function ingresarPiraRed() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const mensaje = document.getElementById('auth-mensaje');
+
+  if (!supabaseClient) {
+    mensaje.textContent = 'No se pudo cargar el servicio. Revisá tu conexión.';
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email, password
+  });
+
+  mensaje.textContent = error
+    ? 'No se pudo ingresar: ' + error.message
+    : '¡Bienvenido a PiraRed!';
+}
+</script> </html>

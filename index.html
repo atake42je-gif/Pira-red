@@ -109,7 +109,14 @@
  <button class="navbtn" data-nav="profile" onclick="go('profile')"><span>♙</span>Perfil</button>
 </nav><div class="toast" id="toast"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = 'https://cerwpgfpicwcxiqatmdl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_tQg7IO7f3pl-7C4B8yt-Yg_aAylKI3z';
+
+const supabaseClient = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
   const items=[
  {id:1,title:'iPhone 12',cat:'Compra/Venta',price:950000,desc:'128GB · Excelente estado · Hace 2 h · Pirané',img:'img/pirared-compra-venta.jpg',icon:'📱'},

@@ -25,26 +25,26 @@ jobs:
           java-version: "17"
 
       - name: Preparar Android SDK
-        uses: android-actions/setup-android@v3
+  uses: android-actions/setup-android@v3
 
-      - name: Instalar paquetes Android
-        shell: bash
-        run: |
-          set -euxo pipefail
-          export ANDROID_SDK_ROOT="${ANDROID_HOME}"
-          export PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+- name: Instalar paquetes Android
+  shell: bash
+  run: |
+    set -euxo pipefail
+    export ANDROID_SDK_ROOT="${ANDROID_HOME}"
+    export PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
 
-          if [ ! -x "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" ]; then
-            echo "cmdline-tools/latest no existe; instalando..."
-            mkdir -p "${ANDROID_HOME}/cmdline-tools"
-            yes | sdkmanager --install "cmdline-tools;latest"
-          fi
+    if [ ! -x "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" ]; then
+      echo "cmdline-tools/latest no existe; instalando..."
+      mkdir -p "${ANDROID_HOME}/cmdline-tools"
+      yes | sdkmanager --install "cmdline-tools;latest"
+    fi
 
-          yes | sdkmanager --licenses
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
+    yes | sdkmanager --licenses
+    yes | sdkmanager --install \
+      "platform-tools" \
+      "platforms;android-35" \
+      "build-tools;35.0.0"
 
       - name: Preparar archivos
         shell: bash

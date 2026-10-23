@@ -1,6 +1,7 @@
 package ar.pirared.app;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -18,6 +19,7 @@ public class MainActivity extends Activity {
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
     private static final int FILE_REQUEST = 1001;
+    private static final String LOCAL_ASSETS = "file:///android_asset/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +31,35 @@ public class MainActivity extends Activity {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
+        // The app currently runs fully from bundled assets. Keep WebView locked
+        // to those assets until a reviewed, HTTPS backend is added.
+        WebView.setWebContentsDebuggingEnabled(false);
         webView = new WebView(this);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
+        settings.setAllowContentAccess(false);
+        settings.setAllowFileAccessFromFileURLs(false);
+        settings.setAllowUniversalAccessFromFileURLs(false);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings.setSafeBrowsingEnabled(true);
+        }
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                return !isLocalAsset(uri);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return !isLocalAsset(Uri.parse(url));
+            }
+        });
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(
@@ -58,13 +80,20 @@ public class MainActivity extends Activity {
                     return true;
                 } catch (Exception e) {
                     fileCallback = null;
+                    callback.onReceiveValue(null);
                     return false;
                 }
             }
         });
 
         setContentView(webView);
-        webView.loadUrl("file:///android_asset/www/index.html");
+        webView.loadUrl(LOCAL_ASSETS + "www/index.html");
+    }
+
+    private boolean isLocalAsset(Uri uri) {
+        return uri != null
+            && "file".equalsIgnoreCase(uri.getScheme())
+            && uri.toString().startsWith(LOCAL_ASSETS);
     }
 
     @Override
@@ -98,5 +127,21 @@ public class MainActivity extends Activity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (fileCallback != null) {
+            fileCallback.onReceiveValue(null);
+            fileCallback = null;
+        }
+        if (webView != null) {
+            webView.stopLoading();
+            webView.setWebChromeClient(null);
+            webView.setWebViewClient(null);
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
     }
 }

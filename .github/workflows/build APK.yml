@@ -53,8 +53,44 @@ jobs:
             convert "$logo" -auto-orient -resize "${size}x${size}^" -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
           done
 
+      - name: Preparar firma de version estable (si esta configurada)
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -n "${KEYSTORE_B64:-}" ] && [ -n "${KEYSTORE_PASSWORD:-}" ] && [ -n "${KEY_ALIAS:-}" ] && [ -n "${KEY_PASSWORD:-}" ]; then
+            printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/pirared-release.jks"
+            test -s "$RUNNER_TEMP/pirared-release.jks"
+            {
+              echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pirared-release.jks"
+              echo "ANDROID_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+              echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
+              echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD"
+              echo "PIRARED_BUILD_TYPE=release"
+            } >> "$GITHUB_ENV"
+            echo "Firma release configurada."
+          else
+            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+            echo "::warning::Se genera APK de prueba. Para actualizaciones compatibles se necesita configurar la firma privada estable en GitHub Secrets."
+          fi
+
       - name: Compilar APK
-        run: gradle assembleDebug
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${PIRARED_BUILD_TYPE:-debug}" = "release" ]; then
+            gradle assembleRelease
+            APK="app/build/outputs/apk/release/app-release.apk"
+          else
+            gradle assembleDebug
+            APK="app/build/outputs/apk/debug/app-debug.apk"
+          fi
+          test -s "$APK"
+          echo "PIRARED_APK_PATH=$APK" >> "$GITHUB_ENV"
 
       - name: Verificar APK, nombre e imagenes originales
         shell: bash
@@ -69,10 +105,11 @@ jobs:
             app/src/main/assets/www/app/Img/06-logo-pirared.png; do
             test -s "$image" || { echo "Falta la imagen original: $image"; exit 1; }
           done
-          APK="app/build/outputs/apk/debug/app-debug.apk"
+          APK="$PIRARED_APK_PATH"
           test -s "$APK"
           AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
           BADGING="$("$AAPT" dump badging "$APK")"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify "$APK"
           grep -F "package: name='ar.pirared.app'" <<< "$BADGING"
           grep -F "application-label:'PiraRed'" <<< "$BADGING"
           test -s app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
@@ -83,7 +120,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/PiraRed.apk
+          cp "$PIRARED_APK_PATH" dist/PiraRed.apk
           test -s dist/PiraRed.apk
 
       - name: Guardar APK

@@ -56,6 +56,28 @@ jobs:
       - name: Compilar APK
         run: gradle assembleDebug
 
+      - name: Verificar APK, nombre e imagenes originales
+        shell: bash
+        run: |
+          set -euo pipefail
+          for image in \
+            app/src/main/assets/www/app/Img/01-inicio-tren.jpg \
+            app/src/main/assets/www/app/Img/02-monumento-plaza.jpg \
+            app/src/main/assets/www/app/Img/03-plaza-juegos.jpg \
+            app/src/main/assets/www/app/Img/04-informacion-pirared.jpg \
+            app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg \
+            app/src/main/assets/www/app/Img/06-logo-pirared.png; do
+            test -s "$image" || { echo "Falta la imagen original: $image"; exit 1; }
+          done
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          BADGING="$("$AAPT" dump badging "$APK")"
+          grep -F "package: name='ar.pirared.app'" <<< "$BADGING"
+          grep -F "application-label:'PiraRed'" <<< "$BADGING"
+          test -s app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          echo "Verificados paquete Android, nombre PiraRed, icono y seis imagenes originales."
+
       - name: Preparar APK con nombre final
         shell: bash
         run: |

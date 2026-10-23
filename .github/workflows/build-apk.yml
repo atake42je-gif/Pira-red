@@ -23,30 +23,39 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      
+
       - name: Preparar Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Aceptar licencias e instalar SDK
+      - name: Actualizar herramientas e instalar paquetes
         shell: bash
         run: |
           set -e
-          yes | sdkmanager --licenses || true
-          sdkmanager \
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "${ANDROID_HOME}/cmdline-tools" -name sdkmanager -type f | head -n 1)"
+          fi
+
+          if [ -z "$SDKMANAGER" ] || [ ! -x "$SDKMANAGER" ]; then
+            echo "No se encontró sdkmanager"
+            exit 1
+          fi
+
+          yes | "$SDKMANAGER" --licenses || true
+
+          "$SDKMANAGER" --install \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
 
       - name: Preparar archivos
+        shell: bash
         run: |
+          set -e
           mkdir -p app/src/main/assets/www
+          mkdir -p app/src/main/assets/www/img
           mkdir -p app/src/main/java/ar/pirared/app
-          mkdir -p app/src/main/res/drawable
-          mkdir -p app/src/main/res/mipmap-mdpi
-          mkdir -p app/src/main/res/mipmap-hdpi
-          mkdir -p app/src/main/res/mipmap-xhdpi
-          mkdir -p app/src/main/res/mipmap-xxhdpi
-          mkdir -p app/src/main/res/mipmap-xxxhdpi
 
           cp index.html app/src/main/assets/www/index.html
           cp MainActivity.java app/src/main/java/ar/pirared/app/MainActivity.java
@@ -55,10 +64,11 @@ jobs:
           for f in ./*.jpg ./*.jpeg ./*.png; do
             [ -f "$f" ] || continue
             cp "$f" app/src/main/assets/www/
-            cp "$f" app/src/main/assets/www/img/ 2>/dev/null || true
+            cp "$f" app/src/main/assets/www/img/
           done
 
       - name: Crear configuración Gradle
+        shell: bash
         run: |
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -114,7 +124,7 @@ jobs:
       - name: Compilar APK
         run: gradle assembleDebug
 
-      - name: Guardar APK
+      - name: Descargar APK
         uses: actions/upload-artifact@v4
         with:
           name: PiraRed-APK

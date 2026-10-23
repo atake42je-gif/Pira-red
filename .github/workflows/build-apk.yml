@@ -1,185 +1,32 @@
-name: Crear APK PiraRed
+- name: Instalar paquetes Android
+  shell: bash
+  run: |
+    set -euo pipefail
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
+    export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+    export ANDROID_SDK_ROOT="${ANDROID_HOME}"
 
-permissions:
-  contents: read
+    SDKMANAGER=""
+    for candidate in \
+      "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+      "$ANDROID_HOME/cmdline-tools/bin/sdkmanager" \
+      "$ANDROID_HOME/tools/bin/sdkmanager" \
+      "$(command -v sdkmanager || true)"; do
+      if [ -n "$candidate" ] && [ -f "$candidate" ] && [ -x "$candidate" ]; then
+        SDKMANAGER="$candidate"
+        break
+      fi
+    done
 
-jobs:
-  build:
-    runs-on: ubuntu-24.04
+    if [ -z "$SDKMANAGER" ]; then
+      echo "ERROR: No se encontró sdkmanager en $ANDROID_HOME."
+      exit 1
+    fi
 
-    steps:
-      - name: Descargar código
-        uses: actions/checkout@v5
+    echo "SDK Manager: $SDKMANAGER"
 
-      - name: Instalar Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Preparar Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Instalar paquetes Android
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "Preparando Android SDK..."
-
-          if [ -z "${ANDROID_HOME:-}" ]; then
-            export ANDROID_HOME="$HOME/Library/Android/sdk"
-          fi
-
-          export ANDROID_SDK_ROOT="${ANDROID_HOME}"
-
-          SDKMANAGER=""
-          for candidate in \
-            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "$ANDROID_HOME/cmdline-tools/bin/sdkmanager" \
-            "$ANDROID_HOME/tools/bin/sdkmanager" \
-            "$(command -v sdkmanager || true)"; do
-            if [ -n "$candidate" ] && [ -f "$candidate" ] && [ -x "$candidate" ]; then
-              SDKMANAGER="$candidate"
-              break
-            fi
-          done
-
-          if [ -z "$SDKMANAGER" ]; then
-            SDKMANAGER="$(find "$ANDROID_HOME" -type f -name sdkmanager 2>/dev/null | head -n 1 || true)"
-          fi
-
-          if [ -z "$SDKMANAGER" ]; then
-            echo "ERROR: No se encontró sdkmanager en $ANDROID_HOME."
-            echo "Contenido de ANDROID_HOME:"
-            ls -R "$ANDROID_HOME" 2>/dev/null | head -n 50 || true
-            exit 1
-          fi
-
-          echo "SDK Manager: $SDKMANAGER"
-
-          yes | "$SDKMANAGER" --licenses || true
-
-          "$SDKMANAGER" --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
-
-      - name: Verificar archivos del proyecto
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          for file in index.html MainActivity.java AndroidManifest.xml; do
-            if [ ! -f "$file" ]; then
-              echo "ERROR: Falta el archivo $file en la raíz del repositorio."
-              exit 1
-            fi
-          done
-
-          echo "Archivos principales encontrados."
-
-      - name: Preparar archivos Android
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          mkdir -p app/src/main/assets/www/img
-          mkdir -p app/src/main/java/ar/pirared/app
-          mkdir -p app/src/main/res/drawable
-
-          cp index.html app/src/main/assets/www/index.html
-          cp MainActivity.java app/src/main/java/ar/pirared/app/MainActivity.java
-          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
-
-          for f in ./*.jpg ./*.jpeg ./*.png; do
-            [ -f "$f" ] || continue
-            cp "$f" app/src/main/assets/www/
-            cp "$f" app/src/main/assets/www/img/
-          done
-
-          if [ -f "logo-pirared.png" ]; then
-            cp logo-pirared.png app/src/main/res/drawable/pirared_logo.png
-          fi
-
-      - name: Crear configuración Gradle
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          cat > settings.gradle <<'EOF'
-          pluginManagement {
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-
-          rootProject.name = 'PiraRed'
-          include ':app'
-          EOF
-
-          cat > build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application' version '8.7.3' apply false
-          }
-          EOF
-
-          cat > app/build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application'
-          }
-
-          android {
-              namespace 'ar.pirared.app'
-              compileSdk 35
-
-              defaultConfig {
-                  applicationId 'ar.pirared.app'
-                  minSdk 23
-                  targetSdk 35
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
-
-          cat > gradle.properties <<'EOF'
-          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-          android.useAndroidX=true
-          EOF
-
-      - name: Instalar Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "8.9"
-
-      - name: Compilar APK
-        shell: bash
-        run: |
-          set -euo pipefail
-          gradle assembleDebug
-
-      - name: Guardar APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: PiraRed-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 7
+    yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
+    "$SDKMANAGER" --install \
+      "platform-tools" \
+      "platforms;android-35" \
+      "build-tools;35.0.0"

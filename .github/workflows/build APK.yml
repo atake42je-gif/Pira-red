@@ -85,8 +85,10 @@ jobs:
           test -s supabase/README.md
           test -s supabase/migrations/202610230001_pirared_commerce_ads.sql
           grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
-          grep -q 'ad_type' app/src/main/assets/www/index.html
-          echo "Archivos de publicidad y esquema Supabase presentes."
+          grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
+          grep -q 'PIRARED_SUPABASE_URL' app/src/main/assets/www/index.html
+          grep -q 'PIRARED_SUPABASE_KEY' app/src/main/assets/www/index.html
+          echo "Archivos de publicidad, esquema y configuración cliente Supabase presentes."
 
       - name: Compilar APK
         shell: bash

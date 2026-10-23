@@ -1,9 +1,11 @@
-name: Build PiraRed APK
+name: Crear APK PiraRed
 
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
 
 permissions:
   contents: read
@@ -13,35 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Instalar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          packages: ''
-          
-      - name: Install Android SDK
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Preparar SDK
         run: |
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Prepare Android project
+      - name: Preparar carpetas y recursos
         run: |
-          test -f MainActivity.java
-          test -f AndroidManifest.xml
-          test -f index.html
-
+          mkdir -p app/src/main/assets/www
           mkdir -p app/src/main/java/ar/pirared/app
-          mkdir -p app/src/main/assets/www/img
           mkdir -p app/src/main/res/drawable
           mkdir -p app/src/main/res/mipmap-mdpi
           mkdir -p app/src/main/res/mipmap-hdpi
@@ -49,77 +42,50 @@ jobs:
           mkdir -p app/src/main/res/mipmap-xxhdpi
           mkdir -p app/src/main/res/mipmap-xxxhdpi
 
-          cp MainActivity.java \
-            app/src/main/java/ar/pirared/app/
+          cp index.html app/src/main/assets/www/index.html
+          cp MainActivity.java app/src/main/java/ar/pirared/app/MainActivity.java
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
 
-          cp AndroidManifest.xml app/src/main/
-
-          cp index.html app/src/main/assets/www/
-          cp logo-pirared.png app/src/main/res/drawable/logo_pirared.png
-          for d in mdpi hdpi xhdpi xxhdpi; do
-          cp logo-pirared.png "app/src/main/res/mipmap-$d/ic_launcher.png"
+          for f in ./*.jpg ./*.jpeg ./*.png; do
+            [ -f "$f" ] || continue
+            cp "$f" app/src/main/assets/www/
           done
-         
-          cp ./*.jpg app/src/main/assets/www/img/
 
-          cat > settings.gradle <<'EOF'
-          pluginManagement {
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-          dependencyResolutionManagement {
-              repositoriesMode.set(
-                  RepositoriesMode.FAIL_ON_PROJECT_REPOS
-              )
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          rootProject.name = "PiraRed"
-          include ":app"
-          EOF
+          mkdir -p app/src/main/assets/www/img
+          for f in ./*.jpg ./*.jpeg ./*.png; do
+            [ -f "$f" ] || continue
+            cp "$f" app/src/main/assets/www/img/
+          done
 
-          cat > build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application' version '8.7.3' apply false
-          }
-          EOF
+          if [ -f "logo-pirared.png" ]; then
+            cp logo-pirared.png app/src/main/res/drawable/pirared_logo.png
+            cp logo-pirared.png app/src/main/res/mipmap-mdpi/ic_launcher.png
+            cp logo-pirared.png app/src/main/res/mipmap-hdpi/ic_launcher.png
+            cp logo-pirared.png app/src/main/res/mipmap-xhdpi/ic_launcher.png
+            cp logo-pirared.png app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+            cp logo-pirared.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          fi
 
-          cat > app/build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application'
-          }
+      - name: Crear configuración Gradle
+        run: |
+          echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }; dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }; rootProject.name = 'PiraRed'; include ':app'" > settings.gradle
 
-          android {
-              namespace 'ar.pirared.app'
-              compileSdk 35
+          echo "plugins { id 'com.android.application' version '8.7.3' apply false }" > build.gradle
 
-              defaultConfig {
-                  applicationId 'ar.pirared.app'
-                  minSdk 23
-                  targetSdk 35
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
+          echo "plugins { id 'com.android.application' }; android { namespace 'ar.pirared.app'; compileSdk 35; defaultConfig { applicationId 'ar.pirared.app'; minSdk 23; targetSdk 35; versionCode 1; versionName '1.0' } }" > app/build.gradle
 
-      - name: Set up Gradle
+          echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
+
+      - name: Instalar Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: "8.9"
 
-      - name: Build APK
+      - name: Compilar APK
         run: gradle assembleDebug
 
-      - name: Upload APK
+      - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: PiraRed-APK
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-          retention-days: 7
+          path: app/build/outputs/apk/debug/app-debug.apk

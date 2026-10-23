@@ -2,6 +2,11 @@
 -- Ejecutar en Supabase SQL Editor. No incluye claves secretas.
 begin;
 
+-- Funciones privilegiadas en esquema no expuesto por la API REST.
+create schema if not exists private;
+revoke all on schema private from public;
+grant usage on schema private to anon, authenticated;
+
 create extension if not exists pgcrypto;
 
 create table if not exists public.profiles (
@@ -49,7 +54,7 @@ create index if not exists ads_owner_idx on public.ads(owner_id);
 create index if not exists ads_business_idx on public.ads(business_id);
 create index if not exists ads_public_idx on public.ads(status, ad_type, created_at desc);
 
-create or replace function public.is_pirared_admin()
+create or replace function private.is_pirared_admin()
 returns boolean
 language sql
 stable
@@ -62,7 +67,7 @@ as $$
   );
 $$;
 
-create or replace function public.handle_new_pirared_user()
+create or replace function private.handle_new_pirared_user()
 returns trigger
 language plpgsql
 security definer
@@ -82,7 +87,7 @@ $$;
 drop trigger if exists on_auth_user_created_pirared on auth.users;
 create trigger on_auth_user_created_pirared
 after insert on auth.users
-for each row execute procedure public.handle_new_pirared_user();
+for each row execute procedure private.handle_new_pirared_user();
 
 alter table public.profiles enable row level security;
 alter table public.businesses enable row level security;
@@ -91,7 +96,7 @@ alter table public.ads enable row level security;
 -- Perfil: cada usuario ve/edita lo suyo; rol nunca se puede editar mediante esta política.
 drop policy if exists "profile read self or admin" on public.profiles;
 create policy "profile read self or admin" on public.profiles
-for select to authenticated using (id = (select auth.uid()) or public.is_pirared_admin());
+for select to authenticated using (id = (select auth.uid()) or private.is_pirared_admin());
 drop policy if exists "profile update self" on public.profiles;
 create policy "profile update self" on public.profiles
 for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
@@ -101,7 +106,7 @@ grant select, update (display_name) on public.profiles to authenticated;
 -- Comercios aprobados visibles públicamente; propietario administra el suyo; admin revisa.
 drop policy if exists "approved businesses public read" on public.businesses;
 create policy "approved businesses public read" on public.businesses
-for select to anon, authenticated using (status = 'approved' or owner_id = (select auth.uid()) or public.is_pirared_admin());
+for select to anon, authenticated using (status = 'approved' or owner_id = (select auth.uid()) or private.is_pirared_admin());
 drop policy if exists "owner submits business" on public.businesses;
 create policy "owner submits business" on public.businesses
 for insert to authenticated with check (owner_id = (select auth.uid()) and status = 'pending');
@@ -111,7 +116,7 @@ for update to authenticated using (owner_id = (select auth.uid()) and status in 
 with check (owner_id = (select auth.uid()) and status in ('pending','rejected'));
 drop policy if exists "admin reviews businesses" on public.businesses;
 create policy "admin reviews businesses" on public.businesses
-for update to authenticated using (public.is_pirared_admin()) with check (public.is_pirared_admin());
+for update to authenticated using (private.is_pirared_admin()) with check (private.is_pirared_admin());
 
 -- Solo anuncios aprobados y de comercios aprobados se muestran a visitantes.
 drop policy if exists "approved ads public read" on public.ads;
@@ -122,7 +127,7 @@ for select to anon, authenticated using (
     where b.id = business_id and b.status = 'approved'
   ))
   or owner_id = (select auth.uid())
-  or public.is_pirared_admin()
+  or private.is_pirared_admin()
 );
 drop policy if exists "owner submits pending ad" on public.ads;
 create policy "owner submits pending ad" on public.ads
@@ -156,13 +161,16 @@ for update to authenticated using (
 );
 drop policy if exists "admin reviews ads" on public.ads;
 create policy "admin reviews ads" on public.ads
-for update to authenticated using (public.is_pirared_admin()) with check (public.is_pirared_admin());
+for update to authenticated using (private.is_pirared_admin()) with check (private.is_pirared_admin());
 
 grant select on public.businesses, public.ads to anon, authenticated;
 grant insert, update on public.businesses, public.ads to authenticated;
 grant select on public.profiles to authenticated;
 grant update (display_name) on public.profiles to authenticated;
-grant execute on function public.is_pirared_admin() to authenticated;
+revoke all on function private.is_pirared_admin() from public;
+revoke all on function private.is_pirared_admin() from anon, authenticated;
+grant execute on function private.is_pirared_admin() to anon, authenticated;
+revoke all on function private.handle_new_pirared_user() from public, anon, authenticated;
 
 commit;
 

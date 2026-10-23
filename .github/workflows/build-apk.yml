@@ -27,7 +27,7 @@ jobs:
       - name: Preparar Android SDK
   uses: android-actions/setup-android@v3
 
-- name: Instalar paquetes Android
+      - name: Instalar paquetes Android
   shell: bash
   run: |
     set -euxo pipefail

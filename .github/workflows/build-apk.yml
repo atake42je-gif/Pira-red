@@ -1,6 +1,6 @@
 name: Crear APK PiraRed
 
-on:
+'on':
 workflow_dispatch:
 push:
 branches:
@@ -41,7 +41,6 @@ steps:
     shell: bash
     run: |
       set -euo pipefail
-
       echo "Contenido del repositorio:"
       ls -la
 

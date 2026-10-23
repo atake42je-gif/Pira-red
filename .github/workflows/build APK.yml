@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,21 +30,45 @@ jobs:
 
       - name: Preparar Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: ''
-      
+
       - name: Instalar herramientas Android
         shell: bash
         run: |
           yes | sdkmanager --licenses || true
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
+      - name: Crear iconos de PiraRed
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          set -euo pipefail
+          logo="app/src/main/assets/www/app/Img/06-logo-pirared.png"
+          test -f "$logo"
+          for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $spec
+            density="$1"
+            size="$2"
+            dir="app/src/main/res/mipmap-$density"
+            mkdir -p "$dir"
+            convert "$logo" -auto-orient -resize "${size}x${size}^" -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
+          done
+
       - name: Compilar APK
         run: gradle assembleDebug
+
+      - name: Preparar APK con nombre final
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/PiraRed.apk
+          test -s dist/PiraRed.apk
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: PiraRed-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: PiraRed-APK
+          path: dist/PiraRed.apk
           if-no-files-found: error
+          retention-days: 14

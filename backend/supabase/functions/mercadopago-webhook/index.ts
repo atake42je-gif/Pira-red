@@ -73,6 +73,20 @@ Deno.serve(async (req) => {
     const { data: linked } = await db.from("promotion_orders").select("id").eq("provider_payment_id", paymentId).maybeSingle();
     if (linked && linked.id !== orderId) return Response.json({ error: "payment_already_used" }, { status: 409 });
     if (order.status === "approved") {
+      if (order.provider_payment_id !== paymentId) {
+        return Response.json({ error: "order_already_paid_by_another_payment" }, { status: 409 });
+      }
+      // Retry-safe: if a previous delivery saved the payment but activation failed,
+      // recreate the promotion idempotently before acknowledging the notification.
+      const { error: retryActivationError } = await db.from("listing_promotions").upsert({
+        order_id: orderId, listing_id: order.listing_id, user_id: order.user_id,
+        promotion_type: order.promotion_type, starts_at: order.approved_at ?? new Date().toISOString(),
+        expires_at: order.expires_at, active: true,
+      }, { onConflict: "order_id" });
+      if (retryActivationError) {
+        console.error("Retry activation failed", retryActivationError);
+        return Response.json({ error: "promotion_activation_failed" }, { status: 500 });
+      }
       return Response.json({ received: true, activated: true, duplicate: true });
     }
     if (order.status !== "pending") return Response.json({ error: "order_not_pending" }, { status: 409 });

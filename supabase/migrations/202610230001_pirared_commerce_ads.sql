@@ -129,6 +129,7 @@ create policy "owner submits pending ad" on public.ads
 for insert to authenticated with check (
   owner_id = (select auth.uid())
   and status = 'pending'
+  and ad_type = 'basic'
   and reviewed_by is null
   and reviewed_at is null
   and exists (
@@ -144,7 +145,14 @@ for update to authenticated using (
   owner_id = (select auth.uid()) and status in ('pending','rejected')
 ) with check (
   owner_id = (select auth.uid()) and status in ('pending','rejected')
+  and ad_type = 'basic'
   and reviewed_by is null and reviewed_at is null
+  and exists (
+    select 1 from public.businesses b
+    where b.id = business_id
+      and b.owner_id = (select auth.uid())
+      and b.status = 'approved'
+  )
 );
 drop policy if exists "admin reviews ads" on public.ads;
 create policy "admin reviews ads" on public.ads

@@ -32,20 +32,46 @@ jobs:
         run: |
           set -euo pipefail
 
-          yes | sdkmanager --licenses || true
+          echo "Preparando Android SDK..."
 
-          sdkmanager \
+          SDKMANAGER="$(find "${ANDROID_HOME}/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+
+          if [ -z "$SDKMANAGER" ]; then
+            echo "ERROR: No se encontró sdkmanager."
+            exit 1
+          fi
+
+          echo "SDK Manager: $SDKMANAGER"
+
+          yes | "$SDKMANAGER" --licenses || true
+
+          "$SDKMANAGER" --install \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
-      - name: Preparar archivos
+
+      - name: Verificar archivos del proyecto
         shell: bash
         run: |
           set -euo pipefail
 
-          mkdir -p app/src/main/assets/www
+          for file in index.html MainActivity.java AndroidManifest.xml; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Falta el archivo $file en la raíz del repositorio."
+              exit 1
+            fi
+          done
+
+          echo "Archivos principales encontrados."
+
+      - name: Preparar archivos Android
+        shell: bash
+        run: |
+          set -euo pipefail
+
           mkdir -p app/src/main/assets/www/img
           mkdir -p app/src/main/java/ar/pirared/app
+          mkdir -p app/src/main/res/drawable
 
           cp index.html app/src/main/assets/www/index.html
           cp MainActivity.java app/src/main/java/ar/pirared/app/MainActivity.java
@@ -57,9 +83,15 @@ jobs:
             cp "$f" app/src/main/assets/www/img/
           done
 
+          if [ -f "logo-pirared.png" ]; then
+            cp logo-pirared.png app/src/main/res/drawable/pirared_logo.png
+          fi
+
       - name: Crear configuración Gradle
         shell: bash
         run: |
+          set -euo pipefail
+
           cat > settings.gradle <<'EOF'
           pluginManagement {
               repositories {
@@ -106,7 +138,10 @@ jobs:
           }
           EOF
 
-          echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          EOF
 
       - name: Instalar Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -114,10 +149,15 @@ jobs:
           gradle-version: "8.9"
 
       - name: Compilar APK
-        run: gradle assembleDebug
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle assembleDebug
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: PiraRed-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7

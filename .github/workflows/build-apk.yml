@@ -1,6 +1,6 @@
-name: Crear APK PiraRed
+name: Crear APK Pira-Red
 
-'on':
+'on'
 workflow_dispatch:
 push:
 branches:

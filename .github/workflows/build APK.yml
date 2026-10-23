@@ -78,6 +78,16 @@ jobs:
             echo "::warning::Se genera APK de prueba. Para actualizaciones compatibles se necesita configurar la firma privada estable en GitHub Secrets."
           fi
 
+      - name: Verificar archivos de publicidad PiraRed
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s supabase/README.md
+          test -s supabase/migrations/202610230001_pirared_commerce_ads.sql
+          grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
+          grep -q 'ad_type' app/src/main/assets/www/index.html
+          echo "Archivos de publicidad y esquema Supabase presentes."
+
       - name: Compilar APK
         shell: bash
         run: |

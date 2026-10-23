@@ -1,77 +1,74 @@
 name: Crear APK PiraRed
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
+workflow_dispatch:
+push:
+branches:
+- main
+- master
 
 permissions:
-  contents: read
+contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
+build:
+runs-on: ubuntu-24.04
 
-    steps:
-      - name: Descargar código
-        uses: actions/checkout@v4
+```
+steps:
+  - name: Descargar código
+    uses: actions/checkout@v4
 
-      - name: Instalar Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+  - name: Instalar Java 17
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
 
-      - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+  - name: Configurar Gradle
+    uses: gradle/actions/setup-gradle@v4
+    with:
+      gradle-version: '8.9'
 
-      - name: Configurar Android SDK
-        uses: android-actions/setup-android@v3
+  - name: Configurar Android SDK
+    uses: android-actions/setup-android@v3
+    with:
+      packages: |
+        platform-tools
+        platforms;android-35
+        build-tools;35.0.0
 
-      - name: Instalar paquetes Android
-        shell: bash
-        run: |
-          set -euo pipefail
+  - name: Verificar archivos del proyecto
+    shell: bash
+    run: |
+      set -euo pipefail
 
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
+      echo "Contenido del repositorio:"
+      ls -la
 
-      - name: Verificar archivos del proyecto
-        shell: bash
-        run: |
-          set -euo pipefail
+      if [ ! -f settings.gradle ] && [ ! -f settings.gradle.kts ]; then
+        echo "ERROR: Falta settings.gradle."
+        exit 1
+      fi
 
-          echo "Contenido del repositorio:"
-          ls -la
+      if [ ! -f app/build.gradle ] && [ ! -f app/build.gradle.kts ]; then
+        echo "ERROR: Falta la configuración de compilación de app."
+        exit 1
+      fi
 
-          if [ ! -f settings.gradle ] && [ ! -f settings.gradle.kts ]; then
-            echo "ERROR: Falta settings.gradle."
-            exit 1
-          fi
+      if [ ! -f app/src/main/AndroidManifest.xml ]; then
+        echo "ERROR: Falta AndroidManifest.xml."
+        exit 1
+      fi
 
-          if [ ! -f app/build.gradle ] && [ ! -f app/build.gradle.kts ]; then
-            echo "ERROR: Falta la configuración de compilación de app."
-            exit 1
-          fi
+  - name: Compilar APK
+    run: gradle --no-daemon assembleDebug
 
-          if [ ! -f app/src/main/AndroidManifest.xml ]; then
-            echo "ERROR: Falta AndroidManifest.xml."
-            exit 1
-          fi
-
-      - name: Compilar APK
-        run: gradle --no-daemon assembleDebug
-
-      - name: Publicar APK para descargar
-        uses: actions/upload-artifact@v4
-        with:
-          name: PiraRed-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+  - name: Publicar APK para descargar
+    uses: actions/upload-artifact@v4
+    with:
+      name: PiraRed-APK
+      path: app/build/outputs/apk/debug/app-debug.apk
+      if-no-files-found: error
+      retention-days: 14
+```

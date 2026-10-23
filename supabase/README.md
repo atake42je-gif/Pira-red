@@ -1,21 +1,35 @@
-# PiraRed — backend de comercios y publicidad
+# PiraRed — estado del backend y publicación
 
-## Qué prepara esta carpeta
-- Esquema SQL para perfiles, comercios y anuncios.
-- Políticas RLS: los visitantes solo leen comercios/anuncios aprobados; los comercios crean anuncios pendientes; la revisión queda reservada a usuarios con rol admin.
-- Tipo de anuncio `basic` gratis y `featured` para destacar. El cobro no está implementado ni se almacena información de tarjetas.
+## Funciones conectadas
+- Registro e inicio de sesión con Supabase Auth, confirmación por correo y recuperación de contraseña.
+- Perfiles privados con políticas RLS.
+- Alta de comercios en estado pendiente.
+- Envío de promociones por comercios aprobados.
+- Listado público limitado a promociones y comercios aprobados.
+- Moderación de anuncios mediante políticas de base de datos; el cliente no incluye botones públicos para aprobar anuncios.
+- Las claves de servicio no deben incluirse en la APK. La interfaz usa únicamente una clave publicable.
 
-## Configuración necesaria (Supabase)
-1. Crear un proyecto en Supabase.
-2. Abrir **SQL Editor** y ejecutar `supabase/migrations/202610230001_pirared_commerce_ads.sql`.
-3. Registrar tu cuenta mediante el sistema de autenticación de Supabase y confirmar tu identidad.
-4. En SQL Editor, consultar tu usuario y su perfil para encontrar el UUID correcto. Después asignar el rol admin con la instrucción comentada al final de la migración, sustituyendo el marcador por el UUID real. Nunca otorgues el rol admin desde el formulario público.
-5. Configurar autenticación y correo de confirmación. Activar protección contra contraseñas filtradas si está disponible.
-6. Guardar la URL del proyecto y la clave publicable/anon en la configuración de la app. **Nunca poner la service_role key en el APK, HTML, repositorio o capturas.**
-7. Conectar la interfaz Android/WebView a Supabase Auth y a las tablas. Hasta terminar y probar este paso, los formularios actuales siguen siendo una demostración local.
+## Funciones todavía no listas para lanzamiento completo
+- Publicaciones comunitarias de productos, changas y servicios.
+- Mensajería privada entre vecinos.
+- Panel administrativo dentro de la aplicación, denuncias y bloqueo de usuarios.
+- Política de privacidad y condiciones revisadas para el lanzamiento público.
+- Pruebas funcionales de registro/correo en el dispositivo y revisión final de RLS en el proyecto de producción.
 
-## Reglas de seguridad
-- La base de datos fuerza aprobación antes de hacer visibles los anuncios.
-- Las políticas RLS son la barrera de acceso; ocultar botones en la interfaz no es seguridad.
-- La política no habilita cobros. Los anuncios destacados deben aprobarse manualmente y activarse comercialmente solo cuando se defina precio y proveedor de pago.
-- Probar con cuentas separadas de comerciante y administrador antes de publicar.
+La interfaz informa cuando estas funciones no están disponibles y no simula envíos de anuncios ni aprobaciones administrativas.
+
+## Configuración de Supabase
+La migración `202610230001_pirared_commerce_ads.sql` define perfiles, comercios, anuncios y políticas RLS. Verificá que se haya ejecutado en el proyecto `slgqcrcktczuvmivwdst` y que las políticas de seguridad estén activas antes de habilitar el lanzamiento.
+
+Para el primer administrador, registrá y confirmá una cuenta y luego asigná el rol `admin` manualmente en SQL Editor usando su UUID real. Nunca permitas que el formulario público establezca el rol de administrador.
+
+## APK y firma
+El workflow compila y valida el APK. Sin los secretos de firma de Android, genera una APK de depuración. Para publicar y permitir actualizaciones consistentes en dispositivos existentes, configurá una clave de firma privada estable en GitHub Actions Secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). No compartas ni subas la clave privada al repositorio.
+
+## Antes de anunciar el lanzamiento
+1. Confirmá que la migración y RLS están activas en el proyecto correcto.
+2. Probá registro, confirmación de correo, inicio de sesión, recuperación y envío de una promoción con cuentas de prueba.
+3. Aprobá el comercio y el anuncio con una cuenta administradora separada y verificá que solo lo aprobado sea visible.
+4. Agregá y probá las funciones comunitarias y de mensajería si forman parte del alcance inicial.
+5. Publicá una política de privacidad y condiciones adecuadas a la operación en Argentina.
+6. Generá la APK firmada con la clave estable y probá la actualización en un dispositivo limpio y otro con la versión anterior.

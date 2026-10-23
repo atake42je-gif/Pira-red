@@ -34,10 +34,32 @@ jobs:
 
           echo "Preparando Android SDK..."
 
-          SDKMANAGER="$(find "${ANDROID_HOME}/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          if [ -z "${ANDROID_HOME:-}" ]; then
+            export ANDROID_HOME="$HOME/Library/Android/sdk"
+          fi
+
+          export ANDROID_SDK_ROOT="${ANDROID_HOME}"
+
+          SDKMANAGER=""
+          for candidate in \
+            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "$ANDROID_HOME/cmdline-tools/bin/sdkmanager" \
+            "$ANDROID_HOME/tools/bin/sdkmanager" \
+            "$(command -v sdkmanager || true)"; do
+            if [ -n "$candidate" ] && [ -f "$candidate" ] && [ -x "$candidate" ]; then
+              SDKMANAGER="$candidate"
+              break
+            fi
+          done
 
           if [ -z "$SDKMANAGER" ]; then
-            echo "ERROR: No se encontró sdkmanager."
+            SDKMANAGER="$(find "$ANDROID_HOME" -type f -name sdkmanager 2>/dev/null | head -n 1 || true)"
+          fi
+
+          if [ -z "$SDKMANAGER" ]; then
+            echo "ERROR: No se encontró sdkmanager en $ANDROID_HOME."
+            echo "Contenido de ANDROID_HOME:"
+            ls -R "$ANDROID_HOME" 2>/dev/null | head -n 50 || true
             exit 1
           fi
 

@@ -1,61 +1,78 @@
-
-name: Crear APK PiraRed
+name: Generar APK de PiraRed
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
-      - master
 
-permissions:
-  contents: read
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar código
+      - name: Descargar el codigo
         uses: actions/checkout@v4
 
-      - name: Instalar Java 17
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+      - name: Recuperar proyecto Android del ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Configurar Android SDK
+          ZIP=$(find . -maxdepth 1 -type f -iname '*.zip' | head -n 1)
+
+          if [ -z "$ZIP" ]; then
+            echo "No se encontro el ZIP del proyecto Android."
+            exit 1
+          fi
+
+          mkdir -p /tmp/pirared
+          unzip -o "$ZIP" -d /tmp/pirared
+
+          ROOT=$(find /tmp/pirared -type f -name settings.gradle -printf '%h\n' | head -n 1)
+
+          if [ -z "$ROOT" ]; then
+            ROOT=$(find /tmp/pirared -type f -name settings.gradle.kts -printf '%h\n' | head -n 1)
+          fi
+
+          if [ -z "$ROOT" ] || [ ! -d "$ROOT/app" ]; then
+            echo "El ZIP no contiene la carpeta app esperada."
+            exit 1
+          fi
+
+          cp -a "$ROOT/." .
+          test -d app
+
+      - name: Preparar Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Instalar paquetes Android
-        shell: bash
-        run: |
-          set -euo pipefail
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
-
-      - name: Verificar archivos
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f settings.gradle || test -f settings.gradle.kts
-          test -f app/build.gradle || test -f app/build.gradle.kts
-          test -f app/src/main/AndroidManifest.xml
+      - name: Instalar herramientas Android
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Compilar APK
-        run: gradle --no-daemon assembleDebug
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Publicar APK
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug
+          else
+            echo "Falta gradlew en el proyecto Android."
+            echo "Inclui el Gradle Wrapper en el ZIP para compilar."
+            exit 1
+          fi
+
+      - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: PiraRed-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: PiraRed-apk
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-          retention-days: 14
+```

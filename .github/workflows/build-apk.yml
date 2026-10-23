@@ -24,30 +24,27 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Preparar Android SDK
-        uses: android-actions/setup-android@v3
+  - name: Preparar Android SDK
+  uses: android-actions/setup-android@v3
 
-      - name: Actualizar herramientas e instalar paquetes
-        shell: bash
-        run: |
-          set -e
-          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+  - name: Instalar paquetes Android
+  shell: bash
+  run: |
+    set -euxo pipefail
+    export ANDROID_SDK_ROOT="${ANDROID_HOME}"
+    export PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
 
-          if [ ! -x "$SDKMANAGER" ]; then
-            SDKMANAGER="$(find "${ANDROID_HOME}/cmdline-tools" -name sdkmanager -type f | head -n 1)"
-          fi
+    if [ ! -x "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" ]; then
+      echo "cmdline-tools/latest no existe; instalando..."
+      mkdir -p "${ANDROID_HOME}/cmdline-tools"
+      yes | sdkmanager --install "cmdline-tools;latest"
+    fi
 
-          if [ -z "$SDKMANAGER" ] || [ ! -x "$SDKMANAGER" ]; then
-            echo "No se encontró sdkmanager"
-            exit 1
-          fi
-
-          yes | "$SDKMANAGER" --licenses || true
-
-          "$SDKMANAGER" --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
+    yes | sdkmanager --licenses
+    sdkmanager --install \
+      "platform-tools" \
+      "platforms;android-35" \
+      "build-tools;35.0.0"
 
       - name: Preparar archivos
         shell: bash

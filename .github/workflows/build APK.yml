@@ -28,20 +28,14 @@ jobs:
 
       - name: Preparar Android SDK
         uses: android-actions/setup-android@v3
-
+        with:
+          packages: ''
       
       - name: Instalar herramientas Android
+        shell: bash
         run: |
           yes | sdkmanager --licenses || true
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-      - name: Verificar archivos
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f settings.gradle || test -f settings.gradle.kts
-          test -f build.gradle || test -f build.gradle.kts
-          test -f app/build.gradle || test -f app/build.gradle.kts
-          test -f app/src/main/AndroidManifest.xml
 
       - name: Compilar APK
         run: gradle assembleDebug

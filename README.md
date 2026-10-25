@@ -1,6 +1,58 @@
-# PiraRed — pendientes y revisión visual
+# PiraRed — documentación general del proyecto
 
-PiraRed es una app Android para la comunidad de Pirané. El registro de cambios realizados está en [Léeme Pepe](LEEME_PEPE.md). Este README se usa para seguir lo que falta y revisar los recursos visuales; no debe interpretarse como prueba de que una función ya funciona en el teléfono.
+PiraRed es una aplicación Android orientada a la comunidad de Pirané y alrededores, Formosa, Argentina. Este documento reúne el propósito, la estructura del proyecto, los recursos visuales, la compilación, las pautas de seguridad y el estado de verificación. El registro complementario de cambios está en [Léeme Pepe](LEEME_PEPE.md). La presencia de código o archivos en el repositorio no garantiza por sí sola que una función esté probada en el teléfono.
+
+
+
+## Estado actual — portadas nuevas incorporadas al código
+
+Se agregaron al repositorio dos imágenes nuevas que el usuario subió y se actualizó `index.html` para usarlas por separado:
+
+- **Bienvenida, sin botones:** `app/Img/file_00000000bf30820ea0628bc7e7035328.png`
+- **Acceso, con “INICIAR SESIÓN” y “CREAR CUENTA”:** `app/Img/file_000000005d30820e921dc8703d3997dc.png`
+
+La pantalla de bienvenida usa la primera imagen; la portada principal usa la segunda. La proporción del contenedor se cambió a 2:3 y la imagen se ajusta con `object-fit: cover` para evitar el estiramiento. La portada de acceso mantiene las zonas táctiles y acciones definidas en el HTML; hay que comprobar en el dispositivo que coincidan con los botones impresos en la imagen.
+
+**Commit de la actualización de portadas:** `501a22d3eac85c6873769ab73fd8d7279aea8e99`.
+
+**Compilación automática:** [ver la ejecución de GitHub Actions](https://github.com/atake42je-gif/Pira-red/actions/runs/40207471776). Al redactar esta sección, la ejecución estaba en curso; no marcar la APK como lista hasta que GitHub Actions finalice con éxito y se confirme el artefacto descargable.
+
+Las portadas anteriores `portada-pirared.png` y `01-inicio-pirared.png` se conservan como recursos del repositorio por ahora; no se borran automáticamente porque todavía pueden estar referenciadas en otras partes del proyecto. Cuando la APK nueva esté validada, se puede hacer una limpieza de archivos antiguos revisando primero todas sus referencias.
+
+## Propósito y alcance
+
+PiraRed busca reunir información y servicios útiles para la comunidad local en una aplicación accesible desde Android. La dirección del producto incluye exploración, cuentas de usuarios, publicaciones comunitarias, comercios, servicios y contacto privado. Cada módulo debe considerarse **pendiente de validación funcional** hasta probarse con el backend y en el teléfono.
+
+## Estructura principal del repositorio
+
+- `app/src/main/assets/www/index.html`: interfaz web que se muestra dentro del WebView Android.
+- `app/src/main/assets/www/app/Img/`: imágenes y recursos visuales de la aplicación.
+- `app/src/main/java/ar/pirared/app/`: código Android que abre la interfaz local en un WebView.
+- `.github/workflows/build APK.yml`: flujo de GitHub Actions para compilar la APK.
+- `README.md`: esta documentación general.
+- `LEEME_PEPE.md`: registro complementario de cambios y notas del proyecto.
+
+## Compilar e instalar la APK
+
+1. Abrir la pestaña **Actions** del repositorio.
+2. Elegir el flujo **Generar APK de PiraRed** (archivo `.github/workflows/build APK.yml`).
+3. Esperar a que la ejecución termine. Si falla, revisar los logs del paso rojo antes de intentar instalar.
+4. Abrir la ejecución exitosa y descargar el artefacto APK publicado por el flujo.
+5. Instalarlo en el teléfono y comprobar que la versión y las imágenes sean las esperadas.
+
+No se debe afirmar que existe una APK nueva descargable hasta que el flujo finalice correctamente y el artefacto esté publicado. Para futuras actualizaciones de la misma instalación se debe mantener una firma de lanzamiento estable. No guardar keystores, contraseñas ni claves administrativas en el repositorio.
+
+## Seguridad y privacidad — principios de implementación
+
+- Mantener privados los datos personales y no mostrar números de teléfono en la mensajería interna.
+- No guardar claves administrativas ni claves `service_role` de Supabase en el código de cliente.
+- Usar políticas de seguridad de filas (RLS) en todas las tablas que contengan datos de usuarios, publicaciones, comercios o mensajes.
+- Verificar autorización en el backend; ocultar un botón en la interfaz no es una medida de seguridad suficiente.
+- Probar invitado, usuario común, comercio pendiente, comercio aprobado y administrador con permisos separados.
+- Tratar los enlaces, archivos y publicaciones de usuarios como contenido no confiable; contemplar denuncias, bloqueo, moderación y protección contra spam.
+- Publicar política de privacidad y términos claros antes del lanzamiento público.
+- La verificación de identidad avanzada queda fuera del alcance confirmado actual; se prioriza un método gratuito, seguro y que minimice la recolección de datos.
+
 
 ## Estado visual comprobado en el código
 
@@ -17,7 +69,7 @@ Los cambios de interfaz y la galería que ya se incorporaron no se repiten como 
 - Usar exclusivamente las imágenes originales que envió el usuario; no sustituirlas por imágenes generadas ni fotos parecidas.
 - Referencia anterior de la imagen de portada/logo: imagen grande, centrada, proporcional y sin deformación. La portada actual elegida por el usuario prevalece sobre cualquier diseño anterior.
 
-- La portada de Inicio usa `app/Img/01-inicio-pirared.png`, renombrada conservando exactamente el mismo archivo original del tren con PiraRed.
+- La portada de Inicio usa actualmente la nueva imagen de acceso `app/Img/file_000000005d30820ea0628bc7e7035328.png`; la bienvenida usa `app/Img/file_00000000bf30820ea0628bc7e7035328.png`. La imagen de tren `01-inicio-pirared.png` se conserva como recurso anterior.
 - La pantalla Información usa `app/Img/04-informacion-pirared.jpg`.
 - La portada se ajustó a pantalla completa y se quitaron los textos/capas duplicados sobre la imagen. Se conservaron zonas táctiles para los accesos; su alineación con los botones dibujados en la foto debe probarse en un teléfono.
 - La imagen original se muestra sin filtro ni capa oscura añadida; el recorte final depende de la proporción de cada dispositivo. Hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
@@ -27,11 +79,11 @@ Los cambios de interfaz y la galería que ya se incorporaron no se repiten como 
 ## Pendientes reales de desarrollo y verificación
 
 ### 1. APK y teléfono
-- [ ] Esperar que termine la compilación más reciente y revisar si finaliza correctamente.
+- [ ] Confirmar que la compilación iniciada por el commit de las portadas finalice correctamente y publique el artefacto APK.
 - [ ] Descargar e instalar la APK nueva en el teléfono.
 - [ ] Probar todas las pantallas, botones, navegación atrás, orientación y distintos tamaños de pantalla.
 - [ ] Confirmar que la portada original no tenga elementos visuales superpuestos y que las zonas táctiles invisibles coincidan con los botones dibujados.
-- [ ] Confirmar que la APK instalada contiene la última interfaz y las imágenes correctas.
+- [ ] Confirmar que la APK instalada contiene la última interfaz y las dos portadas nuevas.
 - [ ] Configurar y probar una firma estable de lanzamiento para futuras actualizaciones; no guardar keystore ni contraseñas en GitHub.
 
 ### 2. Supabase y seguridad
@@ -75,7 +127,7 @@ Los cambios de interfaz y la galería que ya se incorporaron no se repiten como 
 
 ### Secuencia principal obligatoria
 
-**1. Inicio — tren con PiraRed.** Portada completa, sin textos, lema, botones visibles ni capas superpuestas.
+**1. Recurso anterior de Inicio — tren con PiraRed.** Se conserva como imagen histórica; las pantallas actuales se conectaron a las dos portadas nuevas listadas arriba.
 ![Portada original de PiraRed con el tren](app/src/main/assets/www/app/Img/01-inicio-pirared.png)
 
 **2. Estatua / monumento de plaza.** El archivo está presente, pero hay que confirmar que sea exactamente la estatua pedida antes de etiquetarlo definitivamente.
@@ -116,7 +168,7 @@ Los cambios de interfaz y la galería que ya se incorporaron no se repiten como 
 **13. Logo original conservado.**
 ![Logo original de PiraRed](app/src/main/assets/www/app/Img/logo-pirared-original.png)
 
-**14. Portada original alternativa conservada.** La portada aprobada para Inicio sigue siendo `01-inicio-pirared.png`.
+**14. Portada anterior conservada.** La portada aprobada actualmente para bienvenida y acceso son los dos PNG nuevos descritos en la sección de estado actual.
 ![Portada PiraRed conservada](app/src/main/assets/www/app/Img/portada-pirared.png)
 
 ### Fotos reales solicitadas que todavía deben cotejarse

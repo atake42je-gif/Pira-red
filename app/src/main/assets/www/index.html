@@ -151,7 +151,8 @@
       }
 
       main {
-        padding: 0 0 92px;
+        /* Reserva espacio real para la navegación fija y evita que el final del formulario quede debajo. */
+        padding: 0 0 calc(108px + env(safe-area-inset-bottom, 0px));
       }
 
       .screen {
@@ -717,13 +718,13 @@
       .bottomnav {
         position: fixed;
         left: 50%;
-        bottom: max(16px, env(safe-area-inset-bottom));
+        bottom: 0;
         transform: translateX(-50%);
         display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
         width: min(100%, 430px);
-        padding: 8px 14px 10px;
-        background: rgba(255,255,255,0.74);
+        padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+        background: rgba(255,255,255,0.92);
         backdrop-filter: blur(18px) saturate(1.2);
         -webkit-backdrop-filter: blur(18px) saturate(1.2);
         border-top: 1px solid rgba(20, 82, 140, 0.06);

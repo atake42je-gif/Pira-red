@@ -4,9 +4,10 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 
 ## Estado visual comprobado en el código
 
-- La portada de Inicio usa `app/Img/Inicio login pira red.png`, la imagen original del tren con PiraRed.
+- La portada de Inicio usa `app/Img/01-inicio-pirared.png`, renombrada conservando exactamente el mismo archivo original del tren con PiraRed.
 - La pantalla Información usa `app/Img/04-informacion-pirared.jpg`.
-- La interfaz HTML define fondos claros celestes; aun así, hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
+- La portada se ajustó a pantalla completa y se quitaron los textos/capas duplicados sobre la imagen. Se conservaron zonas táctiles para los accesos; su alineación con los botones dibujados en la foto debe probarse en un teléfono.
+- La imagen original se muestra sin filtro ni capa oscura añadida; el recorte final depende de la proporción de cada dispositivo. Hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
 - La galería ordenada de abajo es una referencia de los archivos originales. **No significa que ya existan cinco pantallas separadas para mostrar esas fotos**: por ahora, las otras imágenes siguen siendo recursos que deben identificarse e integrarse donde corresponda.
 - Se limpiaron copias idénticas de imágenes. Se conservaron archivos visualmente distintos aunque todavía falte clasificarlos.
 

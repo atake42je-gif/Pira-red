@@ -4,6 +4,8 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 
 ## Estado visual comprobado en el código
 
+Los cambios de interfaz y la galería que ya se incorporaron no se repiten como tareas pendientes. Quedan abajo únicamente las comprobaciones que todavía requieren validación o trabajo nuevo.
+
 ## Estilo visual acordado (mantener en todas las pantallas)
 
 - Identidad moderna, simple, distintiva y claramente de Pirané; las fotos originales del pueblo son protagonistas.
@@ -22,14 +24,15 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - Se agregó a `index.html` una pantalla **Fotos** con las 14 imágenes del directorio canónico. La galería se ordenó para respetar primero la secuencia principal solicitada (portada, imagen pendiente de confirmar como estatua, placita, monumento de los 50 años, cartel YO ❤️ PIRANÉ e información); después aparecen los recursos complementarios. Las fotos genéricas siguen identificadas como pendientes. La galería aún requiere prueba visual en la APK instalada.
 - Se limpiaron copias idénticas de imágenes. Se conservaron archivos visualmente distintos aunque todavía falte clasificarlos.
 
-## Pendientes de desarrollo y verificación
+## Pendientes reales de desarrollo y verificación
 
 ### 1. APK y teléfono
-- [ ] Generar/descargar e instalar la APK más reciente en el teléfono.
+- [ ] Esperar que termine la compilación más reciente y revisar si finaliza correctamente.
+- [ ] Descargar e instalar la APK nueva en el teléfono.
 - [ ] Probar todas las pantallas, botones, navegación atrás, orientación y distintos tamaños de pantalla.
-- [ ] Confirmar que la portada original no tenga ningún elemento visual superpuesto; las zonas táctiles invisibles no deben dibujar botones ni textos.
+- [ ] Confirmar que la portada original no tenga elementos visuales superpuestos y que las zonas táctiles invisibles coincidan con los botones dibujados.
 - [ ] Confirmar que la APK instalada contiene la última interfaz y las imágenes correctas.
-- [ ] Confirmar y probar una firma estable de lanzamiento antes de distribuir actualizaciones; no guardar keystore ni contraseñas en GitHub.
+- [ ] Configurar y probar una firma estable de lanzamiento para futuras actualizaciones; no guardar keystore ni contraseñas en GitHub.
 
 ### 2. Supabase y seguridad
 - [ ] Confirmar que la URL y la clave pública configuradas en la app correspondan al proyecto Supabase correcto.
@@ -39,18 +42,16 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Probar errores de red, falta de conexión y respuestas inválidas sin exponer tokens ni datos privados.
 - [ ] No incluir claves service-role, credenciales administrativas ni contraseñas en el cliente o en GitHub.
 
-### 3. Diseño, imágenes y navegación
-- [ ] Confirmar visualmente que la portada de inicio sea la imagen original del tren con PiraRed, grande y legible.
-- [ ] Identificar cuál de las imágenes originales sin nombre descriptivo corresponde a la estatua; no asignar una foto por suposición.
-- [ ] Verificar el orden solicitado: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
-- [x] Agregar una pantalla Fotos con las 14 imágenes del directorio canónico, ordenando primero la secuencia principal y después los recursos complementarios.
+### 3. Diseño e imágenes — comprobaciones pendientes
 - [ ] Confirmar en el teléfono que las 14 imágenes de la galería carguen correctamente en la APK.
-- [x] Ajustar la galería para mostrar las fotos completas, evitando recortes agresivos; el ajuste visual todavía debe comprobarse en el teléfono.
+- [ ] Identificar cuál de las imágenes originales corresponde a la estatua; no asignar una foto por suposición.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
 - [ ] Probar cada botón, enlace y regreso a Inicio; corregir los que no tengan una acción funcional.
-- [x] Ajustar la navegación inferior para distribuir sus seis secciones sin forzarlas en una cuadrícula de cinco columnas.
 - [ ] Mantener separada la portada de Inicio del formulario de acceso: Iniciar sesión y Crear cuenta deben abrir la pantalla de cuenta; Acceso para comercios debe abrir su sección independiente.
 - [ ] Tomar capturas reales de Inicio, Explorar, Publicar, Comercios, Perfil e Información para documentar el aspecto real de la APK.
+- [ ] Confirmar la ubicación exacta de la foto del paseo al atardecer y la del Camping La Esperanza.
+- [ ] Verificar que la foto nocturna del cartel de ingreso esté guardada en versión limpia y de alta calidad.
+- [ ] Confirmar que cada archivo de la galería exista en la ruta indicada y se vea correctamente en el teléfono.
 
 ### 4. Funciones comunitarias
 - [ ] Implementar exploración como invitado con permisos limitados.

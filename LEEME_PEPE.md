@@ -8,7 +8,9 @@ Este archivo es el **registro de lo que ya se hizo** en PiraRed. La lista de err
 - [x] Se mantuvo la interfaz principal dentro de `app/src/main/assets/www/index.html`, para que Android la abra desde los recursos locales de la app.
 - [x] Se configuró la portada original del tren en `app/Img/01-inicio-pirared.png`, conservando el contenido de imagen sin alterarlo.
 - [x] Se amplió la portada a pantalla completa y se retiraron el título, el texto y la capa oscura añadidos por encima para evitar duplicados.
-- [x] Se dejaron zonas táctiles transparentes para mantener accesos a Explorar, Ingresar y Publicar sin dibujar botones duplicados; falta validar la ubicación táctil sobre los botones de la imagen en el teléfono.
+- [x] Se dejaron zonas táctiles invisibles, sin elementos visuales superpuestos, sobre los botones que ya están dibujados en la portada original.
+- [x] Se separó el flujo de la portada del formulario de inicio de sesión/registro: el acceso de inicio de sesión y Crear cuenta navegan a Mi cuenta; el acceso de comercios navega a su sección.
+- [ ] Verificar en el teléfono que la portada se vea exactamente igual al archivo original y que las zonas táctiles coincidan con cada botón. Las zonas se definieron por proporciones estimadas y necesitan prueba real.
 - [x] Se definió una interfaz clara, con tonos celestes, paneles translúcidos y navegación inferior.
 - [x] Se agregaron las secciones de Inicio, Explorar, Publicar, Comercios, Perfil/Mi cuenta e Información.
 - [x] Se incluyeron mensajes para estados sin publicaciones y errores de conexión, evitando inventar avisos para rellenar la pantalla.
@@ -84,3 +86,10 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 - Se usa `app/src/main/assets/www/app/Img/` como carpeta canónica y se eliminan copias idénticas de otras rutas y duplicados internos con nombres diferentes.
 - El README principal organiza la galería según la secuencia solicitada. La estatua queda pendiente de identificar visualmente; no se asigna una foto al azar.
 - La limpieza elimina copias exactas únicamente. Las imágenes distintas sin clasificar se conservan.
+
+
+### Registro de decisión — 25 de octubre de 2026
+- La imagen enviada nuevamente por el usuario es la portada oficial de Inicio. Debe mostrarse tal cual, sin añadir logo, textos, botones visibles, filtros ni capas encima.
+- La pantalla de Inicio y la pantalla de autenticación son independientes. No se deben mostrar campos de correo o contraseña sobre la portada.
+- La portada incluye visualmente tres accesos: Iniciar sesión, Crear cuenta y Acceso exclusivo para comercios. Se conservan zonas táctiles transparentes; hay que probar sus coordenadas en un teléfono real.
+- El usuario pidió que todo avance, decisión y pendiente quede anotado en este archivo y en README.md.

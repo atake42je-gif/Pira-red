@@ -182,6 +182,54 @@ main{padding:12px}
   body:has(#home.active) #home .notice{margin-left:14px;margin-right:14px}
 }
 
+
+/* PiraRed: correcciones consolidadas dentro del CSS válido de la página.
+   Se conserva la foto original, se evita duplicar el logo y se despejan los accesos. */
+body:has(#home.active) header.masthead{display:none!important}
+body:has(#home.active) #home .welcome-logo{display:none!important}
+body:has(#home.active) #home .welcome-brand{display:none!important}
+body:has(#home.active) #home .welcome-hero{
+  min-height:calc(100dvh - 76px - env(safe-area-inset-bottom));
+  height:auto;
+  margin:-15px -15px 18px;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+body:has(#home.active) #home .welcome-hero>img{
+  object-fit:cover;
+  object-position:center center;
+}
+body:has(#home.active) #home .welcome-content{
+  left:0;right:0;bottom:0;top:auto;width:100%;max-width:none;
+  padding:clamp(16px,3vh,28px) clamp(14px,4vw,24px) calc(16px + env(safe-area-inset-bottom));
+  text-align:center;
+  background:linear-gradient(180deg,rgba(2,20,43,.02) 0%,rgba(2,20,43,.58) 24%,rgba(2,20,43,.94) 100%);
+}
+body:has(#home.active) #home .welcome-content .eyebrow{
+  color:#55e4ff;font-size:clamp(12px,3.6vw,16px);letter-spacing:.08em;line-height:1.25;
+}
+body:has(#home.active) #home .welcome-content h1{
+  color:#fff;font-size:clamp(23px,6.4vw,35px);line-height:1.04;margin:7px 0 12px;
+}
+body:has(#home.active) #home .welcome-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;
+}
+body:has(#home.active) #home .welcome-actions button{
+  min-width:0;min-height:48px;border-radius:14px;padding:10px 8px;
+  font-size:clamp(12px,3.4vw,15px);white-space:normal;
+}
+body:has(#home.active) #home .welcome-actions button:last-child{
+  grid-column:1/-1;background:linear-gradient(110deg,#00a99a,#00c9bd);
+  color:#fff;border:1px solid #61fff0;text-shadow:none;
+}
+body:has(#home.active) #home .instagram-mark{margin-top:10px;color:#fff;font-size:13px}
+@media(max-height:700px){
+  body:has(#home.active) #home .welcome-content{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  body:has(#home.active) #home .welcome-content h1{font-size:clamp(21px,5.8vw,29px);margin:5px 0 8px}
+  body:has(#home.active) #home .welcome-actions button{min-height:42px;padding:7px}
+}
+
 </style></head><body><div class="app"><header class="masthead"><img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed, Pirané FSA"><div class="masthead-actions"><button class="primary" onclick="go(\'account\');showAuth(\'login\')">Iniciar sesión</button><button class="secondary" onclick="go(\'account\');showAuth(\'register\')">Crear cuenta</button><button class="ghost" onclick="go(\'account\');showAuth(\'business\')">Acceso comercios</button></div><div class="pill">📍 Pirané, Formosa</div></header><main>
 <section class="screen active" id="home"><div class="hero welcome-hero"><img src="app/Img/01-inicio-tren.jpg" alt="Tren de Pirané, Formosa"><div class="hero-content welcome-content"><img class="welcome-logo" src="app/Img/06-logo-pirared.png" alt="Logo PiraRed"><div class="welcome-brand">PiraRed</div><div class="eyebrow">AQUÍ PIRANÉ, MI PUEBLO</div><h1>CAPITAL PROVINCIAL<br>DEL FOLKLORE</h1><div class="actions welcome-actions"><button class="primary" onclick="go(\'account\');showAuth(\'login\')">Iniciar sesión</button><button class="secondary" onclick="go(\'account\');showAuth(\'register\')">Crear cuenta</button><button class="ghost" onclick="go(\'account\');showAuth(\'business\')">Acceso exclusivo para comercios</button></div><div class="instagram-mark">◎ @escalantepepe22</div></div></div><div class="section-head"><h2>¿Qué necesitás hoy?</h2><small>Comunidad local</small></div><div class="categories"><button class="category" onclick="filterCategory('Compra / Venta')"><span class="emoji">🛍️</span><span><strong>Compra / Venta</strong><small>Productos de la zona</small></span></button><button class="category" onclick="filterCategory('Changas')"><span class="emoji">🧰</span><span><strong>Changas</strong><small>Oportunidades y trabajos</small></span></button><button class="category" onclick="filterCategory('Servicios')"><span class="emoji">🛠️</span><span><strong>Servicios</strong><small>Personas que te ayudan</small></span></button><button class="category" onclick="go('ads')"><span class="emoji">📣</span><span><strong>Publicidad</strong><small>Promociones de comercios</small></span></button></div><div class="section-head"><h2>De la comunidad</h2><small>Ejemplos de muestra</small></div><div class="listings" id="homeListings"></div><div class="notice">🔒 Las cuentas nuevas deberán aprobarse antes de publicar o enviar mensajes.</div></section>
 <section class="screen" id="explore"><div class="section-head"><h2>Explorar publicaciones</h2><small id="countLabel">Muestra local</small></div><div class="search"><input id="searchInput" placeholder="Buscar producto, trabajo o servicio…" aria-label="Buscar publicaciones" oninput="renderListings()"><button class="secondary" onclick="document.getElementById('searchInput').value='';renderListings()">Limpiar</button></div><div class="actions" style="margin:0 0 14px"><button class="ghost" onclick="filterCategory('Todas')">Todas</button><button class="ghost" onclick="filterCategory('Compra / Venta')">🛍️ Compra/Venta</button><button class="ghost" onclick="filterCategory('Changas')">🧰 Changas</button><button class="ghost" onclick="filterCategory('Servicios')">🛠️ Servicios</button><button class="ghost" onclick="filterCategory('Publicidad')">📣 Publicidad</button></div><div class="listings" id="allListings"></div><div class="notice" id="communityNotice">Las publicaciones de vecinos todavía no están habilitadas. En esta versión solo se muestran promociones de comercios aprobados.</div></section>
@@ -198,89 +246,3 @@ const piraredSupabase=(window.supabase&&window.supabase.createClient)?window.sup
 let listings=[];let activeCategory='Todas';function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function card(x){return `<article class="listing"><div class="thumb">${esc(x.icon||'📣')}</div><div><span class="label">${esc(x.cat)}</span><h3>${esc(x.title)}</h3><p>${esc(x.desc)}</p><div class="price">${esc(x.price||'Consultar al comercio')}</div></div></article>`}function renderListings(){let q=(document.getElementById('searchInput')?.value||'').toLowerCase();let data=listings.filter(x=>(activeCategory==='Todas'||x.cat===activeCategory)&&[x.title,x.cat,x.desc].join(' ').toLowerCase().includes(q));let html=data.length?data.map(card).join(''):'<div class="empty">Todavía no hay promociones aprobadas para mostrar.</div>';let all=document.getElementById('allListings');if(all)all.innerHTML=html;let home=document.getElementById('homeListings');if(home)home.innerHTML=listings.slice(0,3).map(card).join('')||'<div class="empty">Próximamente: promociones de comercios locales aprobados.</div>';let count=document.getElementById('countLabel');if(count)count.textContent=data.length+' promociones aprobadas'}async function loadApprovedAds(){if(!piraredSupabase){renderListings();return;}try{const {data,error}=await piraredSupabase.from('ads').select('id,title,description,category,offer_text,ad_type,created_at,starts_at,ends_at,businesses!inner(name,status)').eq('status','approved').eq('businesses.status','approved').order('created_at',{ascending:false}).limit(100);if(error)throw error;listings=(data||[]).filter(a=>{const now=Date.now();return (!a.starts_at||new Date(a.starts_at).getTime()<=now)&&(!a.ends_at||new Date(a.ends_at).getTime()>=now)}).map(a=>({id:a.id,title:a.title,cat:'Publicidad',desc:(a.businesses?.name? a.businesses.name+' · ':'')+a.description,price:a.offer_text||'Consultar al comercio',icon:a.ad_type==='featured'?'⭐':'📣'}));renderListings();}catch(err){console.error('No se pudieron cargar anuncios aprobados',err);const n=document.getElementById('communityNotice');if(n)n.textContent='No se pudieron cargar las promociones ahora. Revisá la conexión e intentá nuevamente.';renderListings();}}function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='explore'||id==='ads'||id==='home')loadApprovedAds();if(id==='ads')renderAdReview()}function filterCategory(cat){activeCategory=cat;let i=document.getElementById('searchInput');if(i)i.value='';go('explore');renderListings()}function toast(m){let t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}function showAuth(mode){const a=document.getElementById('authArea');if(!a)return;if(!piraredSupabase){a.innerHTML='<div class="panel"><div class="notice">No se pudo cargar la conexión segura. Revisá internet e intentá nuevamente.</div></div>';return;}if(mode==='register'){a.innerHTML=`<div class="panel"><h3>Crear cuenta PiraRed</h3><p class="muted small">Confirmaremos tu correo. No pedimos DNI ni reconocimiento facial.</p><form class="form" id="registerForm"><div class="field"><label for="regName">Nombre para mostrar</label><input id="regName" autocomplete="name" required maxlength="60"></div><div class="field"><label for="regEmail">Correo electrónico</label><input id="regEmail" type="email" autocomplete="email" required></div><div class="field"><label for="regPassword">Contraseña</label><input id="regPassword" type="password" autocomplete="new-password" minlength="10" required></div><button class="primary wide" type="submit">Crear cuenta y confirmar correo</button></form><div id="authMessage" aria-live="polite"></div></div>`;document.getElementById('registerForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.currentTarget.querySelector('button'),box=document.getElementById('authMessage');btn.disabled=true;try{const {error}=await piraredSupabase.auth.signUp({email:document.getElementById('regEmail').value.trim(),password:document.getElementById('regPassword').value,options:{data:{display_name:document.getElementById('regName').value.trim()}}});if(error)throw error;box.innerHTML='<div class="notice">Solicitud creada. Revisá tu correo para confirmar la cuenta. Luego podrás iniciar sesión.</div>';}catch(err){box.innerHTML='<div class="notice">'+esc(err.message||'No se pudo crear la cuenta.')+'</div>';}finally{btn.disabled=false;}});}else if(mode==='business'){a.innerHTML='<div class="panel"><h3>Acceso para comercios</h3><p class="muted small">Iniciá sesión o creá una cuenta. Después podrás enviar los datos de tu comercio para revisión.</p><div class="actions"><button class="primary" onclick="showAuth(\'register\')">Crear cuenta</button><button class="secondary" onclick="showAuth(\'login\')">Iniciar sesión</button></div></div>';}else{a.innerHTML=`<div class="panel"><h3>Iniciar sesión</h3><form class="form" id="loginForm"><div class="field"><label for="loginEmail">Correo electrónico</label><input id="loginEmail" type="email" autocomplete="email" required></div><div class="field"><label for="loginPassword">Contraseña</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="primary wide" type="submit">Iniciar sesión</button></form><button class="secondary wide" style="margin-top:10px" onclick="resetPassword()">Recuperar contraseña</button><button class="ghost wide" style="margin-top:8px" onclick="signOut()">Cerrar sesión</button><div id="authMessage" aria-live="polite"></div></div>`;document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.currentTarget.querySelector('button'),box=document.getElementById('authMessage');btn.disabled=true;try{const {error}=await piraredSupabase.auth.signInWithPassword({email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPassword').value});if(error)throw error;box.innerHTML='<div class="notice">Sesión iniciada correctamente. Ya podés enviar una solicitud comercial.</div>';toast('Sesión iniciada');}catch(err){box.innerHTML='<div class="notice">'+esc(err.message||'No se pudo iniciar sesión.')+'</div>';}finally{btn.disabled=false;}});}a.scrollIntoView({behavior:'smooth',block:'start'});}async function signOut(){if(!piraredSupabase)return;const {error}=await piraredSupabase.auth.signOut();toast(error?'No se pudo cerrar sesión':'Sesión cerrada');}async function resetPassword(){const email=document.getElementById('loginEmail')?.value.trim(),box=document.getElementById('authMessage');if(!email){if(box)box.innerHTML='<div class="notice">Escribí tu correo arriba y volvé a tocar recuperar contraseña.</div>';return;}try{const {error}=await piraredSupabase.auth.resetPasswordForEmail(email);if(error)throw error;box.innerHTML='<div class="notice">Si el correo está registrado, recibirás instrucciones para recuperar el acceso.</div>';}catch(err){box.innerHTML='<div class="notice">'+esc(err.message||'No se pudo solicitar la recuperación.')+'</div>';}}async function submitAd(event){event.preventDefault();const form=document.getElementById('adForm'),btn=form.querySelector('button[type="submit"]'),status=document.getElementById('adSubmitStatus');if(!piraredSupabase){status.innerHTML='<div class="notice">Conexión no disponible. Intentá más tarde.</div>';return;}btn.disabled=true;status.textContent='Enviando solicitud…';try{const {data:{user},error:userError}=await piraredSupabase.auth.getUser();if(userError||!user){status.innerHTML='<div class="notice">Para enviar una promoción tenés que iniciar sesión primero.</div>';go('account');showAuth('login');return;}const businessName=document.getElementById('adBusiness').value.trim(),category=document.getElementById('adCategory').value,description=document.getElementById('adDescription').value.trim(),title=document.getElementById('adTitle').value.trim(),offer=document.getElementById('adPrice').value.trim();const {data:existing,error:lookupError}=await piraredSupabase.from('businesses').select('id,name,status').eq('owner_id',user.id).order('created_at',{ascending:false}).limit(1);if(lookupError)throw lookupError;let business=(existing||[])[0];if(!business){const {data:created,error}=await piraredSupabase.from('businesses').insert({owner_id:user.id,name:businessName,category,description,status:'pending'}).select('id,name,status').single();if(error)throw error;status.innerHTML='<div class="notice">Datos del comercio enviados para revisión. Cuando el comercio sea aprobado, iniciá sesión y enviá nuevamente la promoción.</div>';form.reset();return;}if(business.status!=='approved'){status.innerHTML='<div class="notice">Tu comercio está '+esc(business.status==='rejected'?'rechazado y requiere revisión':'pendiente de aprobación')+'. No se publicó ningún anuncio. Contactá al administrador para revisar los datos.</div>';return;}if(business.name!==businessName){status.innerHTML='<div class="notice">El nombre no coincide con tu comercio aprobado ('+esc(business.name)+'). Para cambiarlo, solicitá una actualización al administrador.</div>';return;}const {error:insertError}=await piraredSupabase.from('ads').insert({business_id:business.id,owner_id:user.id,title,description,category,offer_text:offer,status:'pending',ad_type:'basic'});if(insertError)throw insertError;status.innerHTML='<div class="notice">Promoción enviada correctamente. Quedó pendiente de aprobación y no será visible hasta que la aprueben.</div>';form.reset();}catch(err){console.error('Error al enviar promoción',err);status.innerHTML='<div class="notice">No se pudo enviar la solicitud: '+esc(err.message||'error de conexión')+'. Verificá tu cuenta e intentá nuevamente.</div>';}finally{btn.disabled=false;}}async function renderAdReview(){const area=document.getElementById('adReviewList');if(!area||!piraredSupabase)return;try{const {data:{user}}=await piraredSupabase.auth.getUser();if(!user){area.innerHTML='<div class="empty">Iniciá sesión para enviar promociones. La revisión está reservada al administrador.</div>';return;}const {data,error}=await piraredSupabase.from('ads').select('id,title,status,created_at').eq('owner_id',user.id).order('created_at',{ascending:false}).limit(20);if(error)throw error;area.innerHTML=(data||[]).length?(data||[]).map(a=>'<article class="ad-request"><span class="ad-status">'+esc(a.status==='approved'?'Aprobado':a.status==='rejected'?'Rechazado':'Pendiente')+'</span><h4>'+esc(a.title)+'</h4><p class="muted small">Solicitud enviada: '+esc(new Date(a.created_at).toLocaleDateString('es-AR'))+'</p></article>').join(''):'<div class="empty">Todavía no enviaste promociones.</div>';}catch(err){area.innerHTML='<div class="empty">No se pudieron consultar tus solicitudes en este momento.</div>';}}document.getElementById('adForm')?.addEventListener('submit',submitAd);
 renderListings();loadApprovedAds();
 </script></body></html>
-
-/* Corrección revisada de portada: la foto 01 ya incluye la identidad PiraRed.
-   Ocultar el logo redondo duplicado para que no tape el texto ni los botones. */
-@media(max-width:599px){
-  body:has(#home.active) #home .welcome-logo{display:none!important}
-  body:has(#home.active) #home .welcome-content{padding-top:12px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
-  body:has(#home.active) #home .welcome-content h1{margin-top:6px;margin-bottom:10px}
-  body:has(#home.active) #home .welcome-actions{margin-top:8px;gap:8px}
-  body:has(#home.active) #home .welcome-actions button{min-height:50px}
-}
-@media(min-width:600px){
-  #home .welcome-logo{display:none!important}
-}
-
-
-/* Ajuste definitivo de portada móvil: respetar la imagen original del tren
-   y evitar que el logo circular del icono se duplique encima de ella. */
-body:has(#home.active) header.masthead{display:none!important}
-body:has(#home.active) #home .welcome-logo,
-body:has(#home.active) #home .welcome-brand{display:none!important}
-body:has(#home.active) #home .welcome-hero{
-  min-height:calc(100dvh - 76px - env(safe-area-inset-bottom));
-  height:auto;
-  margin:-15px -15px 18px;
-  border:0;
-  border-radius:0;
-  box-shadow:none;
-}
-body:has(#home.active) #home .welcome-hero>img{
-  object-fit:cover;
-  object-position:center center;
-}
-body:has(#home.active) #home .welcome-content{
-  top:auto;
-  bottom:0;
-  left:0;
-  right:0;
-  width:100%;
-  max-width:none;
-  padding:clamp(18px,4vh,34px) clamp(16px,4vw,28px) calc(18px + env(safe-area-inset-bottom));
-  text-align:center;
-  background:linear-gradient(180deg,rgba(2,20,43,.02) 0%,rgba(2,20,43,.56) 24%,rgba(2,20,43,.94) 100%);
-}
-body:has(#home.active) #home .welcome-content .eyebrow{
-  color:#55e4ff;
-  font-size:clamp(13px,3.8vw,17px);
-  letter-spacing:.08em;
-  line-height:1.25;
-}
-body:has(#home.active) #home .welcome-content h1{
-  color:#fff;
-  font-size:clamp(24px,6.4vw,35px);
-  line-height:1.04;
-  margin:8px 0 14px;
-}
-body:has(#home.active) #home .welcome-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
-body:has(#home.active) #home .welcome-actions button{
-  min-width:0;
-  min-height:54px;
-  border-radius:15px;
-  padding:12px 9px;
-  font-size:clamp(12px,3.4vw,15px);
-  white-space:normal;
-}
-body:has(#home.active) #home .welcome-actions button:last-child{
-  grid-column:1/-1;
-  background:linear-gradient(110deg,#00a99a,#00c9bd);
-  color:#fff;
-  border:1px solid #61fff0;
-  text-shadow:none;
-}
-body:has(#home.active) #home .instagram-mark{
-  margin-top:12px;
-  color:#fff;
-  font-size:14px;
-}
-@media(max-height:700px){
-  body:has(#home.active) #home .welcome-content{padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
-  body:has(#home.active) #home .welcome-content h1{font-size:clamp(22px,5.8vw,30px);margin:5px 0 9px}
-  body:has(#home.active) #home .welcome-actions button{min-height:46px;padding:8px}
-}

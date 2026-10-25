@@ -19,7 +19,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - La pantalla Información usa `app/Img/04-informacion-pirared.jpg`.
 - La portada se ajustó a pantalla completa y se quitaron los textos/capas duplicados sobre la imagen. Se conservaron zonas táctiles para los accesos; su alineación con los botones dibujados en la foto debe probarse en un teléfono.
 - La imagen original se muestra sin filtro ni capa oscura añadida; el recorte final depende de la proporción de cada dispositivo. Hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
-- Se agregó a `index.html` una pantalla **Fotos** con una galería que muestra los 14 archivos de imagen presentes en `app/Img/`, incluyendo las fotos locales, las portadas y los logos. Las tres imágenes con nombres genéricos se etiquetan como pendientes de identificación; no se les atribuye un lugar por suposición. Esto integra las imágenes en la interfaz, pero todavía debe comprobarse visualmente en la APK instalada.
+- Se agregó a `index.html` una pantalla **Fotos** con las 14 imágenes del directorio canónico. La galería se ordenó para respetar primero la secuencia principal solicitada (portada, imagen pendiente de confirmar como estatua, placita, monumento de los 50 años, cartel YO ❤️ PIRANÉ e información); después aparecen los recursos complementarios. Las fotos genéricas siguen identificadas como pendientes. La galería aún requiere prueba visual en la APK instalada.
 - Se limpiaron copias idénticas de imágenes. Se conservaron archivos visualmente distintos aunque todavía falte clasificarlos.
 
 ## Pendientes de desarrollo y verificación
@@ -43,7 +43,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Confirmar visualmente que la portada de inicio sea la imagen original del tren con PiraRed, grande y legible.
 - [ ] Identificar cuál de las imágenes originales sin nombre descriptivo corresponde a la estatua; no asignar una foto por suposición.
 - [ ] Verificar el orden solicitado: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
-- [x] Agregar una pantalla Fotos con una galería que presenta todas las imágenes que actualmente existen en `app/Img/`.
+- [x] Agregar una pantalla Fotos con las 14 imágenes del directorio canónico, ordenando primero la secuencia principal y después los recursos complementarios.
 - [ ] Confirmar en el teléfono que las 14 imágenes de la galería carguen correctamente en la APK.
 - [ ] Revisar carga, calidad, recorte y legibilidad de cada imagen en el teléfono.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
@@ -74,7 +74,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 1. **Inicio / bienvenida:** imagen original del tren con PiraRed. Debe ocupar la pantalla de inicio completa, sin lema, texto, botones visibles ni capas adicionales por encima de la imagen.
    ![Portada original de inicio PiraRed con el tren](app/src/main/assets/www/app/Img/Inicio%20login%20pira%20red.png)
 
-2. **Estatua:** usar únicamente la foto original de la estatua enviada por el usuario. Si no está identificada con certeza entre los archivos del repositorio, dejar pendiente y pedir confirmación; no asignar otra imagen por suposición.
+2. **Estatua:** la imagen `02-monumento-plaza.jpg` aparece como monumento de la plaza, pero no está confirmado que sea la estatua solicitada. Se muestra con esa aclaración y queda pendiente de identificación; no se afirma que sea la estatua.
 
 3. **Placita / parque:** foto original de la placita con bancos y juegos.
    ![Placita y juegos de Pirané](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
@@ -85,7 +85,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 5. **Cartel “YO ❤️ PIRANÉ”:** foto nocturna original del cartel de Pirané, sin la interfaz de TikTok/Instagram ni barras del teléfono. La versión limpia debe conservar la calidad de la foto y no alterar el cartel.
    ![Cartel Yo amo Pirané](app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg)
 
-6. **Información de la app:** imagen original de información de PiraRed. Siempre va última en esta secuencia.
+6. **Información de la app:** imagen original de información de PiraRed. Cierra la secuencia principal; las imágenes complementarias van después en la galería general.
    ![Información de PiraRed](app/src/main/assets/www/app/Img/04-informacion-pirared.jpg)
 
 ### Otras fotos reales de Pirané para secciones complementarias
@@ -122,3 +122,10 @@ La imagen de pantallas compartida por el usuario es **una referencia de diseño*
 ### Fotografías reenviadas para cotejar
 
 El usuario volvió a adjuntar las fotografías reales del pueblo, el logo y la imagen de información. Antes de agregarlas o reemplazar recursos, comparar cada archivo con los recursos existentes en `app/src/main/assets/www/app/Img/`, identificar duplicados y conservar los originales distintos. No asignar una foto a la estatua ni a otro lugar por suposición. Registrar en este README cualquier recurso nuevo y su función solo después de verificarlo.
+
+
+## Última compilación verificada — 25 de octubre de 2026
+
+- La ejecución de GitHub Actions [40181089631](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631) compiló y verificó la APK correctamente para el commit `31907a51ad5c952e23edcda57cb6fed063e834ef`.
+- Artefacto `PiraRed-APK`: [descargar desde los artefactos de Actions](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631).
+- **Pendiente importante:** el éxito de compilación no demuestra que se instale sobre la versión ya instalada. El workflow genera una APK de prueba si no están configurados los secretos privados de firma (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). Una APK firmada con otra clave no puede actualizar la instalación existente; no subir el keystore ni sus contraseñas al repositorio.

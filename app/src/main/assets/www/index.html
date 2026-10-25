@@ -24,6 +24,42 @@
 
       * { box-sizing: border-box; }
 
+      /* Ajuste visual global para móviles: ninguna foto debe desbordar su tarjeta
+         ni deformarse; las imágenes de contenido se adaptan al ancho disponible. */
+      img {
+        max-width: 100%;
+      }
+      .screen img {
+        height: auto;
+      }
+      .photo-card img,
+      .listing-thumb img,
+      .welcome-hero > img {
+        max-width: none;
+      }
+      @media (max-width: 360px) {
+        .listing-card {
+          grid-template-columns: 84px minmax(0, 1fr);
+          gap: 10px;
+        }
+        .listing-thumb {
+          width: 84px;
+          height: 78px;
+        }
+        .listing-price {
+          grid-column: 2;
+          justify-self: start;
+          min-width: 0;
+        }
+        #account .home-body {
+          padding: 16px 12px 28px;
+        }
+        #account .panel {
+          padding: 18px 14px;
+        }
+      }
+
+
       html, body {
         margin: 0;
         height: 100%;
@@ -1198,7 +1234,6 @@
         if (hero) hero.style.height = '100dvh';
       }
       fitWelcomeImage();
-      window.addEventListener('resize', fitWelcomeImage);
       window.addEventListener('resize', fitWelcomeImage);
 
       window.addEventListener('load', () => {

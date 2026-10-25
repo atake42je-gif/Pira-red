@@ -328,22 +328,23 @@
         position: relative;
         display: block;
         width: 100%;
-        height: 86dvh;
-        min-height: 560px;
-        max-height: 820px;
+        /* La proporción se calcula desde la imagen original al cargar. */
+        height: auto;
+        min-height: 0;
+        max-height: none;
         aspect-ratio: auto;
         overflow: hidden;
         background: #eef9ff;
       }
 
       .welcome-hero > img {
-        position: absolute;
-        inset: 0;
+        position: relative;
         display: block;
         width: 100%;
-        height: 100%;
-        /* Mantener la proporción de las zonas táctiles alineada con los botones dibujados. */
-        object-fit: fill;
+        height: auto;
+        /* La imagen conserva su proporción original: los botones dibujados y
+           sus zonas táctiles no se estiran ni se recortan. */
+        object-fit: contain;
         object-position: center;
         filter: none;
       }
@@ -1192,6 +1193,21 @@
         splash.classList.add('is-hidden');
         window.setTimeout(() => splash.remove(), 350);
       }
+      function fitWelcomeImage() {
+        const hero = document.querySelector('.welcome-hero');
+        const image = hero?.querySelector('img');
+        if (!hero || !image) return;
+        const applyRatio = () => {
+          if (image.naturalWidth > 0 && image.naturalHeight > 0) {
+            hero.style.aspectRatio = image.naturalWidth + ' / ' + image.naturalHeight;
+          }
+        };
+        if (image.complete) applyRatio();
+        else image.addEventListener('load', applyRatio, { once: true });
+      }
+      fitWelcomeImage();
+      window.addEventListener('resize', fitWelcomeImage);
+
       window.addEventListener('load', () => {
         window.setTimeout(hidePiraredSplash, 1250);
       }, { once: true });

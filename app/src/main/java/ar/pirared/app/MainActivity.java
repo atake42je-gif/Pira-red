@@ -13,6 +13,15 @@ import android.net.Uri;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebResourceRequest;
+import android.app.AlertDialog;
+import android.content.pm.PackageInfo;
+import android.os.Handler;
+import android.os.Looper;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends Activity {
 
@@ -20,6 +29,8 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCallback;
     private static final int FILE_REQUEST = 1001;
     private static final String LOCAL_ASSETS = "file:///android_asset/";
+    private static final String RELEASE_API = "https://api.github.com/repos/atake42je-gif/Pira-red/releases/latest";
+    private static final String RELEASE_PAGE = "https://github.com/atake42je-gif/Pira-red/releases/latest";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +99,62 @@ public class MainActivity extends Activity {
 
         setContentView(webView);
         webView.loadUrl(LOCAL_ASSETS + "www/index.html");
+        checkForUpdate();
+    }
+
+
+    // Comprueba actualizaciones publicadas y firmadas para evitar instalar paquetes incompatibles.
+    private void checkForUpdate() {
+        new Thread(() -> {
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) new URL(RELEASE_API).openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(6000);
+                connection.setReadTimeout(6000);
+                connection.setRequestProperty("Accept", "application/vnd.github+json");
+                connection.setRequestProperty("User-Agent", "PiraRed-Android");
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return;
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                StringBuilder body = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) body.append(line);
+                reader.close();
+                JSONObject release = new JSONObject(body.toString());
+                String tag = release.optString("tag_name", "");
+                int latestBuild = parseBuildNumber(tag);
+                int installedBuild;
+                try {
+                    PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    installedBuild = (int) (Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode);
+                } catch (Exception ignored) { installedBuild = 0; }
+                if (latestBuild > installedBuild) {
+                    String releaseUrl = release.optString("html_url", RELEASE_PAGE);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (isFinishing() || isDestroyed()) return;
+                        new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Actualización de PiraRed disponible")
+                            .setMessage("Hay una nueva versión. Abrí la página oficial para descargarla e instalarla. Android te pedirá confirmar la instalación.")
+                            .setNegativeButton("Más tarde", (dialog, which) -> dialog.dismiss())
+                            .setPositiveButton("Ver actualización", (dialog, which) -> {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl));
+                                try { startActivity(intent); } catch (Exception ignored) { }
+                            })
+                            .show();
+                    });
+                }
+            } catch (Exception ignored) {
+                // Sin conexión o sin publicación nueva: la app sigue funcionando normalmente.
+            } finally {
+                if (connection != null) connection.disconnect();
+            }
+        }, "PiraRed-update-check").start();
+    }
+
+    private int parseBuildNumber(String tag) {
+        if (tag == null || !tag.startsWith("build-")) return 0;
+        try { return Integer.parseInt(tag.substring("build-".length())); }
+        catch (NumberFormatException ignored) { return 0; }
     }
 
     private boolean isLocalAsset(Uri uri) {

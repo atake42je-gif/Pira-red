@@ -41,6 +41,38 @@
         font: inherit;
       }
 
+      /* Formularios móviles: cada etiqueta y campo ocupa su propia fila.
+         Evita que los rótulos queden pegados al costado de los inputs. */
+      .panel form label {
+        display: block;
+        width: 100%;
+        margin: 12px 0 6px;
+        line-height: 1.35;
+      }
+      .panel form input,
+      .panel form select,
+      .panel form textarea {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        margin: 0 0 10px;
+      }
+      .panel form textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+      .panel form .cta-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .panel form .cta-row button {
+        min-width: 0;
+        white-space: normal;
+      }
+
       .app-shell {
         position: relative;
         width: min(100%, 430px);
@@ -956,7 +988,7 @@
                 <label for="authEmail">Correo electrónico</label>
                 <input id="authEmail" type="email" required autocomplete="email" placeholder="vos@ejemplo.com" />
                 <label for="authPassword">Contraseña</label>
-                <input id="authPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres" />
+                <input id="authPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
                 <div class="cta-row">
                   <button class="primary" type="submit" id="loginButton">Iniciar sesión</button>
                   <button class="secondary" type="button" id="registerButton">Crear cuenta</button>
@@ -1225,8 +1257,11 @@
         try {
           const data = await authRequest('signup', {email,password,data:{display_name:name}});
           if (data?.access_token) setSession(data);
-          showToast(data?.access_token ? 'Cuenta creada y sesión iniciada.' : 'Cuenta creada. Revisá tu correo para confirmarla antes de ingresar.');
-        } catch (error) { showToast(error.message || 'No se pudo crear la cuenta.'); }
+          showToast(data?.access_token ? 'Cuenta creada y sesión iniciada.' : 'Solicitud recibida. Si Supabase requiere confirmación, revisá la bandeja de entrada y correo no deseado.');
+        } catch (error) {
+          const message = error.message || 'No se pudo crear la cuenta.';
+          showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);
+        }
         finally { $('registerButton').disabled = false; }
       });
       $('resetPasswordButton')?.addEventListener('click', async () => {

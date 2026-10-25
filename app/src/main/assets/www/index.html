@@ -1,54 +1,836 @@
-<!doctype html><html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080d18"><meta name="description" content="PiraRed, comunidad local de Pirané, Formosa"><title>PiraRed</title><style>
-:root{--bg:#080d18;--p:#101a2b;--p2:#142239;--line:#253751;--blue:#4ca5ff;--cyan:#58e0ee;--text:#f3f7ff;--muted:#9fb0c8;--green:#79e0b0}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#0d2243 0%,#081827 32%,#050d18 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.45}img{max-width:100%;display:block}button,input,textarea,select{font:inherit}button{cursor:pointer;border:none;border-radius:14px;padding:12px 14px;font-weight:800;transition:transform .12s ease,filter .12s ease;border:1px solid transparent}button:active{transform:translateY(1px) scale(.99)}a{text-decoration:none;color:inherit}.app{width:100%;max-width:520px;margin:0 auto;padding-bottom:calc(76px + env(safe-area-inset-bottom));background:rgba(7,18,32,.22)}header{position:relative;top:0;z-index:10;width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 16px 14px;border-bottom:1px solid rgba(167,206,249,.18);background:rgba(7,16,28,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.masthead-logo{display:block;width:min(100%,260px);height:auto;object-fit:contain}.masthead-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:8px}.masthead-actions button{width:100%;min-height:46px;white-space:normal;line-height:1.15}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid rgba(149,190,235,.25);background:rgba(133,191,255,.08);color:#d9eeff;font-size:11px;font-weight:700;letter-spacing:.04em}.primary{background:linear-gradient(115deg,#1d8dff,#59d4ff);color:#fff;box-shadow:0 7px 22px rgba(25,130,239,.25)}.secondary{background:#dfeeff;color:#0d4166;border-color:#aacbf0}.ghost{background:rgba(11,25,40,.18);border-color:rgba(166,217,255,.25);color:#dfeeff}.main{padding:12px}main{padding:12px}.screen{display:none}.screen.active{display:block}.section-head{margin:18px 0 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}.section-head h2{margin:0;font-size:1.12rem}.section-head small{color:var(--muted);font-weight:700}.hero{position:relative;overflow:hidden;border-radius:20px;border:1px solid rgba(174,220,255,.38);background:#0d2140;box-shadow:0 18px 40px rgba(0,0,0,.2)}.hero>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:20px 14px 22px;z-index:1;background:linear-gradient(180deg,rgba(2,18,36,.08),rgba(2,18,36,.18) 25%,rgba(2,18,36,.85) 70%,rgba(2,18,36,.96) 100%)}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#aef0ff}.hero-content h1{margin:8px 0 12px;text-align:center;font-size:clamp(24px,7vw,38px);line-height:1.02;letter-spacing:0;color:#fff;text-transform:uppercase;text-shadow:0 5px 18px rgba(0,0,0,.35)}.welcome-logo{display:block;width:clamp(180px,50vw,260px);height:auto;max-height:26dvh;object-fit:contain;margin:0 auto 8px}.welcome-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(100%,520px);margin-top:10px}.welcome-actions button{min-height:48px;padding:10px 8px;font-size:13px;white-space:normal}.welcome-actions button:last-child{grid-column:1/-1;background:linear-gradient(110deg,#e7f5ff,#b7e8ff);border:1px solid #fff;color:#12456d}.instagram-mark{margin-top:12px;color:#fff;font-size:13px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.5)}.categories{display:grid;grid-template-columns:1fr;gap:10px}.category{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;background:linear-gradient(125deg,rgba(235,245,255,.8),rgba(159,203,244,.22));border:1px solid rgba(171,214,255,.55);border-radius:18px;text-align:left;color:var(--text);box-shadow:0 8px 22px rgba(20,47,76,.15)}.category .emoji{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:rgba(103,178,255,.15);font-size:24px}.category strong{display:block;font-size:15px}.category small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.listing{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid rgba(171,214,255,.52);border-radius:16px;background:rgba(255,255,255,.82);box-shadow:0 7px 18px rgba(11,32,49,.08)}.thumb{width:72px;height:72px;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,#d7ecff,#edf7ff);border:1px solid rgba(152,193,230,.7)}.thumb img{width:100%;height:100%;object-fit:cover}.listing h3{margin:0 0 4px;font-size:15px}.listing p{margin:0;color:var(--muted);font-size:12px}.notice{margin-top:12px;padding:10px 12px;border:1px solid rgba(154,202,255,.5);border-radius:12px;background:rgba(18,57,89,.18);color:#d9f3ff;font-size:12px;font-weight:700}.bottomnav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:min(100%,520px);padding:8px 12px calc(8px + env(safe-area-inset-bottom));border-top:1px solid rgba(169,214,255,.18);background:rgba(6,16,28,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:20}.navbtn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:12px;background:transparent;color:#afc7de;font-size:11px;border:none}.navbtn span{font-size:18px;line-height:1}.navbtn.active{background:rgba(71,153,232,.18);color:#dff4ff}.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);padding:10px 14px;border-radius:999px;background:#0d233d;color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s ease}.toast.show{opacity:1}.field input,.field textarea,.search input,.field select{width:100%;border:1px solid rgba(171,214,255,.55);border-radius:12px;padding:12px 13px;background:rgba(255,255,255,.92);color:#102b49;font:inherit}.panel{padding:16px;border:1px solid rgba(171,214,255,.5);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 8px 22px rgba(11,32,49,.08)}.panel h2,.panel h3{margin-top:0}.muted{color:var(--muted)}.small{font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}.ads-intro{padding:18px 16px}.ads-symbol{font-size:34px;margin-bottom:10px}.ad-plan{padding:12px;border-radius:14px;border:1px solid rgba(171,214,255,.5);background:rgba(255,255,255,.69)}.ad-plan h4{margin:0 0 4px}.ad-plan p{margin:0;color:var(--muted);font-size:12px}.search{position:relative;margin-top:10px}.search input{padding-left:40px}.search:before{content:"⌕";position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#4d7396;font-size:18px}.listings{display:grid;gap:10px}.info-card{padding:14px;border:1px solid rgba(171,214,255,.5);border-radius:16px;background:rgba(255,255,255,.8)}.info-card h3{margin:0 0 6px}.info-card p{margin:0;color:var(--muted);font-size:12px}.footer{padding:16px 12px 30px;text-align:center;color:var(--muted);font-size:12px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#071b2d" />
+    <title>PiraRed</title>
+    <style>
+      :root {
+        --bg: #061827;
+        --bg-2: #0a2240;
+        --panel: rgba(16, 31, 49, 0.9);
+        --panel-strong: #10253f;
+        --panel-soft: #1e3559;
+        --card: rgba(15, 28, 41, 0.86);
+        --line: rgba(132, 170, 212, 0.2);
+        --text: #edf4ff;
+        --muted: #a9bdd7;
+        --muted-2: #7e95b7;
+        --primary: #ff9d3d;
+        --primary-2: #ffc96c;
+        --blue: #1c86ff;
+        --cyan: #63d6ff;
+        --green: #6fe2a5;
+        --shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+      }
 
-/* Portada final premium: foto de atardecer con overlay elegante y botones realistas */
-body:has(#home.active) header.masthead{display:none!important}
-body:has(#home.active) main{padding:0!important}
-body:has(#home.active) #home{margin:0;padding:0}
-body:has(#home.active) #home .welcome-hero{
-  position:relative;display:block;width:100%;min-height:calc(100dvh - 76px);height:calc(100dvh - 76px);margin:0;border:0;border-radius:0;box-shadow:none;overflow:hidden;background:#10263e;isolation:isolate;
-}
-body:has(#home.active) #home .welcome-hero>img:first-child{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;display:block;filter:saturate(1.08) contrast(1.04);
-}
-body:has(#home.active) #home .welcome-hero::after{
-  content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,20,28,0.04) 0%,rgba(14,20,28,0.18) 30%,rgba(14,20,28,0.65) 65%,rgba(14,20,28,0.92) 100%);z-index:1;
-}
-body:has(#home.active) #home .welcome-copy{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px 16px calc(18px + env(safe-area-inset-bottom));text-align:center;
-}
-body:has(#home.active) #home .welcome-logo{display:block;width:clamp(160px,48vw,250px);max-width:82%;height:auto;max-height:24dvh;object-fit:contain;margin:0 auto 10px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
-body:has(#home.active) #home .welcome-kicker{font-size:clamp(11px,3vw,15px);font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#9fefff;text-shadow:0 2px 12px rgba(0,0,0,.45)}
-body:has(#home.active) #home .welcome-title{margin:8px 0 12px;color:#fff;font-size:clamp(27px,7vw,42px);line-height:1.04;font-weight:900;letter-spacing:-.04em;text-transform:uppercase;text-shadow:0 6px 18px rgba(0,0,0,.45)}
-body:has(#home.active) #home .welcome-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(100%,460px);margin-top:4px}
-body:has(#home.active) #home .welcome-actions button{min-height:48px;border-radius:14px;padding:11px 10px;font-size:13px;box-shadow:0 10px 18px rgba(0,0,0,.18)}
-body:has(#home.active) #home .welcome-actions .primary{background:linear-gradient(115deg,#1d8dff,#59d4ff);color:#fff}
-body:has(#home.active) #home .welcome-actions .secondary{background:rgba(255,255,255,.92);color:#12456d;border:1px solid rgba(255,255,255,.7)}
-body:has(#home.active) #home .welcome-actions .ghost{grid-column:1/-1;background:linear-gradient(110deg,#edf9ff,#bceaff);color:#0d4863;border:1px solid rgba(255,255,255,.9)}
-body:has(#home.active) #home .instagram-mark{margin-top:12px;color:#fff;font-size:13px;font-weight:800;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-@media (max-width: 599px){
-  body:has(#home.active) header.masthead{display:none!important}
-  body:has(#home.active) main{padding:0!important}
-  body:has(#home.active) #home{margin:0;padding:0}
-  body:has(#home.active) #home .welcome-hero{min-height:calc(100dvh - 76px);height:calc(100dvh - 76px)}
-}
-</style></head><body><div class="app"><header class="masthead"><img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed, Pirané FSA"><div class="masthead-actions"><button class="primary" onclick="go('account');showAuth('login')">Iniciar sesión</button><button class="secondary" onclick="go('account');showAuth('register')">Crear cuenta</button><button class="ghost" onclick="go('account');showAuth('business')">Acceso comercios</button></div><div class="pill">📍 Pirané, Formosa</div></header><main>
-<section class="screen active" id="home"><div class="hero welcome-hero"><img src="app/Img/PiraRed_%20Folklore%20y%20atardecer%20en%20Piran%C3%A9.png" alt="PiraRed folklore y atardecer en Pirané"><div class="welcome-copy"><img class="welcome-logo" src="app/Img/06-logo-pirared.png" alt="Logo PiraRed"><div class="welcome-kicker">Aquí Pirané, mi pueblo</div><h1 class="welcome-title">Capital provincial<br>del folklore</h1><div class="welcome-actions"><button class="primary" onclick="go('account');showAuth('login')">Iniciar sesión</button><button class="secondary" onclick="go('account');showAuth('register')">Crear cuenta</button><button class="ghost" onclick="go('account');showAuth('business')">Acceso exclusivo para comercios</button></div><div class="instagram-mark">◎ @escalantepepe22</div></div></div><div class="section-head"><h2>¿Qué necesitás hoy?</h2><small>Comunidad local</small></div><div class="categories"><button class="category" onclick="filterCategory('Compra / Venta')"><span class="emoji">🛍️</span><span><strong>Compra / Venta</strong><small>Productos de la zona</small></span></button><button class="category" onclick="filterCategory('Changas')"><span class="emoji">🧰</span><span><strong>Changas</strong><small>Oportunidades y trabajos</small></span></button><button class="category" onclick="filterCategory('Servicios')"><span class="emoji">🛠️</span><span><strong>Servicios</strong><small>Personas que te ayudan</small></span></button><button class="category" onclick="go('ads')"><span class="emoji">📣</span><span><strong>Publicidad</strong><small>Promociones de comercios</small></span></button></div><div class="section-head"><h2>De la comunidad</h2><small>Ejemplos de muestra</small></div><div class="listings" id="homeListings"></div><div class="notice">🔒 Las cuentas nuevas deberán aprobarse antes de publicar o enviar mensajes.</div></section>
-<section class="screen" id="explore"><div class="section-head"><h2>Explorar publicaciones</h2><small id="countLabel">Muestra local</small></div><div class="search"><input id="searchInput" placeholder="Buscar por nombre, barrio o texto"></div><div class="listings" id="exploreListings"></div></section>
-<section class="screen" id="publish"><div class="section-head"><h2>Publicaciones de vecinos</h2><small>Próximamente</small></div><div class="panel"><div style="font-size:28px">🛠️</div><h3>Publicá con control</h3><p class="muted small">Las publicaciones sólo aparecerán luego de revisión del equipo de moderación.</p></div></section>
-<section class="screen" id="ads"><div class="section-head"><h2>Publicidad de comercios</h2><small>Promociones locales</small></div><div class="panel ads-intro"><div class="ads-symbol">📣</div><h3>Promociones locales y reales</h3><p class="muted small">Los comercios podrán publicar ofertas para vecinos y visitantes, con control manual antes de salir al público.</p></div></section>
-<section class="screen" id="account"><div class="section-head"><h2>Tu cuenta PiraRed</h2><small>Acceso seguro</small></div><div class="panel"><div class="eyebrow">Bienvenido a la comunidad</div><h2 style="margin-top:8px">Sumate a PiraRed</h2><p class="muted small">Explorá como invitado o prepará tu solicitud de acceso.</p><div class="actions"><button class="primary" onclick="showAuth('register')">Crear cuenta</button><button class="secondary" onclick="showAuth('login')">Iniciar sesión</button></div></div><div id="authArea"></div><div class="panel"><h3>Cómo cuidamos la comunidad</h3><ul class="muted small" style="padding-left:18px;line-height:1.8"><li>Correo electrónico confirmado.</li><li>Revisión manual de solicitudes.</li><li>Referencias de vecinos como dato complementario.</li><li>Sin DNI ni reconocimiento facial por ahora.</li><li>Cuentas pendientes sin permiso para publicar o mensajear.</li></ul></div></section>
-<section class="screen" id="about"><div class="hero" style="min-height:220px"><img src="app/Img/04-informacion-pirared.jpg" alt="Imagen de información de PiraRed"><div class="hero-content"><div class="eyebrow">Un proyecto local</div><h1>PiraRed</h1><p>Todo cerca. Todo conectado.</p></div></div><div class="panel"><h2>Una red hecha para Pirané</h2><p class="muted">Un espacio para acercar vecinos, emprendedores, trabajadores y comercios. Que las oportunidades locales se encuentren en un solo lugar.</p></div><div class="panel"><h3>Transparencia</h3><p class="muted small">Esta entrega es un prototipo navegable. El registro, inicio de sesión, publicaciones y mensajes aún no están conectados a un servidor real. No ingreses contraseñas reales en esta demostración.</p><p class="muted small">Interfaz 0.1 · Proyecto comunitario</p></div></section><div class="footer">PiraRed · Pirané, Formosa · Todo cerca. Todo conectado.</div></main><nav class="bottomnav" aria-label="Navegación principal"><button class="navbtn active" data-screen="home" onclick="go('home')"><span>⌂</span>Inicio</button><button class="navbtn" data-screen="explore" onclick="go('explore')"><span>⌕</span>Explorar</button><button class="navbtn" data-screen="publish" onclick="go('publish')"><span>＋</span>Publicar</button><button class="navbtn" data-screen="messages" onclick="go('messages')"><span>✉</span>Mensajes</button><button class="navbtn" data-screen="account" onclick="go('account')"><span>♙</span>Cuenta</button></nav><div class="toast" id="toast" role="status" aria-live="polite"></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const PIRARED_SUPABASE_URL='https://slgqcrcktczuvmivwdst.supabase.co';
-const PIRARED_SUPABASE_KEY='sb_publishable_QNdAcWGllSEpRrUqoHKoig_YBNWfxDA';
-const piraredSupabase=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(PIRARED_SUPABASE_URL,PIRARED_SUPABASE_KEY):null;
-let listings=[];let activeCategory='Todas';
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function card(x){return `<article class="listing"><div class="thumb"><img src="${x.image||'app/Img/02-monumento-plaza.jpg'}" alt="${esc(x.title||'Publicación')}" loading="lazy"></div><div><h3>${esc(x.title||'Publicación')}</h3><p>${esc(x.category||'Local')} · ${esc(x.location||'Pirané')}</p><p>${esc(x.description||'Anuncio local')}</p></div></article>`}
-function renderListings(){const container=document.getElementById('homeListings'); if(!container) return; const visible=listings.filter(x=>activeCategory==='Todas'||x.category===activeCategory).slice(0,6); container.innerHTML=visible.length ? visible.map(card).join('') : '<div class="info-card"><h3>Sin publicaciones</h3><p class="muted">Pronto aparecerán anuncios de la comunidad.</p></div>';} 
-function filterCategory(cat){activeCategory=cat;renderListings();document.querySelectorAll('.category').forEach(btn=>btn.style.outline=''); const active=[...document.querySelectorAll('.category')].find(btn=>btn.textContent.includes(cat)); if(active) active.style.outline='2px solid #4ca5ff';}
-function showToast(msg){const t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(showToast._timer); showToast._timer=setTimeout(()=>t.classList.remove('show'),2200);} 
-function showAuth(mode){const area=document.getElementById('authArea'); if(!area) return; const forms={login:`<div class="panel"><h3>Iniciar sesión</h3><div class="field"><input placeholder="Correo electrónico"></div><div class="field"><input type="password" placeholder="Contraseña"></div><div class="actions"><button class="primary" onclick="showToast('Demo: acceso simulado')">Entrar</button></div></div>`,register:`<div class="panel"><h3>Crear cuenta</h3><div class="field"><input placeholder="Nombre y apellido"></div><div class="field"><input placeholder="Correo electrónico"></div><div class="field"><input type="password" placeholder="Contraseña"></div><div class="actions"><button class="primary" onclick="showToast('Cuenta creada en modo demo')">Crear cuenta</button></div></div>`,business:`<div class="panel"><h3>Acceso comercios</h3><div class="field"><input placeholder="Cuit o Razón social"></div><div class="field"><input placeholder="Correo de contacto"></div><div class="actions"><button class="primary" onclick="showToast('Solicitud enviada')">Solicitar acceso</button></div></div>`}; area.innerHTML=forms[mode]||'';}
-function go(screen){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===screen)); document.querySelectorAll('.navbtn').forEach(btn=>btn.classList.toggle('active',btn.dataset.screen===screen));}
-const seed=[{title:'Venta de trigo local',category:'Compra / Venta',location:'Pirané Centro',description:'Semillas y productos del campo.',image:'app/Img/02-monumento-plaza.jpg'},{title:'Arreglo de bicicletas',category:'Servicios',location:'Barrio El Parque',description:'Reparación rápida y a domicilio.',image:'app/Img/03-plaza-juegos.jpg'},{title:'Se buscan ayudantes',category:'Changas',location:'Pirané Norte',description:'Trabajo por horas para eventos locales.',image:'app/Img/04-informacion-pirared.jpg'}]; listings=seed; renderListings();
-</script></body></html>
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: linear-gradient(180deg, #061827 0%, #0b1d30 26%, #071d33 100%);
+        color: var(--text);
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        background-image:
+          radial-gradient(circle at top, rgba(88, 164, 255, 0.18), transparent 32%),
+          radial-gradient(circle at bottom, rgba(255, 153, 61, 0.12), transparent 28%);
+      }
+
+      button, input {
+        font: inherit;
+      }
+
+      .app-shell {
+        position: relative;
+        width: min(100%, 430px);
+        min-height: 100dvh;
+        background: #071d2f;
+        border-left: 1px solid rgba(255,255,255,0.04);
+        border-right: 1px solid rgba(255,255,255,0.04);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .masthead {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 16px 12px;
+        background: rgba(7, 24, 39, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+
+      .masthead-logo {
+        width: 110px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      .masthead-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .masthead-pill,
+      .icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 42px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+        border-radius: 12px;
+      }
+
+      .masthead-pill {
+        min-width: unset;
+        padding: 0 12px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      main {
+        padding: 0 0 90px;
+      }
+
+      .screen {
+        display: none;
+        min-height: calc(100dvh - 90px);
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .welcome-hero {
+        position: relative;
+        display: block;
+        width: 100%;
+        min-height: 70dvh;
+        background: #0d2a45;
+        overflow: hidden;
+      }
+
+      .welcome-hero > img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(1.08) contrast(1.06);
+      }
+
+      .welcome-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(7, 17, 26, 0.12) 0%,
+          rgba(7, 17, 26, 0.18) 20%,
+          rgba(7, 17, 26, 0.55) 65%,
+          rgba(7, 17, 26, 0.9) 100%
+        );
+      }
+
+      .welcome-copy {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        text-align: center;
+        min-height: 70dvh;
+        padding: 26px 18px 22px;
+      }
+
+      .welcome-logo {
+        width: clamp(150px, 52vw, 230px);
+        max-width: 80%;
+        height: auto;
+        filter: drop-shadow(0 10px 25px rgba(0,0,0,0.35));
+        margin-bottom: 8px;
+      }
+
+      .welcome-kicker {
+        color: #9fe9ff;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+        opacity: 0.95;
+      }
+
+      .welcome-title {
+        margin: 10px 0 12px;
+        font-size: clamp(32px, 8vw, 52px);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+        font-weight: 900;
+        text-transform: uppercase;
+        text-shadow: 0 10px 20px rgba(0,0,0,0.45);
+      }
+
+      .welcome-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        width: min(100%, 420px);
+        margin-top: 6px;
+      }
+
+      .welcome-actions button {
+        min-height: 52px;
+        border: 0;
+        border-radius: 14px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+      }
+
+      .primary {
+        color: white;
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+      }
+
+      .secondary {
+        color: #0e3f60;
+        background: rgba(255,255,255,0.95);
+      }
+
+      .ghost {
+        grid-column: 1 / -1;
+        color: #0d4863;
+        background: linear-gradient(135deg, #edf9ff, #bfe8ff);
+      }
+
+      .instagram-mark {
+        margin-top: 10px;
+        color: rgba(255,255,255,0.88);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .home-body {
+        padding: 18px 16px 8px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 8px 0 12px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+
+      .section-head small {
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .category-strip {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 2px 0 12px;
+        scrollbar-width: none;
+      }
+
+      .category-strip::-webkit-scrollbar { display: none; }
+
+      .category-chip {
+        flex: 0 0 auto;
+        border: 1px solid rgba(150, 183, 228, 0.18);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 9px 14px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .category-chip.active {
+        background: linear-gradient(135deg, rgba(28,134,255,0.25), rgba(99,214,255,0.2));
+        border-color: rgba(99,214,255,0.38);
+        color: white;
+      }
+
+      .listing-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .listing-card {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        background: linear-gradient(180deg, rgba(20, 34, 52, 0.95), rgba(12, 23, 36, 0.95));
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+      }
+
+      .listing-thumb {
+        position: relative;
+        width: 112px;
+        height: 92px;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #0b1e31;
+      }
+
+      .listing-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .listing-main {
+        min-width: 0;
+      }
+
+      .listing-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(99,214,255,0.1);
+        border: 1px solid rgba(99,214,255,0.18);
+        color: var(--cyan);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .listing-card h3 {
+        margin: 8px 0 4px;
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+      }
+
+      .listing-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .listing-price {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 70px;
+        padding: 10px 8px;
+        border-radius: 12px;
+        background: rgba(255, 157, 61, 0.1);
+        border: 1px solid rgba(255, 157, 61, 0.24);
+        color: var(--primary-2);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .side-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border: 0;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+      }
+
+      .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid rgba(150, 183, 228, 0.18);
+        border-radius: 14px;
+        background: rgba(255,255,255,0.04);
+        margin-bottom: 16px;
+      }
+
+      .search-box input {
+        flex: 1;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 14px;
+        outline: none;
+      }
+
+      .search-box input::placeholder { color: var(--muted-2); }
+
+      .list-compact {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .compact-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .compact-item .left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .compact-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(24,131,255,0.22), rgba(99,214,255,0.14));
+        font-size: 20px;
+      }
+
+      .compact-item strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .compact-item small {
+        color: var(--muted);
+      }
+
+      .panel {
+        padding: 18px 16px;
+        margin: 16px;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(180deg, rgba(17,30,46,0.95), rgba(8,20,31,0.95));
+        border: 1px solid rgba(150, 183, 228, 0.14);
+        box-shadow: 0 12px 22px rgba(0,0,0,0.18);
+      }
+
+      .panel h3 {
+        margin: 10px 0 8px;
+        font-size: 18px;
+      }
+
+      .panel p {
+        margin: 0;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .cta-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .cta-row button {
+        min-height: 46px;
+        border-radius: 12px;
+        border: 0;
+        font-weight: 800;
+      }
+
+      .bottomnav {
+        position: fixed;
+        left: 50%;
+        bottom: max(16px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        width: min(100%, 430px);
+        padding: 8px 14px 10px;
+        background: rgba(7, 24, 39, 0.9);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        z-index: 20;
+      }
+
+      .navbtn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 62px;
+        background: transparent;
+        color: var(--muted);
+        border: 0;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .navbtn .icon {
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .navbtn.active {
+        color: #dff5ff;
+      }
+
+      .navbtn.active .icon-wrap {
+        background: linear-gradient(180deg, rgba(28,134,255,0.28), rgba(99,214,255,0.16));
+        border: 1px solid rgba(99,214,255,0.3);
+      }
+
+      .icon-wrap {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+      }
+
+      #toast {
+        position: fixed;
+        left: 50%;
+        bottom: 96px;
+        transform: translateX(-50%) translateY(10px);
+        opacity: 0;
+        pointer-events: none;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(10, 31, 48, 0.92);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.22);
+        font-size: 12px;
+        font-weight: 700;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (min-width: 480px) {
+        body {
+          padding: 26px 0;
+        }
+        .app-shell {
+          border-radius: 32px;
+          min-height: calc(100dvh - 52px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="masthead">
+        <img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed" />
+        <div class="masthead-actions">
+          <button class="icon-btn" aria-label="notificaciones">🔔</button>
+          <button class="masthead-pill">Pirané</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="screen active" id="home">
+          <div class="welcome-hero">
+            <img src="app/Img/PiraRed_ Folklore y atardecer en Pirané.png" alt="PiraRed folklore y atardecer en Pirané" />
+            <div class="welcome-copy">
+              <img class="welcome-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed logo" />
+              <div class="welcome-kicker">Pirané FSA</div>
+              <h1 class="welcome-title">PIRARÉ<br />CAPITAL</h1>
+              <div class="welcome-actions">
+                <button class="primary" onclick="go('explore')">Ver anuncios</button>
+                <button class="secondary" onclick="go('account')">Ingresar</button>
+                <button class="ghost" onclick="go('publish')">Publicar</button>
+              </div>
+              <div class="instagram-mark">Pirané capital provincial del folklore</div>
+            </div>
+          </div>
+
+          <div class="home-body">
+            <div class="section-head">
+              <h2>¿Qué necesitás hoy?</h2>
+              <small>Comunidad local</small>
+            </div>
+
+            <div class="category-strip" id="categoryBar">
+              <button class="category-chip active" type="button" data-category="Todas">Todos</button>
+              <button class="category-chip" type="button" data-category="Compra / Venta">Compra / Venta</button>
+              <button class="category-chip" type="button" data-category="Trabajos">Trabajos</button>
+              <button class="category-chip" type="button" data-category="Servicios">Servicios</button>
+              <button class="category-chip" type="button" data-category="Comercios">Comercios</button>
+            </div>
+
+            <div class="listing-grid" id="homeListings"></div>
+          </div>
+        </section>
+
+        <section class="screen" id="explore">
+          <div class="home-body">
+            <div class="section-head">
+              <h2>Explorar</h2>
+              <small id="countLabel">0 publicaciones</small>
+            </div>
+
+            <div class="search-box">
+              <span>🔎</span>
+              <input id="searchInput" type="text" placeholder="Buscar publicaciones..." />
+            </div>
+
+            <div class="list-compact" id="exploreList"></div>
+          </div>
+        </section>
+
+        <section class="screen" id="publish">
+          <div class="home-body">
+            <div class="section-head">
+              <h2>Publicar</h2>
+              <small>Próximamente</small>
+            </div>
+            <div class="panel">
+              <div style="font-size: 34px;">📣</div>
+              <h3>Publicá tu aviso</h3>
+              <p>Tu comunidad puede vender, ofrecer trabajos, servicios o anunciar negocios locales desde PiraRed.</p>
+              <div class="cta-row">
+                <button class="primary" onclick="showToast('Formulario en desarrollo')">Crear aviso</button>
+                <button class="secondary" onclick="go('home')">Volver</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="ads">
+          <div class="home-body">
+            <div class="section-head">
+              <h2>Comercios</h2>
+              <small>Promociones</small>
+            </div>
+            <div class="panel">
+              <div style="font-size: 34px;">🏪</div>
+              <h3>Publicidad local</h3>
+              <p>Descubrí comercios, servicios y ofertas de Pirané. Todo dentro de la plataforma.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="account">
+          <div class="home-body">
+            <div class="section-head">
+              <h2>Mi cuenta</h2>
+              <small>Acceso</small>
+            </div>
+            <div class="panel">
+              <div style="font-size: 34px;">👤</div>
+              <h3>Bienvenido a PiraRed</h3>
+              <p>Iniciá sesión para guardar favoritos, publicar avisos y hablar con la comunidad.</p>
+              <div class="cta-row">
+                <button class="primary" onclick="showToast('Ingreso disponible en próxima versión')">Iniciar sesión</button>
+                <button class="secondary" onclick="showToast('Registro disponible en próxima versión')">Registrarme</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="about">
+          <div class="home-body">
+            <div class="section-head">
+              <h2>Información</h2>
+              <small>Sobre PiraRed</small>
+            </div>
+            <div class="panel">
+              <div style="font-size: 34px;">💡</div>
+              <h3>Pirané conectada</h3>
+              <p>PiraRed reúne oportunidades, servicios y comercio local para fortalecer la comunidad del pueblo.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottomnav" aria-label="Navegación principal">
+        <button class="navbtn active" data-screen="home" onclick="go('home')">
+          <span class="icon-wrap"><span class="icon">⌂</span></span>
+          Inicio
+        </button>
+        <button class="navbtn" data-screen="explore" onclick="go('explore')">
+          <span class="icon-wrap"><span class="icon">⌕</span></span>
+          Explorar
+        </button>
+        <button class="navbtn" data-screen="publish" onclick="go('publish')">
+          <span class="icon-wrap"><span class="icon">＋</span></span>
+          Publicar
+        </button>
+        <button class="navbtn" data-screen="ads" onclick="go('ads')">
+          <span class="icon-wrap"><span class="icon">◫</span></span>
+          Comercios
+        </button>
+        <button class="navbtn" data-screen="account" onclick="go('account')">
+          <span class="icon-wrap"><span class="icon">☰</span></span>
+          Perfil
+        </button>
+      </nav>
+
+      <div id="toast">Mensaje</div>
+    </div>
+
+    <script>
+      const listings = [
+        {
+          title: 'Yamaha XTZ 125',
+          category: 'Compra / Venta',
+          price: '$ 1.450.000',
+          place: 'Pirané · 2 km',
+          icon: '🏍️',
+          image: 'app/Img/02-monumento-plaza.jpg'
+        },
+        {
+          title: 'Terreno en Pirané',
+          category: 'Compra / Venta',
+          price: '$ 3.800.000',
+          place: 'Pirané · 3 km',
+          icon: '🏡',
+          image: 'app/Img/02-monumento-plaza.jpg'
+        },
+        {
+          title: 'Trabajo de albañilería',
+          category: 'Trabajos',
+          price: 'A convenir',
+          place: 'Pirané · 1 km',
+          icon: '🧱',
+          image: 'app/Img/02-monumento-plaza.jpg'
+        },
+        {
+          title: 'Arreglo de computadoras',
+          category: 'Servicios',
+          price: '$ 8.000',
+          place: 'Pirané · 1,5 km',
+          icon: '💻',
+          image: 'app/Img/02-monumento-plaza.jpg'
+        },
+        {
+          title: 'Cafetería del barrio',
+          category: 'Comercios',
+          price: 'Oferta',
+          place: 'Centro',
+          icon: '☕',
+          image: 'app/Img/02-monumento-plaza.jpg'
+        }
+      ];
+
+      function renderHomeListings() {
+        const container = document.getElementById('homeListings');
+        if (!container) return;
+
+        const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
+        const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
+
+        container.innerHTML = filtered.map(item => `
+          <article class="listing-card">
+            <div class="listing-thumb"><img src="${item.image}" alt="${item.title}" /></div>
+            <div class="listing-main">
+              <span class="listing-badge">${item.category}</span>
+              <h3>${item.title}</h3>
+              <div class="listing-meta">
+                <span>${item.place}</span>
+              </div>
+            </div>
+            <div class="listing-price">${item.price}</div>
+          </article>
+        `).join('');
+      }
+
+      function renderExploreList() {
+        const container = document.getElementById('exploreList');
+        const countLabel = document.getElementById('countLabel');
+        if (!container) return;
+
+        const query = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
+        const filtered = listings.filter(item => {
+          if (!query) return true;
+          return item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query) || item.place.toLowerCase().includes(query);
+        });
+
+        countLabel.textContent = filtered.length + ' publicaciones';
+
+        container.innerHTML = filtered.map(item => `
+          <article class="compact-item">
+            <div class="left">
+              <div class="compact-icon">${item.icon}</div>
+              <div>
+                <strong>${item.title}</strong>
+                <small>${item.category} · ${item.place}</small>
+              </div>
+            </div>
+            <span style="font-weight:900; color:#ffd085;">${item.price}</span>
+          </article>
+        `).join('');
+      }
+
+      document.addEventListener('click', (event) => {
+        const chip = event.target.closest('.category-chip');
+        if (chip) {
+          document.querySelectorAll('.category-chip').forEach(btn => btn.classList.toggle('active', btn === chip));
+          renderHomeListings();
+        }
+      });
+
+      document.getElementById('searchInput')?.addEventListener('input', renderExploreList);
+
+      function go(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
+        document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => toast.classList.remove('show'), 1800);
+      }
+
+      renderHomeListings();
+      renderExploreList();
+    </script>
+  </body>
+</html>

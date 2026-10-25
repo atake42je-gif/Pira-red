@@ -504,7 +504,7 @@
         bottom: max(16px, env(safe-area-inset-bottom));
         transform: translateX(-50%);
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         width: min(100%, 430px);
         padding: 8px 14px 10px;
         background: rgba(255,255,255,0.74);
@@ -583,9 +583,9 @@
         }
       }
     
-      .photo-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px; }
-      .photo-card { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.78); box-shadow:0 8px 20px rgba(18,79,131,.08); margin:0; }
-      .photo-card img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; background:#e8f4fc; }
+      .photo-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px; align-items:start; }
+      .photo-card { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.84); box-shadow:0 8px 20px rgba(18,79,131,.08); margin:0; }
+      .photo-card img { display:block; width:100%; height:auto; max-height:360px; aspect-ratio:4/3; object-fit:contain; background:rgba(226,242,255,.7); }
       .photo-card figcaption { padding:9px 10px 11px; font-size:12px; line-height:1.35; font-weight:800; color:var(--text); }
       .gallery-note { margin:12px; padding:12px; border-radius:14px; background:rgba(255,255,255,.72); font-size:12px; line-height:1.5; color:var(--muted); }
 
@@ -733,7 +733,7 @@
         <section class="screen" id="photos">
           <div class="home-body">
             <div class="section-head"><h2>Fotos de Pirané y PiraRed</h2><small>Galería completa</small></div>
-            <p class="gallery-note">Todas las imágenes guardadas en la carpeta visual del proyecto se muestran aquí. Las fotos sin identificación confirmada se conservan como “foto por identificar”, sin atribuirles un lugar por suposición.</p>
+            <p class="gallery-note">Galería con las 14 imágenes conservadas en el proyecto. Las fotografías se muestran completas para evitar recortes importantes; las que aún no tienen ubicación confirmada quedan identificadas como pendientes.</p>
             <div class="photo-gallery">
               <figure class="photo-card"><img src="app/Img/01-inicio-pirared.png" alt="Portada original de inicio PiraRed" loading="lazy"><figcaption>1. Inicio: portada original del tren</figcaption></figure>
               <figure class="photo-card"><img src="app/Img/02-monumento-plaza.jpg" alt="Monumento de la plaza; falta confirmar si corresponde a la estatua solicitada" loading="lazy"><figcaption>2. Monumento de la plaza — confirmar si es la estatua solicitada</figcaption></figure>

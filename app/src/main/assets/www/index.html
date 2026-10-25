@@ -602,9 +602,9 @@
               <!-- Zonas táctiles transparentes sobre los botones dibujados en la
                    imagen original; conservan la portada sin duplicar elementos. -->
               <div class="welcome-actions">
-                <button class="primary" aria-label="Explorar anuncios" onclick="go('explore')">Explorar anuncios</button>
-                <button class="secondary" aria-label="Ingresar o crear cuenta" onclick="go('account')">Ingresar</button>
-                <button class="ghost" aria-label="Publicar" onclick="go('publish')">Publicar</button>
+                <button class="primary" aria-label="Iniciar sesión" onclick="go('account')">Iniciar sesión</button>
+                <button class="secondary" aria-label="Crear cuenta" onclick="go('account'); document.getElementById('registerButton')?.focus()">Crear cuenta</button>
+                <button class="ghost" aria-label="Acceso para comercios" onclick="go('ads')">Acceso para comercios</button>
               </div>
             </div>
           </div>

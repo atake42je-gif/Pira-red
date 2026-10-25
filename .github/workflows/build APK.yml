@@ -91,12 +91,14 @@ jobs:
           set -euo pipefail
           test -s supabase/README.md
           test -s supabase/migrations/202610230001_pirared_commerce_ads.sql
+          test -s supabase/migrations/20261023000100_pirared_payments.sql
           grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
           test -s supabase/migrations/202610250001_pirared_community_posts.sql
           test -s supabase/migrations/202610250002_pirared_rls_performance_tuning.sql
           test -s supabase/migrations/202610250003_pirared_private_message_permissions.sql
           test -s supabase/migrations/202610250004_pirared_reports_and_blocks.sql
           test -s supabase/migrations/202610250005_pirared_reports_blocks_indexes.sql
+          test -s supabase/migrations/202610250006_pirared_respect_user_blocks_in_messages.sql
           grep -q 'PIRARED_SUPABASE_URL' app/src/main/assets/www/index.html
           grep -q 'PIRARED_SUPABASE_KEY' app/src/main/assets/www/index.html
           echo "Archivos de publicidad, esquema y configuración cliente Supabase presentes."
@@ -154,6 +156,9 @@ jobs:
           grep -F "package: name='ar.pirared.app'" <<< "$BADGING"
           grep -F "application-label:'PiraRed'" <<< "$BADGING"
           test -s app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          test -s app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
+          grep -q '@drawable/pirared_logo_foreground' app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          grep -q '@drawable/pirared_logo_foreground' app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
           python3 - <<'PY'
           from pathlib import Path
           import re

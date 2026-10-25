@@ -19,7 +19,9 @@
 La interfaz informa cuando estas funciones no están disponibles y no simula envíos de anuncios ni aprobaciones administrativas.
 
 ## Configuración de Supabase
-La migración `202610230001_pirared_commerce_ads.sql` define perfiles, comercios, anuncios y políticas RLS. Verificá que se haya ejecutado en el proyecto `slgqcrcktczuvmivwdst` y que las políticas de seguridad estén activas antes de habilitar el lanzamiento.
+
+La interfaz actual apunta a `https://cerwpgfpicwcxiqatmdl.supabase.co` y usa una clave publicable. Esta URL debe coincidir con el proyecto donde se ejecuta la migración; si la base se creó en otro proyecto, hay que migrarla o corregir la configuración antes de probar.
+La migración `202610230001_pirared_commerce_ads.sql` define perfiles, comercios, anuncios y políticas RLS. Verificá que se haya ejecutado en el proyecto configurado en la interfaz actual (`cerwpgfpicwcxiqatmdl`) y que las políticas de seguridad estén activas antes de habilitar el lanzamiento.
 
 Para el primer administrador, registrá y confirmá una cuenta y luego asigná el rol `admin` manualmente en SQL Editor usando su UUID real. Nunca permitas que el formulario público establezca el rol de administrador.
 

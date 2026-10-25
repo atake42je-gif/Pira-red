@@ -116,7 +116,7 @@
         position: relative;
         display: block;
         width: 100%;
-        min-height: 72dvh;
+        min-height: 88dvh;
         overflow: hidden;
         background: #dfeeff;
       }
@@ -151,12 +151,12 @@
         align-items: center;
         justify-content: flex-end;
         text-align: center;
-        min-height: 72dvh;
+        min-height: 88dvh;
         padding: 24px 18px 20px;
       }
 
       .welcome-logo {
-        width: clamp(150px, 52vw, 220px);
+        width: clamp(220px, 76vw, 330px);
         max-width: 80%;
         height: auto;
         margin-bottom: 8px;
@@ -571,11 +571,11 @@
       <main>
         <section class="screen active" id="home">
           <div class="welcome-hero">
-            <img src="app/Img/PiraRed_%20Folklore%20y%20atardecer%20en%20Piran%C3%A9.png" alt="PiraRed folklore y atardecer en Pirané" />
+            <img src="app/Img/Inicio%20login%20pira%20red.png" alt="PiraRed folklore y atardecer en Pirané" />
             <div class="welcome-copy">
-              <img class="welcome-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed logo" />
+              
               <div class="welcome-kicker">Pirané FSA</div>
-              <h1 class="welcome-title">PIRARÉ<br />CAPITAL</h1>
+              <h1 class="welcome-title">TODO CERCA<br />TODO CONECTADO</h1>
               <div class="welcome-actions">
                 <button class="primary" onclick="go('explore')">Ver anuncios</button>
                 <button class="secondary" onclick="go('account')">Ingresar</button>
@@ -621,49 +621,78 @@
 
         <section class="screen" id="publish">
           <div class="home-body">
-            <div class="section-head">
-              <h2>Publicar</h2>
-              <small>Próximamente</small>
+            <div class="section-head"><h2>Publicar</h2><small>Tu comunidad</small></div>
+            <div class="panel">
+              <h3>Solicitar alta de comercio</h3>
+              <p>Registrá tu comercio. Quedará pendiente de revisión antes de aparecer públicamente.</p>
+              <form id="businessForm">
+                <label for="businessName">Nombre del comercio</label>
+                <input id="businessName" required minlength="2" maxlength="100" placeholder="Ej. Almacén del barrio" />
+                <label for="businessCategory">Categoría</label>
+                <input id="businessCategory" required maxlength="80" placeholder="Ej. Alimentos, servicios" />
+                <label for="businessDescription">Descripción</label>
+                <textarea id="businessDescription" maxlength="700" rows="3" placeholder="Qué ofrecés"></textarea>
+                <label for="businessContact">Contacto público (opcional)</label>
+                <input id="businessContact" maxlength="120" placeholder="Solo un contacto que quieras publicar" />
+                <button class="primary" type="submit">Enviar comercio para revisión</button>
+              </form>
+              <p class="form-note">Necesitás iniciar sesión. No publiques tu número personal si no querés hacerlo público.</p>
             </div>
             <div class="panel">
-              <div style="font-size: 34px;">📣</div>
-              <h3>Publicá tu aviso</h3>
-              <p>Tu comunidad puede vender, ofrecer trabajos, servicios o anunciar negocios locales desde PiraRed.</p>
-              <div class="cta-row">
-                <button class="primary" onclick="showToast('Formulario en desarrollo')">Crear aviso</button>
-                <button class="secondary" onclick="go('home')">Volver</button>
-              </div>
+              <h3>Publicar una promoción</h3>
+              <p>Disponible para comercios registrados. Las promociones se revisan antes de mostrarse.</p>
+              <form id="adForm">
+                <label for="adBusiness">ID del comercio aprobado</label>
+                <input id="adBusiness" required placeholder="ID de tu comercio aprobado" />
+                <label for="adTitle">Título</label>
+                <input id="adTitle" required minlength="3" maxlength="90" placeholder="Título de la promoción" />
+                <label for="adCategory">Categoría</label>
+                <input id="adCategory" required maxlength="80" placeholder="Categoría" />
+                <label for="adDescription">Descripción</label>
+                <textarea id="adDescription" required minlength="5" maxlength="600" rows="3" placeholder="Detalles de la promoción"></textarea>
+                <label for="adOffer">Oferta (opcional)</label>
+                <input id="adOffer" maxlength="100" placeholder="Ej. 10% de descuento" />
+                <button class="primary" type="submit">Enviar promoción para revisión</button>
+              </form>
             </div>
           </div>
         </section>
 
         <section class="screen" id="ads">
           <div class="home-body">
-            <div class="section-head">
-              <h2>Comercios</h2>
-              <small>Promociones</small>
-            </div>
-            <div class="panel">
-              <div style="font-size: 34px;">🏪</div>
-              <h3>Publicidad local</h3>
-              <p>Descubrí comercios, servicios y ofertas de Pirané. Todo dentro de la plataforma.</p>
-            </div>
+            <div class="section-head"><h2>Comercios</h2><small>Promociones aprobadas</small></div>
+            <div id="adsStatus" class="panel"><p>Cargando promociones públicas…</p></div>
+            <div class="listing-grid" id="adsList"></div>
           </div>
         </section>
 
         <section class="screen" id="account">
           <div class="home-body">
-            <div class="section-head">
-              <h2>Mi cuenta</h2>
-              <small>Acceso</small>
+            <div class="section-head"><h2>Mi cuenta</h2><small>Acceso seguro</small></div>
+            <div class="panel" id="sessionPanel">
+              <h3>Ingresar o crear una cuenta</h3>
+              <p>Usá tu correo para registrarte. Supabase puede pedirte que confirmes el correo antes de iniciar sesión.</p>
+              <form id="authForm">
+                <label for="authName">Nombre para mostrar (solo al registrarte)</label>
+                <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre" />
+                <label for="authEmail">Correo electrónico</label>
+                <input id="authEmail" type="email" required autocomplete="email" placeholder="vos@ejemplo.com" />
+                <label for="authPassword">Contraseña</label>
+                <input id="authPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres" />
+                <div class="cta-row">
+                  <button class="primary" type="submit" id="loginButton">Iniciar sesión</button>
+                  <button class="secondary" type="button" id="registerButton">Crear cuenta</button>
+                </div>
+              </form>
+              <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
+              <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
             </div>
-            <div class="panel">
-              <div style="font-size: 34px;">👤</div>
-              <h3>Bienvenido a PiraRed</h3>
-              <p>Iniciá sesión para guardar favoritos, publicar avisos y hablar con la comunidad.</p>
+            <div class="panel" id="loggedPanel" hidden>
+              <h3 id="loggedTitle">Tu cuenta</h3>
+              <p id="loggedEmail"></p>
               <div class="cta-row">
-                <button class="primary" onclick="showToast('Ingreso disponible en próxima versión')">Iniciar sesión</button>
-                <button class="secondary" onclick="showToast('Registro disponible en próxima versión')">Registrarme</button>
+                <button class="secondary" type="button" id="refreshDataButton">Actualizar datos</button>
+                <button class="primary" type="button" id="logoutButton">Cerrar sesión</button>
               </div>
             </div>
           </div>
@@ -671,14 +700,12 @@
 
         <section class="screen" id="about">
           <div class="home-body">
-            <div class="section-head">
-              <h2>Información</h2>
-              <small>Sobre PiraRed</small>
-            </div>
+            <div class="section-head"><h2>Información</h2><small>Sobre PiraRed</small></div>
             <div class="panel">
-              <div style="font-size: 34px;">💡</div>
+              <img class="about-image" src="app/Img/04-informacion-pirared.jpg" alt="Información de PiraRed" />
               <h3>Pirané conectada</h3>
-              <p>PiraRed reúne oportunidades, servicios y comercio local para fortalecer la comunidad del pueblo.</p>
+              <p>PiraRed reúne oportunidades, servicios y comercio local para fortalecer la comunidad. Los anuncios públicos deben respetar las normas de la comunidad.</p>
+              <p class="form-note">Cuidamos tus datos: los contactos privados no se muestran automáticamente y las publicaciones comerciales quedan sujetas a revisión.</p>
             </div>
           </div>
         </section>
@@ -711,126 +738,156 @@
     </div>
 
     <script>
-      const PIRARED_SUPABASE_URL = 'https://<TU-PROYECTO>.supabase.co';
-      const PIRARED_SUPABASE_KEY = '<TU_ANON_KEY>';
-
-      const listings = [
-        {
-          title: 'Yamaha XTZ 125',
-          category: 'Compra / Venta',
-          price: '$ 1.450.000',
-          place: 'Pirané · 2 km',
-          icon: '🏍️',
-          image: 'app/Img/02-monumento-plaza.jpg'
-        },
-        {
-          title: 'Terreno en Pirané',
-          category: 'Compra / Venta',
-          price: '$ 3.800.000',
-          place: 'Pirané · 3 km',
-          icon: '🏡',
-          image: 'app/Img/02-monumento-plaza.jpg'
-        },
-        {
-          title: 'Trabajo de albañilería',
-          category: 'Trabajos',
-          price: 'A convenir',
-          place: 'Pirané · 1 km',
-          icon: '🧱',
-          image: 'app/Img/02-monumento-plaza.jpg'
-        },
-        {
-          title: 'Arreglo de computadoras',
-          category: 'Servicios',
-          price: '$ 8.000',
-          place: 'Pirané · 1,5 km',
-          icon: '💻',
-          image: 'app/Img/02-monumento-plaza.jpg'
-        },
-        {
-          title: 'Cafetería del barrio',
-          category: 'Comercios',
-          price: 'Oferta',
-          place: 'Centro',
-          icon: '☕',
-          image: 'app/Img/02-monumento-plaza.jpg'
-        }
-      ];
-
-      function renderHomeListings() {
-        const container = document.getElementById('homeListings');
-        if (!container) return;
-
-        const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
-        const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
-
-        container.innerHTML = filtered.map(item => `
-          <article class="listing-card">
-            <div class="listing-thumb"><img src="${item.image}" alt="${item.title}" /></div>
-            <div class="listing-main">
-              <span class="listing-badge">${item.category}</span>
-              <h3>${item.title}</h3>
-              <div class="listing-meta">
-                <span>${item.place}</span>
-              </div>
-            </div>
-            <div class="listing-price">${item.price}</div>
-          </article>
-        `).join('');
-      }
-
-      function renderExploreList() {
-        const container = document.getElementById('exploreList');
-        const countLabel = document.getElementById('countLabel');
-        if (!container) return;
-
-        const query = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
-        const filtered = listings.filter(item => {
-          if (!query) return true;
-          return item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query) || item.place.toLowerCase().includes(query);
+      // Public Supabase publishable key only; never place a service-role key in an APK.
+      const PIRARED_SUPABASE_URL = 'https://cerwpgfpicwcxiqatmdl.supabase.co';
+      const PIRARED_SUPABASE_KEY = 'sb_publishable_tQg7IO7f3pl-7C4B8yt-Yg_aAylKI3z';
+      const SESSION_KEY = 'pirared.auth.session.v1';
+      let session = null;
+      try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { session = null; }
+      const listings = [];
+      const $ = (id) => document.getElementById(id);
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const apiHeaders = (token) => ({ 'apikey': PIRARED_SUPABASE_KEY, 'Authorization': 'Bearer ' + (token || PIRARED_SUPABASE_KEY), 'Content-Type':'application/json' });
+      async function api(path, options = {}) {
+        const response = await fetch(PIRARED_SUPABASE_URL + '/rest/v1/' + path, {
+          ...options, headers: {...apiHeaders(session?.access_token), ...(options.headers || {})}
         });
-
-        countLabel.textContent = filtered.length + ' publicaciones';
-
-        container.innerHTML = filtered.map(item => `
-          <article class="compact-item">
-            <div class="left">
-              <div class="compact-icon">${item.icon}</div>
-              <div>
-                <strong>${item.title}</strong>
-                <small>${item.category} · ${item.place}</small>
-              </div>
-            </div>
-            <span style="font-weight:900; color:#0d5ca8;">${item.price}</span>
-          </article>
-        `).join('');
+        const body = await response.text();
+        let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) { data = body; }
+        if (!response.ok) throw new Error(data?.message || data?.msg || ('Error del servidor (' + response.status + ')'));
+        return data;
       }
-
-      document.addEventListener('click', (event) => {
-        const chip = event.target.closest('.category-chip');
-        if (chip) {
-          document.querySelectorAll('.category-chip').forEach(btn => btn.classList.toggle('active', btn === chip));
-          renderHomeListings();
+      async function authRequest(path, payload) {
+        const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/' + path, {
+          method:'POST', headers:apiHeaders(), body:JSON.stringify(payload)
+        });
+        const body = await response.text(); let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) {}
+        if (!response.ok) throw new Error(data?.msg || data?.message || 'No se pudo completar la operación de cuenta.');
+        return data;
+      }
+      function setSession(value) {
+        session = value;
+        if (value) localStorage.setItem(SESSION_KEY, JSON.stringify(value)); else localStorage.removeItem(SESSION_KEY);
+        renderSession();
+      }
+      function renderSession() {
+        const logged = !!session?.access_token;
+        $('sessionPanel').hidden = logged;
+        $('loggedPanel').hidden = !logged;
+        if (logged) {
+          $('loggedTitle').textContent = 'Sesión iniciada';
+          $('loggedEmail').textContent = session.user?.email || 'Cuenta conectada';
         }
-      });
-
-      document.getElementById('searchInput')?.addEventListener('input', renderExploreList);
-
+      }
+      function showToast(message) {
+        const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
+        clearTimeout(showToast._timer); showToast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+      }
       function go(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
         document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
+        if (screen === 'ads') loadAds();
+        if (screen === 'account') renderSession();
       }
-
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(showToast._timer);
-        showToast._timer = setTimeout(() => toast.classList.remove('show'), 1800);
+      function renderHomeListings() {
+        const container = $('homeListings'); if (!container) return;
+        if (!listings.length) {
+          container.innerHTML = '<div class="panel"><h3>Tu comunidad empieza acá</h3><p>Por ahora no hay publicaciones verificadas disponibles. Evitamos mostrar avisos inventados.</p></div>';
+          return;
+        }
+        const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
+        const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
+        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div></div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
       }
-
-      renderHomeListings();
-      renderExploreList();
+      function renderExploreList() {
+        const container = $('exploreList'); if (!container) return;
+        const query = ($('searchInput')?.value || '').trim().toLowerCase();
+        const filtered = listings.filter(item => !query || [item.title,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
+        $('countLabel').textContent = filtered.length + ' publicaciones';
+        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small></div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
+      }
+      async function loadAds() {
+        $('adsStatus').innerHTML = '<p>Buscando promociones aprobadas…</p>';
+        try {
+          const rows = await api('ads?select=id,title,description,category,offer_text,business_id,created_at&status=eq.approved&order=created_at.desc');
+          const businessIds = [...new Set((rows || []).map(r => r.business_id).filter(Boolean))];
+          let businesses = [];
+          if (businessIds.length) businesses = await api('businesses?select=id,name,category,status&id=in.(' + businessIds.join(',') + ')&status=eq.approved');
+          const byId = Object.fromEntries(businesses.map(b => [b.id,b]));
+          const approved = (rows || []).filter(r => byId[r.business_id]).map(r => ({title:r.title,category:r.category || byId[r.business_id].category,description:r.description,price:r.offer_text || 'Consultar',place:byId[r.business_id].name,icon:'🏪'}));
+          $('adsList').innerHTML = approved.map(r => '<article class="listing-card"><div class="listing-thumb"><img src="app/Img/03-plaza-juegos.jpg" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(r.category) + '</span><h3>' + escapeHtml(r.title) + '</h3><div class="listing-meta">' + escapeHtml(r.place) + '</div><p>' + escapeHtml(r.description) + '</p></div><div class="listing-price">' + escapeHtml(r.price) + '</div></article>').join('');
+          $('adsStatus').innerHTML = approved.length ? '<p>' + approved.length + ' promociones aprobadas.</p>' : '<p>Todavía no hay promociones aprobadas para mostrar.</p>';
+          listings.splice(0, listings.length, ...approved);
+          renderHomeListings(); renderExploreList();
+        } catch (error) {
+          $('adsStatus').innerHTML = '<p>No se pudieron cargar las promociones. Revisá la conexión y la configuración de Supabase.</p>';
+          $('adsList').innerHTML = '';
+          showToast(error.message || 'No se pudo conectar con el servidor.');
+        }
+      }
+      document.addEventListener('click', event => {
+        const chip = event.target.closest('.category-chip');
+        if (chip) { document.querySelectorAll('.category-chip').forEach(btn => btn.classList.toggle('active', btn === chip)); renderHomeListings(); }
+      });
+      $('searchInput')?.addEventListener('input', renderExploreList);
+      $('authForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        const email = $('authEmail').value.trim(); const password = $('authPassword').value;
+        if (password.length < 8) return showToast('La contraseña debe tener al menos 8 caracteres.');
+        $('loginButton').disabled = true;
+        try {
+          const data = await authRequest('token?grant_type=password', {email,password});
+          if (!data?.access_token) throw new Error('No se recibió una sesión. Si te registraste recién, confirmá el correo y volvé a ingresar.');
+          setSession(data); showToast('Sesión iniciada correctamente.');
+        } catch (error) { showToast(error.message || 'No se pudo iniciar sesión.'); }
+        finally { $('loginButton').disabled = false; }
+      });
+      $('registerButton')?.addEventListener('click', async () => {
+        const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
+        if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
+        $('registerButton').disabled = true;
+        try {
+          const data = await authRequest('signup', {email,password,data:{display_name:name}});
+          if (data?.access_token) setSession(data);
+          showToast(data?.access_token ? 'Cuenta creada y sesión iniciada.' : 'Cuenta creada. Revisá tu correo para confirmarla antes de ingresar.');
+        } catch (error) { showToast(error.message || 'No se pudo crear la cuenta.'); }
+        finally { $('registerButton').disabled = false; }
+      });
+      $('resetPasswordButton')?.addEventListener('click', async () => {
+        const email = $('authEmail').value.trim();
+        if (!email) return showToast('Escribí tu correo y volvé a tocar recuperar contraseña.');
+        try {
+          const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/recover', {method:'POST',headers:apiHeaders(),body:JSON.stringify({email})});
+          if (!response.ok) throw new Error('No se pudo enviar el correo de recuperación.');
+          showToast('Si el correo está registrado, recibirás instrucciones para recuperar el acceso.');
+        } catch (error) { showToast(error.message || 'No se pudo enviar la recuperación.'); }
+      });
+      $('logoutButton')?.addEventListener('click', async () => {
+        try { if (session?.access_token) await fetch(PIRARED_SUPABASE_URL + '/auth/v1/logout', {method:'POST',headers:apiHeaders(session.access_token)}); } catch (_) {}
+        setSession(null); showToast('Sesión cerrada en este dispositivo.');
+      });
+      $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
+      $('businessForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
+        const body = {owner_id:session.user.id,name:$('businessName').value.trim(),category:$('businessCategory').value.trim(),description:$('businessDescription').value.trim(),public_contact:$('businessContact').value.trim(),status:'pending'};
+        try {
+          await api('businesses', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+          $('businessForm').reset(); showToast('Solicitud enviada. El comercio queda pendiente de revisión.');
+        } catch (error) { showToast('No se pudo enviar: ' + error.message + '. Verificá que la migración de Supabase esté aplicada.'); }
+      });
+      $('adForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
+        const body = {business_id:$('adBusiness').value.trim(),owner_id:session.user.id,title:$('adTitle').value.trim(),category:$('adCategory').value.trim(),description:$('adDescription').value.trim(),offer_text:$('adOffer').value.trim(),status:'pending',ad_type:'basic'};
+        try {
+          await api('ads', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+          $('adForm').reset(); showToast('Promoción enviada para revisión. No se publicará hasta ser aprobada.');
+        } catch (error) { showToast('No se pudo enviar: ' + error.message + '. Necesitás un comercio aprobado y la base configurada.'); }
+      });
+      renderSession(); renderHomeListings(); renderExploreList();
+      // Check the backend without blocking the initial screen.
+      loadAds();
     </script>
   </body>
 </html>

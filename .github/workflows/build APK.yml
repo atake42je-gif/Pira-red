@@ -128,7 +128,7 @@ jobs:
         run: |
           set -euo pipefail
           images=(
-            "app/src/main/assets/www/app/Img/portada-pirared.png"
+            "app/src/main/assets/www/app/Img/Inicio login pira red.png"
             "app/src/main/assets/www/app/Img/02-monumento-plaza.jpg"
             "app/src/main/assets/www/app/Img/03-plaza-juegos.jpg"
             "app/src/main/assets/www/app/Img/04-informacion-pirared.jpg"

@@ -126,3 +126,56 @@ Eso genera una keystore local y muestra las variables necesarias para compilar l
 ## Resumen
 
 La app queda lista para funcionar como WebView local; la parte que falta para uso real es completar la configuración de Supabase y la firma digital local. El repositorio ya está preparado para eso y esta documentación deja claro el flujo correcto para compilar y publicar la app.
+
+
+## Pendientes de desarrollo y verificación (lista maestra)
+
+**Regla del proyecto:** todo lo que falte, falle o todavía no se haya probado debe registrarse aquí. No marcar una función como terminada hasta probarla en la APK y, cuando corresponda, contra Supabase.
+
+### Prioridad 1 — compilación y APK
+- [ ] Revisar el error del paso **Compilar APK** del workflow de GitHub Actions para el commit `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`.
+- [ ] Corregir el error de compilación y ejecutar nuevamente el workflow.
+- [ ] Confirmar que la APK se genere como artefacto descargable y que incluya la última versión de `index.html` e imágenes.
+- [ ] Verificar instalación y apertura en Android, navegación hacia atrás, orientación y diferentes tamaños de pantalla.
+- [ ] Confirmar una firma de lanzamiento estable antes de distribuir actualizaciones; no guardar keystore ni contraseñas en el repositorio.
+
+### Prioridad 2 — Supabase y seguridad
+- [ ] Confirmar que la URL y la clave pública de Supabase configuradas en la app correspondan al proyecto correcto.
+- [ ] Localizar y verificar la migración SQL real; confirmar que las tablas y columnas usadas por la interfaz coincidan con el esquema desplegado.
+- [ ] Ejecutar las migraciones pendientes en Supabase y revisar que RLS esté habilitado en todas las tablas con datos privados.
+- [ ] Probar registro, inicio de sesión, cierre de sesión, sesión persistente y recuperación de contraseña.
+- [ ] Manejar errores de red, falta de conexión, respuestas no válidas y límites de solicitudes sin mostrar datos privados.
+- [ ] No incluir service-role keys, credenciales administrativas ni contraseñas en el cliente o en GitHub.
+- [ ] Definir reglas seguras para perfiles, roles, permisos de comercios, anuncios y moderadores; probar accesos no autorizados.
+
+### Prioridad 3 — pantallas y navegación
+- [ ] Probar todos los botones y enlaces de cada pantalla; eliminar enlaces sin acción y destinos incorrectos.
+- [ ] Verificar que la pantalla inicial use la imagen original del tren con PiraRed, a tamaño grande y legible.
+- [ ] Verificar el orden de las imágenes originales: tren/inicio; estatua; placita/parque; monumento de los 50 años; cartel “YO ❤️ PIRANÉ”; imagen de información al final.
+- [ ] Revisar rutas y nombres de archivos de imagen, carga de imágenes, calidad, recorte y legibilidad en móviles.
+- [ ] Revisar que no aparezca fondo negro involuntario y que las fotos originales de Pirané se vean correctamente.
+- [ ] Comprobar accesibilidad básica: contraste, tamaño de letra, etiquetas de campos y mensajes de error claros.
+- [ ] Probar la navegación directa a Información de PiraRed y el regreso a Inicio.
+
+### Prioridad 4 — cuentas y comunidad
+- [ ] Implementar y probar exploración como invitado con permisos limitados.
+- [ ] Definir qué acciones requieren cuenta completa y un método de verificación gratuito y seguro.
+- [ ] Implementar publicaciones comunitarias de productos, changas y servicios, con formularios, validación y estados.
+- [ ] Implementar edición y eliminación autorizada de publicaciones propias.
+- [ ] Implementar mensajería privada entre usuarios sin revelar números de teléfono.
+- [ ] Añadir bloqueo de usuarios, denuncias y controles contra spam/abuso.
+- [ ] Definir flujo de aprobación de comercios y promociones; comprobar que solo se publiquen elementos aprobados.
+- [ ] Crear un panel administrativo seguro para revisar cuentas, comercios, anuncios y denuncias.
+
+### Prioridad 5 — privacidad y lanzamiento
+- [ ] Redactar y publicar una política de privacidad clara y términos de uso adaptados al funcionamiento real.
+- [ ] Explicar qué datos se recopilan, por qué, cuánto tiempo se conservan y cómo solicitar su eliminación.
+- [ ] Probar la app con cuentas de prueba: invitado, usuario común, comercio pendiente, comercio aprobado y administrador.
+- [ ] Hacer pruebas funcionales de cada pantalla y flujo en un dispositivo Android real.
+- [ ] Revisar registros y mensajes de error para evitar exponer tokens, claves o datos personales.
+- [ ] Preparar instrucciones de instalación/actualización y documentar cómo recuperar la firma de lanzamiento de forma segura.
+
+### Estado de la última compilación revisada
+- Commit de interfaz: `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`.
+- Workflow: [Generar APK de PiraRed](https://github.com/atake42je-gif/Pira-red/actions/runs/40175677335).
+- Resultado comprobado: **falló el paso “Compilar APK”**. La APK de ese commit no debe considerarse validada hasta corregir el error y lograr una compilación exitosa.

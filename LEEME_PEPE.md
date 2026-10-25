@@ -107,3 +107,10 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 - Se reordenó la galería de `index.html`: primero las seis imágenes de la secuencia principal, luego los recursos complementarios, manteniendo las 14 imágenes.
 - Se dejó explícito que `02-monumento-plaza.jpg` no está confirmado como la estatua; no se inventa esa identificación.
 - Se comprobó que GitHub Actions compiló y verificó la APK para el commit `31907a51ad5c952e23edcda57cb6fed063e834ef`. Sigue pendiente resolver la instalación sobre la versión previa: hace falta confirmar si la APK es de prueba y mantener la misma firma de lanzamiento.
+
+
+### Ajustes visuales adicionales — 25 de octubre de 2026
+- [x] La navegación inferior contempla seis secciones en la cuadrícula, evitando que el diseño reserve solo cinco columnas.
+- [x] La galería usa un ajuste de imagen que prioriza mostrar las fotos completas y no cortar detalles importantes; se conserva el estilo claro de tarjetas con efecto vidrio.
+- [x] Se dejó documentado que la prueba visual final debe realizarse sobre la APK instalada y que no se debe sumar texto o lema sobre la portada original.
+- [ ] Verificar la galería y el menú en el teléfono, porque una modificación de código y una compilación correcta no reemplazan la prueba real.

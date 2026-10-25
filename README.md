@@ -66,42 +66,46 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Revisar mensajes y registros para evitar exponer tokens, claves o datos personales.
 - [ ] Documentar instalación, actualización y recuperación segura de la firma.
 
-## Galería de imágenes originales — orden solicitado
+## Galería de imágenes — orden obligatorio para la app
 
-> Son archivos originales del repositorio, no capturas de la app funcionando. La estatua todavía debe identificarse visualmente. Los enlaces muestran los recursos disponibles, pero no prueban que todos estén conectados a una pantalla de la app.
+**Respetar este orden al mostrar las imágenes.** La portada es una imagen completa y separada; las demás fotos deben aparecer en sus secciones correspondientes. No inventar fotos ni cambiar una por otra parecida.
 
-### 1. Inicio — tren con PiraRed
-![Portada original de inicio PiraRed con el tren](app/src/main/assets/www/app/Img/Inicio%20login%20pira%20red.png)
+1. **Inicio / bienvenida:** imagen original del tren con PiraRed. Debe ocupar la pantalla de inicio completa, sin lema, texto, botones visibles ni capas adicionales por encima de la imagen.
+   ![Portada original de inicio PiraRed con el tren](app/src/main/assets/www/app/Img/Inicio%20login%20pira%20red.png)
 
-### 2. Estatua
-**Pendiente:** identificar la foto original correcta entre los archivos restantes antes de mostrarla aquí.
+2. **Estatua:** usar únicamente la foto original de la estatua enviada por el usuario. Si no está identificada con certeza entre los archivos del repositorio, dejar pendiente y pedir confirmación; no asignar otra imagen por suposición.
 
-### 3. Placita / parque
-![Placita y juegos de Pirané](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
+3. **Placita / parque:** foto original de la placita con bancos y juegos.
+   ![Placita y juegos de Pirané](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
 
-### 4. Monumento de los 50 años
-![Monumento de los 50 años de Pirané](app/src/main/assets/www/app/Img/08-monumento-50-anios.jpg)
+4. **Monumento de los 50 años:** usar la foto original correspondiente a ese monumento.
+   ![Monumento de los 50 años de Pirané](app/src/main/assets/www/app/Img/08-monumento-50-anios.jpg)
 
-### 5. Cartel “YO ❤️ PIRANÉ”
-![Cartel Yo amo Pirané](app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg)
+5. **Cartel “YO ❤️ PIRANÉ”:** foto nocturna original del cartel de Pirané, sin la interfaz de TikTok/Instagram ni barras del teléfono. La versión limpia debe conservar la calidad de la foto y no alterar el cartel.
+   ![Cartel Yo amo Pirané](app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg)
 
-### 6. Información de la app — última imagen
-![Información de PiraRed](app/src/main/assets/www/app/Img/04-informacion-pirared.jpg)
+6. **Información de la app:** imagen original de información de PiraRed. Siempre va última en esta secuencia.
+   ![Información de PiraRed](app/src/main/assets/www/app/Img/04-informacion-pirared.jpg)
 
-## Otras imágenes originales por clasificar
+### Otras fotos reales de Pirané para secciones complementarias
 
-Se conservan porque son distintas y todavía no se ha confirmado si corresponden a otra sección o a una de las fotos que faltan por identificar:
+Estas imágenes son recursos complementarios y **no cambian el orden obligatorio de las seis imágenes anteriores**:
 
-- [Vista aérea de Pirané](app/src/main/assets/www/app/Img/07-vista-aerea-pirane.jpg)
-- [Imagen de detalles de la app con tren](app/src/main/assets/www/app/Img/11-detalles%20de%20la%20app%20-tren.jpg)
-- [Imagen original 1 sin nombre descriptivo](app/src/main/assets/www/app/Img/images%20(3).jpeg)
-- [Imagen original 2 sin nombre descriptivo](app/src/main/assets/www/app/Img/images%20(4).jpeg)
-- [Imagen original 3 sin nombre descriptivo](app/src/main/assets/www/app/Img/images%20(9).jpeg)
-- [Logo original de PiraRed](app/src/main/assets/www/app/Img/logo-pirared-original.png)
+- **Monumento/torre azul de la plaza:** foto real enviada por el usuario; usar en lugares destacados de Pirané.
+- **Plaza con mástil y banderas:** foto real enviada por el usuario; usar como otra vista de la plaza.
+- **Paseo junto al agua al atardecer:** foto real enviada por el usuario; asignar al lugar correcto solo cuando se confirme su ubicación.
+- **Cartel de ingreso “PIRANÉ” de noche:** foto real enviada como captura de una publicación. Para integrarla, recortar la interfaz del teléfono y conservar solo la fotografía, sin reconstruir ni inventar partes; confirmar que la versión final esté guardada en la carpeta de imágenes.
+- **Camping La Esperanza:** usar únicamente una fotografía real del camping. No reemplazarla por un paisaje genérico ni presentar una imagen generada como si fuera el camping.
+- **Pareja bailando folclore y capullo de algodón:** pueden utilizarse como elementos culturales/ilustrativos en el afiche de Pirané, pero no etiquetarlos como fotografías de un lugar concreto si no son fotos reales de ese sitio.
 
-**Regla de seguimiento:** no marcar una función como terminada hasta que exista un cambio concreto y se haya probado; cuando corresponda, verificar también contra Supabase y en la APK instalada.
+### Recursos pendientes de confirmar
 
+- Identificar con certeza la foto original de la **estatua**.
+- Confirmar la ubicación exacta de la foto del paseo al atardecer y la foto del camping.
+- Verificar que la foto nocturna del cartel de ingreso ya exista en la carpeta del proyecto en versión limpia y de alta calidad.
+- Confirmar que cada archivo de esta galería existe en la ruta indicada y se ve correctamente en el teléfono.
 
+**Importante:** esta galería documenta el orden que debe respetar el diseño; no demuestra por sí sola que todas las fotos ya estén conectadas a pantallas de la app.
 ## Referencia visual acordada: vidrio claro (glassmorphism)
 
 La imagen de pantallas compartida por el usuario es **una referencia de diseño**, no una captura de la app actual ni una orden de copiar cada pantalla literalmente. La app debe conservar las funciones y las fotos reales de Pirané que el usuario adjunta y tiene en el repositorio.

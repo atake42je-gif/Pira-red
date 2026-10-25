@@ -88,7 +88,11 @@ jobs:
           test -s supabase/README.md
           test -s supabase/migrations/202610230001_pirared_commerce_ads.sql
           grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
-          grep -q 'create table if not exists public.ads' supabase/migrations/202610230001_pirared_commerce_ads.sql
+          test -s supabase/migrations/202610250001_pirared_community_posts.sql
+          test -s supabase/migrations/202610250002_pirared_rls_performance_tuning.sql
+          test -s supabase/migrations/202610250003_pirared_private_message_permissions.sql
+          test -s supabase/migrations/202610250004_pirared_reports_and_blocks.sql
+          test -s supabase/migrations/202610250005_pirared_reports_blocks_indexes.sql
           grep -q 'PIRARED_SUPABASE_URL' app/src/main/assets/www/index.html
           grep -q 'PIRARED_SUPABASE_KEY' app/src/main/assets/www/index.html
           echo "Archivos de publicidad, esquema y configuración cliente Supabase presentes."

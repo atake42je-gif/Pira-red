@@ -58,7 +58,8 @@ jobs:
           # Android 8+ usa el icono adaptativo, no los PNG mipmap anteriores.
           # Crear también su primer plano con el logo original para que se vea en el launcher.
           mkdir -p app/src/main/res/drawable-nodpi
-          convert "$logo" -auto-orient -resize "320x320" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
+          # Dejar margen de seguridad para que el launcher no recorte el borde ni las letras del logo.
+          convert "$logo" -auto-orient -resize "260x260" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
 
       - name: Preparar firma de version estable (si esta configurada)
         shell: bash

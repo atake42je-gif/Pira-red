@@ -32,10 +32,30 @@
       .screen img {
         height: auto;
       }
+
+      /* Mejora suave para las fotos interiores sin alterar la portada de inicio.
+         Conserva las fotos originales: solo ajusta nitidez percibida, contraste
+         y color, y evita que las tarjetas recorten de forma irregular. */
+      .screen:not(#home) img:not(.welcome-hero > img) {
+        filter: contrast(1.04) saturate(1.07) brightness(1.015);
+      }
+      .photo-card img,
+      .about-image {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 12px;
+      }
       .photo-card img,
       .listing-thumb img,
       .welcome-hero > img {
         max-width: none;
+      }
+      /* La imagen de inicio queda expresamente intacta. */
+      .welcome-hero > img {
+        filter: none;
       }
       @media (max-width: 360px) {
         .listing-card {

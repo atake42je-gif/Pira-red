@@ -1,5 +1,7 @@
 # PiraRed
 
+> Registro de avances terminados: [Léeme Pepe — LEEME_PEPE.md](LEEME_PEPE.md). Esta lista complementa el seguimiento de tareas pendientes de este README.
+
 PiraRed es una app Android con una interfaz web embebida en `app/src/main/assets/www/index.html` para la comunidad de Pirané.
 
 ## Estado del proyecto

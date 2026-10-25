@@ -127,13 +127,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for image in \
-            app/src/main/assets/www/app/Img/PiraRed_ Folklore y atardecer en Pirané.png \
-            app/src/main/assets/www/app/Img/02-monumento-plaza.jpg \
-            app/src/main/assets/www/app/Img/03-plaza-juegos.jpg \
-            app/src/main/assets/www/app/Img/04-informacion-pirared.jpg \
-            app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg \
-            app/src/main/assets/www/app/Img/06-logo-pirared.png; do
+          images=(
+            "app/src/main/assets/www/app/Img/PiraRed_ Folklore y atardecer en Pirané.png"
+            "app/src/main/assets/www/app/Img/02-monumento-plaza.jpg"
+            "app/src/main/assets/www/app/Img/03-plaza-juegos.jpg"
+            "app/src/main/assets/www/app/Img/04-informacion-pirared.jpg"
+            "app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg"
+            "app/src/main/assets/www/app/Img/06-logo-pirared.png"
+          )
+          for image in "${images[@]}"; do
             test -s "$image" || { echo "Falta la imagen original: $image"; exit 1; }
           done
           APK="$PIRARED_APK_PATH"

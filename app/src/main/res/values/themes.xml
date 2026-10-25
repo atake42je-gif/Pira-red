@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.PiraRed" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Tema del sistema Android: no requiere una dependencia Material Components. -->
+    <style name="Theme.PiraRed" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#1E8FFF</item>
     </style>
 </resources>

@@ -150,7 +150,8 @@ jobs:
           from pathlib import Path
           import re
           html = Path("app/src/main/assets/www/index.html").read_text(encoding="utf-8")
-          refs = sorted(set(re.findall(r'''(?:src|href)=["'](app/Img/[^"'#?]+)''', html)))
+          from urllib.parse import unquote
+          refs = sorted(set(unquote(ref) for ref in re.findall(r'''(?:src|href)=["'](app/Img/[^"'#?]+)''', html)))
           missing = [ref for ref in refs if not (Path("app/src/main/assets/www") / ref).is_file()]
           if missing:
               raise SystemExit("Referencias de imagen inexistentes en index.html: " + ", ".join(missing))

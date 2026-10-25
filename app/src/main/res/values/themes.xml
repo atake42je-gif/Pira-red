@@ -8,5 +8,9 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:fontFamily">sans</item>
         <item name="android:colorAccent">#1E8FFF</item>
+        <!-- Android 12+: evitar que el icono del launcher aparezca gigante al abrir.
+             La portada correcta la muestra la WebView apenas termina de cargar. -->
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">#EEF9FF</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/splash_transparent</item>
     </style>
 </resources>

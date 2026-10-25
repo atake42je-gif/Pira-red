@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -161,3 +161,21 @@ jobs:
           path: dist/PiraRed.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publicar actualización oficial (solo con firma estable)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${PIRARED_BUILD_TYPE:-debug}" != "release" ]; then
+            echo "::warning::APK compilada como prueba; no se publica para actualización porque falta configurar una firma estable."
+            exit 0
+          fi
+          TAG="build-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" dist/PiraRed.apk \
+            --title "PiraRed ${TAG}" \
+            --notes "Actualización oficial de PiraRed. Instalá sobre la versión anterior; debe conservarse la misma firma." \
+            --latest
+

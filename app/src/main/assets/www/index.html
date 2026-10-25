@@ -211,3 +211,76 @@ renderListings();loadApprovedAds();
 @media(min-width:600px){
   #home .welcome-logo{display:none!important}
 }
+
+
+/* Ajuste definitivo de portada móvil: respetar la imagen original del tren
+   y evitar que el logo circular del icono se duplique encima de ella. */
+body:has(#home.active) header.masthead{display:none!important}
+body:has(#home.active) #home .welcome-logo,
+body:has(#home.active) #home .welcome-brand{display:none!important}
+body:has(#home.active) #home .welcome-hero{
+  min-height:calc(100dvh - 76px - env(safe-area-inset-bottom));
+  height:auto;
+  margin:-15px -15px 18px;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+body:has(#home.active) #home .welcome-hero>img{
+  object-fit:cover;
+  object-position:center center;
+}
+body:has(#home.active) #home .welcome-content{
+  top:auto;
+  bottom:0;
+  left:0;
+  right:0;
+  width:100%;
+  max-width:none;
+  padding:clamp(18px,4vh,34px) clamp(16px,4vw,28px) calc(18px + env(safe-area-inset-bottom));
+  text-align:center;
+  background:linear-gradient(180deg,rgba(2,20,43,.02) 0%,rgba(2,20,43,.56) 24%,rgba(2,20,43,.94) 100%);
+}
+body:has(#home.active) #home .welcome-content .eyebrow{
+  color:#55e4ff;
+  font-size:clamp(13px,3.8vw,17px);
+  letter-spacing:.08em;
+  line-height:1.25;
+}
+body:has(#home.active) #home .welcome-content h1{
+  color:#fff;
+  font-size:clamp(24px,6.4vw,35px);
+  line-height:1.04;
+  margin:8px 0 14px;
+}
+body:has(#home.active) #home .welcome-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+body:has(#home.active) #home .welcome-actions button{
+  min-width:0;
+  min-height:54px;
+  border-radius:15px;
+  padding:12px 9px;
+  font-size:clamp(12px,3.4vw,15px);
+  white-space:normal;
+}
+body:has(#home.active) #home .welcome-actions button:last-child{
+  grid-column:1/-1;
+  background:linear-gradient(110deg,#00a99a,#00c9bd);
+  color:#fff;
+  border:1px solid #61fff0;
+  text-shadow:none;
+}
+body:has(#home.active) #home .instagram-mark{
+  margin-top:12px;
+  color:#fff;
+  font-size:14px;
+}
+@media(max-height:700px){
+  body:has(#home.active) #home .welcome-content{padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  body:has(#home.active) #home .welcome-content h1{font-size:clamp(22px,5.8vw,30px);margin:5px 0 9px}
+  body:has(#home.active) #home .welcome-actions button{min-height:46px;padding:8px}
+}

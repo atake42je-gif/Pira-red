@@ -921,14 +921,14 @@
         }
         const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
         const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
-        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div></div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
+        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button>' : '') + '</div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
       }
       function renderExploreList() {
         const container = $('exploreList'); if (!container) return;
         const query = ($('searchInput')?.value || '').trim().toLowerCase();
         const filtered = listings.filter(item => !query || [item.title,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
         $('countLabel').textContent = filtered.length + ' publicaciones';
-        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small></div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
+        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button>' : '') + '</div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
       }
       async function loadCommunityPosts() {
         try {

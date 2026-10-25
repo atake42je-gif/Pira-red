@@ -101,3 +101,9 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 - La portada del tren enviada nuevamente es la imagen final elegida: mostrarla grande/a pantalla completa, exactamente como es, sin superponer ningún elemento visual.
 - Inicio y acceso de cuenta deben estar separados. Cualquier zona táctil sobre la portada debe ser completamente invisible.
 - No usar fotos sustitutas ni generar versiones parecidas de las imágenes originales. Este acuerdo queda como referencia para futuras modificaciones.
+
+
+### Registro de avance — 25 de octubre de 2026
+- Se reordenó la galería de `index.html`: primero las seis imágenes de la secuencia principal, luego los recursos complementarios, manteniendo las 14 imágenes.
+- Se dejó explícito que `02-monumento-plaza.jpg` no está confirmado como la estatua; no se inventa esa identificación.
+- Se comprobó que GitHub Actions compiló y verificó la APK para el commit `31907a51ad5c952e23edcda57cb6fed063e834ef`. Sigue pendiente resolver la instalación sobre la versión previa: hace falta confirmar si la APK es de prueba y mantener la misma firma de lanzamiento.

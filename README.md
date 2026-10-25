@@ -1,39 +1,128 @@
-# PiraRed — proyecto inicial para continuar desde Android
+# PiraRed
 
-**Marca:** PiraRed  
-**Lema de marca definido:** “Pirané capital provincial del folklore”  
-**División de movilidad:** PiraRed Móvil
+PiraRed es una app Android con una interfaz web embebida en `app/src/main/assets/www/index.html` para la comunidad de Pirané.
 
-## Qué incluye
-- Interfaz adaptable a celulares.
-- Pantalla de inicio con espacio preparado para la foto local del tren de Pirané.
-- Secciones Compra/Venta, Trabajos y Changas, Comercios y Ofertas, PiraRed Móvil, Servicios y Turnos.
-- Perfil local y creación de publicaciones de demostración usando `localStorage`.
-- Estilo de tarjetas y botones translúcidos.
-- Archivos HTML, CSS y JavaScript sin necesidad de instalar herramientas para revisar el prototipo.
+## Estado del proyecto
 
-## Importante
-Este ZIP es un **prototipo inicial**, no una app de producción. Las publicaciones y el perfil se guardan únicamente en el navegador del dispositivo; no están sincronizados entre usuarios. No están conectados Supabase, Mercado Pago, verificación de identidad, mapas/GPS en tiempo real, notificaciones ni un panel de administrador seguro. Esas funciones necesitan desarrollo e integración antes de ofrecer servicios reales.
+La app ya está preparada como WebView local y se ejecuta desde `file:///android_asset/www/index.html`. La capa Android tiene la base mínima necesaria para compilar y la interfaz web queda embebida sin depender de un backend externo para arrancar.
 
-Los viajes comerciales de pasajeros —especialmente en moto— deben habilitarse solo tras verificar las normas, permisos y seguros aplicables en cada localidad. La documentación de la moto no se configuró como campo obligatorio del registro interno, pero siguen vigentes las obligaciones legales aplicables para circular.
+## Configuración necesaria de Supabase
 
-## Cómo probar desde Android
-1. Descomprimí el ZIP.
-2. Abrí `index.html` en un navegador o subí los archivos a un repositorio de GitHub.
-3. Para GitHub Pages, subí `index.html`, `styles.css`, `app.js` y la carpeta `assets` al directorio principal y activá Pages en la configuración del repositorio.
+La app usa dos variables globales dentro del archivo HTML principal:
 
-## Fotos locales
-Las imágenes reales que el usuario elija deben guardarse dentro de `assets/` con estos nombres:
-- `tren-pirane.jpg` — fondo de inicio, foto real del tren/rieles de Pirané.
-- `festival.jpg` — imagen local del festival, sin bailarines ni público si se mantiene esa preferencia.
-- `camping-la-esperanza.jpg` — foto local del camping La Esperanza.
+- `app/src/main/assets/www/index.html`
 
-Por ahora se incluyen archivos de texto como guía porque no se han añadido las fotos originales del usuario. Si los nombres de archivo no existen, el diseño muestra un fondo de color alternativo.
+Debés definirlas con tus valores reales del proyecto Supabase:
 
-## Siguiente etapa recomendada
-1. Añadir las fotos originales/locales.
-2. Conectar Supabase (tablas, autenticación y reglas de acceso).
-3. Implementar roles reales de usuario, conductor y administrador.
-4. Integrar proveedor de identidad y pagos.
-5. Integrar mapas, ubicación y asignación de pedidos.
-6. Pruebas de seguridad, accesibilidad y cumplimiento local antes del lanzamiento.
+```javascript
+const PIRARED_SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+const PIRARED_SUPABASE_KEY = 'TU_ANON_PUBLIC_KEY';
+```
+
+Importante:
+- Usá la URL real del proyecto.
+- Usá la anon/public key, no la service role key.
+- Nunca subas claves privadas ni secretas al repositorio.
+- Si aún no tenés el proyecto de Supabase configurado, la app queda en estado seguro con placeholders y sin conexión real.
+
+## Base de datos y seguridad
+
+La migración SQL principal está en:
+
+- `supabase/migrations/202610230001_pirared_commerce_ads.sql`
+
+Eso define perfiles, comercios, anuncios y políticas RLS para la aplicación.
+
+Antes de usar la app con datos reales:
+
+1. Crear el proyecto en Supabase.
+2. Ejecutar la migración en el SQL Editor.
+3. Verificar que las políticas RLS estén activas.
+4. Registrar una cuenta real y luego asignar el primer administrador manualmente desde SQL Editor.
+
+Ejemplo:
+
+```sql
+update public.profiles
+set role = 'admin'
+where id = 'UUID-DE-TU-CUENTA';
+```
+
+## Funcionalidades activas
+
+- Registro e inicio de sesión con Supabase Auth.
+- Recuperación de contraseña.
+- Perfiles privados con RLS.
+- Alta de comercios en estado pendiente.
+- Promociones para comercios aprobados.
+- Listado público limitado a contenido aprobado.
+- Moderación y validación por base de datos.
+
+## Funcionalidades pendientes para lanzamiento completo
+
+- Publicaciones comunitarias de productos, changas y servicios.
+- Mensajería privada entre vecinos.
+- Panel administrativo dentro de la app.
+- Denuncias, bloqueo y moderación avanzada.
+- Política de privacidad y términos legales refinados.
+- Pruebas funcionales en dispositivo real.
+
+## APK y firma
+
+La app ya está preparada para compilar en Android con una firma local.
+
+Se usan estas variables de entorno:
+
+```bash
+export ANDROID_KEYSTORE_PATH="/ruta/completa/a/pirared-release.keystore"
+export ANDROID_KEYSTORE_PASSWORD="PiraRed2026!"
+export ANDROID_KEY_ALIAS="pirared"
+export ANDROID_KEY_PASSWORD="PiraRed2026!"
+```
+
+Luego:
+
+```bash
+./gradlew assembleRelease
+```
+
+La APK firmada queda en:
+
+```bash
+app/build/outputs/apk/release/app-release.apk
+```
+
+La keystore no debe subirse a GitHub ni guardarse dentro del repositorio.
+
+## Generación local de keystore
+
+El proyecto incluye un script para preparar la firma localmente:
+
+```bash
+chmod +x scripts/*.sh
+./scripts/build-release.sh
+```
+
+Eso genera una keystore local y muestra las variables necesarias para compilar la release.
+
+## Estructura relevante
+
+- `app/src/main/AndroidManifest.xml` — manifest principal.
+- `app/src/main/java/ar/pirared/app/MainActivity.java` — WebView principal.
+- `app/src/main/assets/www/index.html` — interfaz embebida.
+- `supabase/migrations/202610230001_pirared_commerce_ads.sql` — SQL principal del backend de comercios.
+- `scripts/build-release.sh` — generación de la firma y build final.
+
+## Antes del lanzamiento público
+
+1. Completar las variables reales de Supabase.
+2. Ejecutar la migración SQL en el proyecto correcto.
+3. Probar registro, inicio de sesión y recuperación de contraseña.
+4. Validar el alta y aprobación de comercios y anuncios.
+5. Verificar RLS y permisos de acceso.
+6. Generar la APK firmada con la clave estable.
+7. Probar la actualización en un dispositivo real y en uno con la versión previa.
+
+## Resumen
+
+La app queda lista para funcionar como WebView local; la parte que falta para uso real es completar la configuración de Supabase y la firma digital local. El repositorio ya está preparado para eso y esta documentación deja claro el flujo correcto para compilar y publicar la app.

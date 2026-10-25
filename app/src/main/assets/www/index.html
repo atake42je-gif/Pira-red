@@ -761,6 +761,19 @@
               <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
               <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
             </div>
+            <div class="panel" id="messagesPanel" hidden>
+              <h3>Mensajes privados</h3>
+              <p>Los mensajes solo los pueden leer quien los envía y quien los recibe.</p>
+              <form id="messageForm">
+                <input id="messageRecipient" type="hidden" />
+                <label for="messageBody">Mensaje</label>
+                <textarea id="messageBody" required minlength="1" maxlength="2000" rows="3" placeholder="Escribí tu mensaje privado"></textarea>
+                <button class="primary" type="submit">Enviar mensaje privado</button>
+              </form>
+              <div id="messageStatus" class="form-note"></div>
+              <div id="messageInbox"><p>Tus mensajes aparecerán acá.</p></div>
+              <button class="secondary full-button" type="button" id="refreshMessages">Actualizar mensajes</button>
+            </div>
             <div class="panel" id="adminPanel" hidden>
               <h3>Moderación de PiraRed</h3>
               <p>Solo visible para cuentas con rol administrador.</p>
@@ -898,7 +911,7 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
         document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
         if (screen === 'ads') loadAds();
-        if (screen === 'account') { renderSession(); if (session?.access_token) loadAdminQueue(); }
+        if (screen === 'account') { renderSession(); if (session?.access_token) { loadAdminQueue(); loadMessages(); } else if ($('messagesPanel')) $('messagesPanel').hidden = true; }
       }
       function renderHomeListings() {
         const container = $('homeListings'); if (!container) return;
@@ -919,9 +932,9 @@
       }
       async function loadCommunityPosts() {
         try {
-          const rows = await api('community_posts?select=id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&order=created_at.desc');
+          const rows = await api('community_posts?select=id,owner_id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&order=created_at.desc');
           communityListings.splice(0, communityListings.length, ...(rows || []).map(r => ({
-            id:r.id, category:r.category, title:r.title, description:r.description,
+            id:r.id, ownerId:r.owner_id, category:r.category, title:r.title, description:r.description,
             price:r.price_text || 'Consultar', place:r.location_text || 'Pirané',
             contact:r.public_contact || '', icon:'📌'
           })));
@@ -993,6 +1006,51 @@
         setSession(null); showToast('Sesión cerrada en este dispositivo.');
       });
       $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
+      async function loadMessages() {
+        if (!session?.access_token || !$('messagesPanel')) return;
+        $('messagesPanel').hidden = false;
+        try {
+          const uid = encodeURIComponent(session.user.id);
+          const rows = await api('private_messages?select=id,sender_id,recipient_id,body,read_at,created_at&or=(sender_id.eq.'+uid+',recipient_id.eq.'+uid+')&order=created_at.desc&limit=50');
+          $('messageInbox').innerHTML = rows?.length ? rows.map(m => {
+            const sent = m.sender_id === session.user.id;
+            return '<article class="panel"><small>'+(sent?'Enviado':'Recibido')+' · '+escapeHtml(new Date(m.created_at).toLocaleString('es-AR'))+'</small><p>'+escapeHtml(m.body)+'</p>' + (!sent ? '<button class="secondary" type="button" data-reply-to="'+escapeHtml(m.sender_id)+'">Responder en privado</button>' : '') + '</article>';
+          }).join('') : '<p>Todavía no tenés mensajes privados.</p>';
+        } catch (_) {
+          $('messageInbox').innerHTML = '<p>No se pudieron cargar los mensajes. Iniciá sesión nuevamente si tu sesión venció.</p>';
+        }
+      }
+      $('refreshMessages')?.addEventListener('click', loadMessages);
+      $('messageForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!session?.access_token) return showToast('Iniciá sesión para enviar mensajes privados.');
+        const recipient = $('messageRecipient').value.trim();
+        const body = $('messageBody').value.trim();
+        if (!recipient || recipient === session.user.id) return showToast('Elegí una persona válida para el mensaje.');
+        if (!body) return showToast('Escribí el mensaje antes de enviarlo.');
+        const button = $('messageForm').querySelector('button[type="submit"]');
+        if (button) button.disabled = true;
+        try {
+          await api('private_messages', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sender_id:session.user.id,recipient_id:recipient,body})});
+          $('messageBody').value = '';
+          showToast('Mensaje privado enviado.');
+          await loadMessages();
+        } catch (error) {
+          showToast('No se pudo enviar el mensaje: '+error.message);
+        } finally { if (button) button.disabled = false; }
+      });
+      document.addEventListener('click', event => {
+        const contact = event.target.closest('[data-message-to]');
+        const reply = event.target.closest('[data-reply-to]');
+        const target = contact?.dataset.messageTo || reply?.dataset.replyTo;
+        if (!target) return;
+        if (!session?.access_token) { showToast('Iniciá sesión para usar los mensajes privados.'); go('account'); return; }
+        $('messageRecipient').value = target;
+        $('messageStatus').textContent = 'Destinatario privado seleccionado.';
+        $('messageBody').focus();
+        go('account');
+        $('messagesPanel').hidden = false;
+      });
       async function loadAdminQueue() {
         if (!session?.access_token) return;
         try {

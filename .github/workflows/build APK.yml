@@ -146,7 +146,17 @@ jobs:
           grep -F "package: name='ar.pirared.app'" <<< "$BADGING"
           grep -F "application-label:'PiraRed'" <<< "$BADGING"
           test -s app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-          echo "Verificados paquete Android, nombre PiraRed, icono y seis imagenes originales."
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path("app/src/main/assets/www/index.html").read_text(encoding="utf-8")
+          refs = sorted(set(re.findall(r'''(?:src|href)=["'](app/Img/[^"'#?]+)''', html)))
+          missing = [ref for ref in refs if not (Path("app/src/main/assets/www") / ref).is_file()]
+          if missing:
+              raise SystemExit("Referencias de imagen inexistentes en index.html: " + ", ".join(missing))
+          print(f"Verificadas {len(refs)} referencias locales a imágenes usadas por la interfaz.")
+          PY
+          echo "Verificados paquete Android, nombre PiraRed, icono, imágenes principales y referencias locales."
 
       - name: Preparar APK con nombre final
         shell: bash

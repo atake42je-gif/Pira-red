@@ -1128,10 +1128,44 @@
       const $ = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const apiHeaders = (token) => ({ 'apikey': PIRARED_SUPABASE_KEY, 'Authorization': 'Bearer ' + (token || PIRARED_SUPABASE_KEY), 'Content-Type':'application/json' });
-      async function api(path, options = {}) {
+      let refreshPromise = null;
+      async function refreshSession() {
+        if (!session?.refresh_token) {
+          setSession(null);
+          return false;
+        }
+        if (!refreshPromise) {
+          refreshPromise = (async () => {
+            try {
+              const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+                method: 'POST',
+                headers: apiHeaders(),
+                body: JSON.stringify({refresh_token: session.refresh_token})
+              });
+              const body = await response.text();
+              let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) {}
+              if (!response.ok || !data?.access_token || !data?.refresh_token) {
+                setSession(null);
+                return false;
+              }
+              setSession(data);
+              return true;
+            } catch (_) {
+              return false;
+            } finally {
+              refreshPromise = null;
+            }
+          })();
+        }
+        return refreshPromise;
+      }
+      async function api(path, options = {}, retryAfterRefresh = true) {
         const response = await fetch(PIRARED_SUPABASE_URL + '/rest/v1/' + path, {
           ...options, headers: {...apiHeaders(session?.access_token), ...(options.headers || {})}
         });
+        if (response.status === 401 && retryAfterRefresh && await refreshSession()) {
+          return api(path, options, false);
+        }
         const body = await response.text();
         let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) { data = body; }
         if (!response.ok) throw new Error(data?.message || data?.msg || ('Error del servidor (' + response.status + ')'));

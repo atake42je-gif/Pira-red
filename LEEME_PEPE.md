@@ -93,3 +93,11 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 - La pantalla de Inicio y la pantalla de autenticación son independientes. No se deben mostrar campos de correo o contraseña sobre la portada.
 - La portada incluye visualmente tres accesos: Iniciar sesión, Crear cuenta y Acceso exclusivo para comercios. Se conservan zonas táctiles transparentes; hay que probar sus coordenadas en un teléfono real.
 - El usuario pidió que todo avance, decisión y pendiente quede anotado en este archivo y en README.md.
+
+### Registro de estilo visual — 25 de octubre de 2026
+- El usuario pidió conservar el estilo que ya habíamos elegido, no rediseñarlo desde cero.
+- Estilo general: moderno, simple y distintivo, con identidad de Pirané; fotos originales protagonistas, navegación fácil, fondos claros celestes/azules y detalles/contornos muy sutiles.
+- Evitar el fondo negro dominante. El fondo fotográfico de Pirané debe verse bien y las imágenes conservar buena calidad, sin deformación.
+- La portada del tren enviada nuevamente es la imagen final elegida: mostrarla grande/a pantalla completa, exactamente como es, sin superponer ningún elemento visual.
+- Inicio y acceso de cuenta deben estar separados. Cualquier zona táctil sobre la portada debe ser completamente invisible.
+- No usar fotos sustitutas ni generar versiones parecidas de las imágenes originales. Este acuerdo queda como referencia para futuras modificaciones.

@@ -104,6 +104,33 @@ header.masthead .pill{font-size:11px}
 .ad-actions{display:flex;gap:8px;margin-top:10px}
 .ad-actions button{flex:1;padding:9px 8px;font-size:12px}
 .ad-published{margin-top:10px;border:1px solid #b6e4ce;background:#edfff5;color:#135c3d;border-radius:12px;padding:10px;font-size:12px}
+
+/* Correcciones integrales de la portada móvil: logo completo, botones legibles y foto bien encuadrada */
+html{min-height:100%;scroll-behavior:auto}
+header.masthead{width:100%;overflow:visible;padding:18px 14px 16px;gap:14px}
+.masthead-logo{width:min(78vw,310px);max-width:100%;height:auto;max-height:none;object-fit:contain;border-radius:0;flex:0 0 auto}
+.masthead-actions{max-width:100%;gap:10px}
+.masthead-actions button{min-height:48px;white-space:normal;line-height:1.2}
+.masthead-actions .ghost{background:#e2f0ff;color:#174d80;border:1px solid #b2d2f2;box-shadow:0 3px 10px rgba(20,83,139,.08)}
+.masthead-actions .primary{color:#fff}
+.masthead-actions .secondary{background:#e2f0ff;color:#174d80;border:1px solid #b2d2f2}
+.welcome-hero{min-height:clamp(520px,76dvh,820px);isolation:isolate}
+.welcome-hero>img{object-fit:cover;object-position:center center;image-rendering:auto}
+.welcome-content{padding-left:clamp(14px,4vw,26px);padding-right:clamp(14px,4vw,26px)}
+.welcome-logo{width:clamp(170px,52vw,290px);max-width:82%;max-height:30dvh;height:auto;object-fit:contain;border-radius:0}
+.welcome-actions button{min-height:48px}
+.welcome-actions button:last-child{background:linear-gradient(110deg,#e7f5ff,#b7e8ff);border:1px solid #fff;color:#12456d;text-shadow:none}
+.bottomnav{padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+@media(max-width:420px){
+ header.masthead{padding:14px 12px 14px;gap:12px}
+ .masthead-logo{width:min(76vw,280px)}
+ .masthead-actions{gap:8px}
+ .masthead-actions button{min-width:0;flex:1;padding:12px 10px;font-size:14px}
+ .masthead-actions button:last-child{flex-basis:100%}
+ .welcome-hero{min-height:clamp(500px,72dvh,760px)}
+ .welcome-logo{width:clamp(160px,48vw,250px);max-height:26dvh}
+}
+
 </style></head><body><div class="app"><header class="masthead"><img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed, Pirané FSA"><div class="masthead-actions"><button class="primary" onclick="go(\'account\');showAuth(\'login\')">Iniciar sesión</button><button class="secondary" onclick="go(\'account\');showAuth(\'register\')">Crear cuenta</button><button class="ghost" onclick="go(\'account\');showAuth(\'business\')">Acceso comercios</button></div><div class="pill">📍 Pirané, Formosa</div></header><main>
 <section class="screen active" id="home"><div class="hero welcome-hero"><img src="app/Img/01-inicio-tren.jpg" alt="Tren de Pirané, Formosa"><div class="hero-content welcome-content"><img class="welcome-logo" src="app/Img/06-logo-pirared.png" alt="Logo PiraRed"><div class="welcome-brand">PiraRed</div><div class="eyebrow">AQUÍ PIRANÉ, MI PUEBLO</div><h1>CAPITAL PROVINCIAL<br>DEL FOLKLORE</h1><div class="actions welcome-actions"><button class="primary" onclick="go(\'account\');showAuth(\'login\')">Iniciar sesión</button><button class="secondary" onclick="go(\'account\');showAuth(\'register\')">Crear cuenta</button><button class="ghost" onclick="go(\'account\');showAuth(\'business\')">Acceso exclusivo para comercios</button></div><div class="instagram-mark">◎ @escalantepepe22</div></div></div><div class="section-head"><h2>¿Qué necesitás hoy?</h2><small>Comunidad local</small></div><div class="categories"><button class="category" onclick="filterCategory('Compra / Venta')"><span class="emoji">🛍️</span><span><strong>Compra / Venta</strong><small>Productos de la zona</small></span></button><button class="category" onclick="filterCategory('Changas')"><span class="emoji">🧰</span><span><strong>Changas</strong><small>Oportunidades y trabajos</small></span></button><button class="category" onclick="filterCategory('Servicios')"><span class="emoji">🛠️</span><span><strong>Servicios</strong><small>Personas que te ayudan</small></span></button><button class="category" onclick="go('ads')"><span class="emoji">📣</span><span><strong>Publicidad</strong><small>Promociones de comercios</small></span></button></div><div class="section-head"><h2>De la comunidad</h2><small>Ejemplos de muestra</small></div><div class="listings" id="homeListings"></div><div class="notice">🔒 Las cuentas nuevas deberán aprobarse antes de publicar o enviar mensajes.</div></section>
 <section class="screen" id="explore"><div class="section-head"><h2>Explorar publicaciones</h2><small id="countLabel">Muestra local</small></div><div class="search"><input id="searchInput" placeholder="Buscar producto, trabajo o servicio…" aria-label="Buscar publicaciones" oninput="renderListings()"><button class="secondary" onclick="document.getElementById('searchInput').value='';renderListings()">Limpiar</button></div><div class="actions" style="margin:0 0 14px"><button class="ghost" onclick="filterCategory('Todas')">Todas</button><button class="ghost" onclick="filterCategory('Compra / Venta')">🛍️ Compra/Venta</button><button class="ghost" onclick="filterCategory('Changas')">🧰 Changas</button><button class="ghost" onclick="filterCategory('Servicios')">🛠️ Servicios</button><button class="ghost" onclick="filterCategory('Publicidad')">📣 Publicidad</button></div><div class="listings" id="allListings"></div><div class="notice" id="communityNotice">Las publicaciones de vecinos todavía no están habilitadas. En esta versión solo se muestran promociones de comercios aprobados.</div></section>

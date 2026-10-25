@@ -761,6 +761,12 @@
               <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
               <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
             </div>
+            <div class="panel" id="adminPanel" hidden>
+              <h3>Moderación de PiraRed</h3>
+              <p>Solo visible para cuentas con rol administrador.</p>
+              <div id="adminQueue"><p>Sin solicitudes cargadas.</p></div>
+              <button class="secondary full-button" type="button" id="reloadAdminQueue">Actualizar solicitudes</button>
+            </div>
             <div class="panel" id="loggedPanel" hidden>
               <h3 id="loggedTitle">Tu cuenta</h3>
               <p id="loggedEmail"></p>
@@ -875,6 +881,7 @@
       }
       function renderSession() {
         const logged = !!session?.access_token;
+        if ($('adminPanel')) $('adminPanel').hidden = true;
         $('sessionPanel').hidden = logged;
         $('loggedPanel').hidden = !logged;
         if (logged) {
@@ -891,7 +898,7 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
         document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
         if (screen === 'ads') loadAds();
-        if (screen === 'account') renderSession();
+        if (screen === 'account') { renderSession(); if (session?.access_token) loadAdminQueue(); }
       }
       function renderHomeListings() {
         const container = $('homeListings'); if (!container) return;
@@ -986,6 +993,56 @@
         setSession(null); showToast('Sesión cerrada en este dispositivo.');
       });
       $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
+      async function loadAdminQueue() {
+        if (!session?.access_token) return;
+        try {
+          const profiles = await api('profiles?select=role&id=eq.' + encodeURIComponent(session.user.id));
+          if (profiles?.[0]?.role !== 'admin') {
+            $('adminPanel').hidden = true;
+            return;
+          }
+          $('adminPanel').hidden = false;
+          const [posts,businesses,ads] = await Promise.all([
+            api('community_posts?select=id,title,category,description,created_at&status=eq.pending&order=created_at.asc'),
+            api('businesses?select=id,name,category,description,created_at&status=eq.pending&order=created_at.asc'),
+            api('ads?select=id,title,category,description,business_id,created_at&status=eq.pending&order=created_at.asc')
+          ]);
+          const items = [
+            ...(posts||[]).map(x=>({...x,_table:'community_posts',_label:'Publicación comunitaria',_title:x.title})),
+            ...(businesses||[]).map(x=>({...x,_table:'businesses',_label:'Comercio',_title:x.name})),
+            ...(ads||[]).map(x=>({...x,_table:'ads',_label:'Promoción',_title:x.title}))
+          ];
+          $('adminQueue').innerHTML = items.length ? items.map(x =>
+            '<article class="panel"><small>'+escapeHtml(x._label)+' · '+escapeHtml(x.category||'')+'</small><h3>'+escapeHtml(x._title)+'</h3><p>'+escapeHtml(x.description||'')+'</p><div class="cta-row"><button class="primary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="approved">Aprobar</button><button class="secondary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="rejected">Rechazar</button></div></article>'
+          ).join('') : '<p>No hay solicitudes pendientes.</p>';
+        } catch (error) {
+          $('adminQueue').innerHTML = '<p>No se pudo cargar la cola de moderación. Revisá permisos de administrador y políticas de seguridad.</p>';
+        }
+      }
+      $('reloadAdminQueue')?.addEventListener('click', loadAdminQueue);
+      $('adminQueue')?.addEventListener('click', async event => {
+        const button = event.target.closest('[data-review-table]');
+        if (!button || !session?.access_token) return;
+        const table = button.dataset.reviewTable;
+        const id = button.dataset.reviewId;
+        const status = button.dataset.reviewStatus;
+        if (!['community_posts','businesses','ads'].includes(table) || !['approved','rejected'].includes(status)) return;
+        button.disabled = true;
+        try {
+          await api(table+'?id=eq.'+encodeURIComponent(id), {
+            method:'PATCH',
+            headers:{'Prefer':'return=minimal'},
+            body:JSON.stringify({status,updated_at:new Date().toISOString()})
+          });
+          showToast(status === 'approved' ? 'Solicitud aprobada.' : 'Solicitud rechazada.');
+          await loadAdminQueue();
+          await loadCommunityPosts();
+          await loadAds();
+        } catch (error) {
+          button.disabled = false;
+          showToast('No se pudo moderar: '+error.message);
+        }
+      });
       $('communityForm')?.addEventListener('submit', async event => {
         event.preventDefault();
         if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');

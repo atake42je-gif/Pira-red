@@ -131,6 +131,27 @@
         display: block;
       }
 
+      /* Fondo local de Pirané también en la pantalla de registro e ingreso. */
+      #account {
+        min-height: calc(100dvh - 90px);
+        background-image: linear-gradient(180deg, rgba(226,244,255,0.72), rgba(239,248,255,0.88)), url('app/Img/02-monumento-plaza.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: scroll;
+      }
+      #account .home-body {
+        min-height: calc(100dvh - 90px);
+        padding-top: 20px;
+        padding-bottom: 32px;
+      }
+      #account .panel {
+        background: rgba(255,255,255,0.88);
+        border: 1px solid rgba(255,255,255,0.82);
+        box-shadow: 0 14px 36px rgba(20,78,125,0.16);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
       .welcome-hero {
         position: relative;
         display: block;

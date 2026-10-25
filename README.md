@@ -16,6 +16,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 ### 1. APK y teléfono
 - [ ] Generar/descargar e instalar la APK más reciente en el teléfono.
 - [ ] Probar todas las pantallas, botones, navegación atrás, orientación y distintos tamaños de pantalla.
+- [ ] Confirmar que la portada original no tenga ningún elemento visual superpuesto; las zonas táctiles invisibles no deben dibujar botones ni textos.
 - [ ] Confirmar que la APK instalada contiene la última interfaz y las imágenes correctas.
 - [ ] Confirmar y probar una firma estable de lanzamiento antes de distribuir actualizaciones; no guardar keystore ni contraseñas en GitHub.
 
@@ -35,6 +36,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Revisar carga, calidad, recorte y legibilidad de cada imagen en el teléfono.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
 - [ ] Probar cada botón, enlace y regreso a Inicio; corregir los que no tengan una acción funcional.
+- [ ] Mantener separada la portada de Inicio del formulario de acceso: Iniciar sesión y Crear cuenta deben abrir la pantalla de cuenta; Acceso para comercios debe abrir su sección independiente.
 - [ ] Tomar capturas reales de Inicio, Explorar, Publicar, Comercios, Perfil e Información para documentar el aspecto real de la APK.
 
 ### 4. Funciones comunitarias

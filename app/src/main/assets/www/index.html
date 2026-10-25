@@ -373,13 +373,11 @@
 
       .welcome-hero > img {
         position: absolute;
-        inset: 0;
         display: block;
         width: 100%;
         height: 100%;
-        /* Portada de pantalla completa: se ajusta al alto y ancho del móvil.
-           Las zonas táctiles siguen las mismas proporciones que los botones dibujados. */
-        object-fit: fill;
+        /* Mantiene la proporción original: evita deformar la foto de bienvenida. */
+        object-fit: contain;
         object-position: center;
         filter: none;
       }
@@ -431,7 +429,10 @@
          transparentes coinciden con los botones que ya vienen en la imagen. */
       .welcome-actions {
         position: absolute;
-        inset: 0;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
         display: block;
         margin: 0;
         pointer-events: none;
@@ -1228,13 +1229,36 @@
         splash.classList.add('is-hidden');
         window.setTimeout(() => splash.remove(), 350);
       }
-      /* La portada usa el alto visible del dispositivo; recalcular al girar el teléfono. */
+      /* Conserva la proporción de la portada y alinea las zonas táctiles con
+         los botones que ya vienen dibujados en la imagen original. */
       function fitWelcomeImage() {
         const hero = document.querySelector('.welcome-hero');
-        if (hero) hero.style.height = '100dvh';
+        const img = hero?.querySelector(':scope > img');
+        const actions = hero?.querySelector('.welcome-actions');
+        if (!hero || !img || !actions) return;
+        hero.style.height = '100dvh';
+        const applyFit = () => {
+          const box = hero.getBoundingClientRect();
+          const nw = img.naturalWidth, nh = img.naturalHeight;
+          if (!nw || !nh || !box.width || !box.height) return;
+          const scale = Math.min(box.width / nw, box.height / nh);
+          const width = nw * scale, height = nh * scale;
+          img.style.width = width + 'px';
+          img.style.height = height + 'px';
+          img.style.left = ((box.width - width) / 2) + 'px';
+          img.style.top = ((box.height - height) / 2) + 'px';
+          actions.style.left = img.style.left;
+          actions.style.top = img.style.top;
+          actions.style.width = width + 'px';
+          actions.style.height = height + 'px';
+          actions.style.inset = 'auto';
+        };
+        if (img.complete) applyFit();
+        else img.addEventListener('load', applyFit, { once: true });
       }
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);
+      window.addEventListener('orientationchange', fitWelcomeImage);
 
       window.addEventListener('load', () => {
         window.setTimeout(hidePiraredSplash, 1250);

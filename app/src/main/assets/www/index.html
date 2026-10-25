@@ -1124,15 +1124,17 @@
             return;
           }
           $('adminPanel').hidden = false;
-          const [posts,businesses,ads] = await Promise.all([
+          const [posts,businesses,ads,reports] = await Promise.all([
             api('community_posts?select=id,title,category,description,created_at&status=eq.pending&order=created_at.asc'),
             api('businesses?select=id,name,category,description,created_at&status=eq.pending&order=created_at.asc'),
-            api('ads?select=id,title,category,description,business_id,created_at&status=eq.pending&order=created_at.asc')
+            api('ads?select=id,title,category,description,business_id,created_at&status=eq.pending&order=created_at.asc'),
+            api('user_reports?select=id,reason,details,reported_user_id,community_post_id,created_at&status=eq.pending&order=created_at.asc')
           ]);
           const items = [
             ...(posts||[]).map(x=>({...x,_table:'community_posts',_label:'Publicación comunitaria',_title:x.title})),
             ...(businesses||[]).map(x=>({...x,_table:'businesses',_label:'Comercio',_title:x.name})),
-            ...(ads||[]).map(x=>({...x,_table:'ads',_label:'Promoción',_title:x.title}))
+            ...(ads||[]).map(x=>({...x,_table:'ads',_label:'Promoción',_title:x.title})),
+            ...(reports||[]).map(x=>({...x,_table:'user_reports',_label:'Denuncia · '+x.reason,_title:'Denuncia recibida',description:x.details||'Sin detalles adicionales'}))
           ];
           $('adminQueue').innerHTML = items.length ? items.map(x =>
             '<article class="panel"><small>'+escapeHtml(x._label)+' · '+escapeHtml(x.category||'')+'</small><h3>'+escapeHtml(x._title)+'</h3><p>'+escapeHtml(x.description||'')+'</p><div class="cta-row"><button class="primary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="approved">Aprobar</button><button class="secondary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="rejected">Rechazar</button></div></article>'
@@ -1148,15 +1150,15 @@
         const table = button.dataset.reviewTable;
         const id = button.dataset.reviewId;
         const status = button.dataset.reviewStatus;
-        if (!['community_posts','businesses','ads'].includes(table) || !['approved','rejected'].includes(status)) return;
+        if (!['community_posts','businesses','ads','user_reports'].includes(table) || !['approved','rejected'].includes(status)) return;
         button.disabled = true;
         try {
           await api(table+'?id=eq.'+encodeURIComponent(id), {
             method:'PATCH',
             headers:{'Prefer':'return=minimal'},
-            body:JSON.stringify({status,updated_at:new Date().toISOString()})
+            body:JSON.stringify(table === 'user_reports' ? {status: status === 'approved' ? 'resolved' : 'dismissed'} : {status,updated_at:new Date().toISOString()})
           });
-          showToast(status === 'approved' ? 'Solicitud aprobada.' : 'Solicitud rechazada.');
+          showToast(table === 'user_reports' ? (status === 'approved' ? 'Denuncia marcada como resuelta.' : 'Denuncia descartada.') : (status === 'approved' ? 'Solicitud aprobada.' : 'Solicitud rechazada.'));
           await loadAdminQueue();
           await loadCommunityPosts();
           await loadAds();

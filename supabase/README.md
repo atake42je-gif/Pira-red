@@ -20,8 +20,7 @@ La interfaz informa cuando estas funciones no están disponibles y no simula env
 
 ## Configuración de Supabase
 
-La interfaz actual apunta a `https://cerwpgfpicwcxiqatmdl.supabase.co` y usa una clave publicable. Esta URL debe coincidir con el proyecto donde se ejecuta la migración; si la base se creó en otro proyecto, hay que migrarla o corregir la configuración antes de probar.
-La migración `202610230001_pirared_commerce_ads.sql` define perfiles, comercios, anuncios y políticas RLS. Verificá que se haya ejecutado en el proyecto configurado en la interfaz actual (`cerwpgfpicwcxiqatmdl`) y que las políticas de seguridad estén activas antes de habilitar el lanzamiento.
+La interfaz apunta al proyecto `https://slgqcrcktczuvmivwdst.supabase.co` y usa una clave publicable. El proyecto activo tiene tablas `profiles`, `businesses`, `ads`, `payment_orders` y `community_posts`, todas con RLS activado. La migración de publicaciones comunitarias es `202610250001_pirared_community_posts.sql`. Se verificó el estado de los asesores de seguridad de Supabase y no devolvieron alertas en la última consulta; esto no reemplaza las pruebas funcionales ni una revisión de permisos completa.
 
 Para el primer administrador, registrá y confirmá una cuenta y luego asigná el rol `admin` manualmente en SQL Editor usando su UUID real. Nunca permitas que el formulario público establezca el rol de administrador.
 

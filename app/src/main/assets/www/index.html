@@ -761,6 +761,26 @@
               <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
               <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
             </div>
+            <div class="panel" id="safetyPanel" hidden>
+              <h3>Seguridad de la comunidad</h3>
+              <p>Podés denunciar contenido o bloquear a un usuario. Las denuncias quedan privadas y las revisa la administración.</p>
+              <form id="reportForm">
+                <input id="reportUserId" type="hidden" />
+                <input id="reportPostId" type="hidden" />
+                <label for="reportReason">Motivo de la denuncia</label>
+                <select id="reportReason" required>
+                  <option value="spam">Spam</option>
+                  <option value="harassment">Acoso</option>
+                  <option value="fraud">Posible estafa</option>
+                  <option value="unsafe">Contenido peligroso</option>
+                  <option value="other">Otro motivo</option>
+                </select>
+                <label for="reportDetails">Detalles (opcional)</label>
+                <textarea id="reportDetails" maxlength="1000" rows="3" placeholder="Describí brevemente qué ocurrió"></textarea>
+                <button class="primary" type="submit">Enviar denuncia privada</button>
+              </form>
+              <div id="safetyStatus" class="form-note"></div>
+            </div>
             <div class="panel" id="messagesPanel" hidden>
               <h3>Mensajes privados</h3>
               <p>Los mensajes solo los pueden leer quien los envía y quien los recibe.</p>
@@ -921,14 +941,14 @@
         }
         const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
         const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
-        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button>' : '') + '</div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
+        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<div class="cta-row"><button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button class="secondary" type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button class="secondary" type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button></div>' : '') + '</div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
       }
       function renderExploreList() {
         const container = $('exploreList'); if (!container) return;
         const query = ($('searchInput')?.value || '').trim().toLowerCase();
         const filtered = listings.filter(item => !query || [item.title,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
         $('countLabel').textContent = filtered.length + ' publicaciones';
-        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button>' : '') + '</div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
+        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<div class="cta-row"><button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button class="secondary" type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button class="secondary" type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button></div>' : '') + '</div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
       }
       async function loadCommunityPosts() {
         try {
@@ -1006,6 +1026,50 @@
         setSession(null); showToast('Sesión cerrada en este dispositivo.');
       });
       $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
+      $('reportForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!session?.access_token) return showToast('Iniciá sesión para enviar una denuncia.');
+        const reportedUser = $('reportUserId').value.trim();
+        const postId = $('reportPostId').value.trim();
+        if (!reportedUser && !postId) return showToast('No se encontró el contenido denunciado.');
+        try {
+          await api('user_reports', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({
+            reporter_id:session.user.id,
+            reported_user_id:reportedUser || null,
+            community_post_id:postId || null,
+            reason:$('reportReason').value,
+            details:$('reportDetails').value.trim(),
+            status:'pending'
+          })});
+          $('reportForm').reset();
+          $('safetyStatus').textContent = 'Denuncia recibida de forma privada. Gracias por ayudar a cuidar la comunidad.';
+          showToast('Denuncia enviada.');
+        } catch (error) { showToast('No se pudo enviar la denuncia: '+error.message); }
+      });
+      document.addEventListener('click', async event => {
+        const report = event.target.closest('[data-report-user]');
+        if (report) {
+          if (!session?.access_token) { showToast('Iniciá sesión para denunciar contenido.'); go('account'); return; }
+          $('reportUserId').value = report.dataset.reportUser || '';
+          $('reportPostId').value = report.dataset.reportPost || '';
+          $('safetyPanel').hidden = false;
+          go('account');
+          $('safetyPanel').hidden = false;
+          return;
+        }
+        const block = event.target.closest('[data-block-user]');
+        if (block) {
+          if (!session?.access_token) { showToast('Iniciá sesión para bloquear usuarios.'); go('account'); return; }
+          const target = block.dataset.blockUser;
+          if (!target || target === session.user.id) return;
+          try {
+            await api('user_blocks', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({blocker_id:session.user.id,blocked_id:target})});
+            showToast('Usuario bloqueado.');
+            block.disabled = true;
+            block.textContent = 'Bloqueado';
+          } catch (error) { showToast('No se pudo bloquear: '+error.message); }
+        }
+      });
       async function loadMessages() {
         if (!session?.access_token || !$('messagesPanel')) return;
         $('messagesPanel').hidden = false;

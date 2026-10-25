@@ -54,6 +54,24 @@ No se debe afirmar que existe una APK nueva descargable hasta que el flujo final
 - La verificación de identidad avanzada queda fuera del alcance confirmado actual; se prioriza un método gratuito, seguro y que minimice la recolección de datos.
 
 
+## Portadas nuevas — imágenes originales
+
+Estas son las dos imágenes nuevas que el usuario subió al repositorio y que se conectaron al código de la app. Se muestran aquí en el mismo orden de uso:
+
+### 1. Bienvenida — sin botones
+
+![Portada de bienvenida de PiraRed, con el logo y el paisaje al atardecer, sin botones](app/src/main/assets/www/app/Img/file_00000000bf30820ea0628bc7e7035328.png)
+
+Archivo: [`file_00000000bf30820ea0628bc7e7035328.png`](app/src/main/assets/www/app/Img/file_00000000bf30820ea0628bc7e7035328.png)
+
+### 2. Acceso — con botones
+
+![Portada de acceso de PiraRed con los botones Iniciar sesión y Crear cuenta](app/src/main/assets/www/app/Img/file_000000005d30820e921dc8703d3997dc.png)
+
+Archivo: [`file_000000005d30820e921dc8703d3997dc.png`](app/src/main/assets/www/app/Img/file_000000005d30820e921dc8703d3997dc.png)
+
+> Las imágenes se enlazan directamente a los archivos PNG originales del repositorio. La vista del README documenta las imágenes guardadas en GitHub; la visualización final y las zonas táctiles deben comprobarse en la APK instalada.
+
 ## Estado visual comprobado en el código
 
 Los cambios de interfaz y la galería que ya se incorporaron no se repiten como tareas pendientes. Quedan abajo únicamente las comprobaciones que todavía requieren validación o trabajo nuevo.

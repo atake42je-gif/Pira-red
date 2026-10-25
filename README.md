@@ -133,7 +133,9 @@ La app queda lista para funcionar como WebView local; la parte que falta para us
 **Regla del proyecto:** todo lo que falte, falle o todavía no se haya probado debe registrarse aquí. No marcar una función como terminada hasta probarla en la APK y, cuando corresponda, contra Supabase.
 
 ### Prioridad 1 — compilación y APK
-- [ ] Revisar el error del paso **Compilar APK** del workflow de GitHub Actions para el commit `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`.
+- [x] Identificar el error de compilación: faltaba el recurso `Theme.Material3.DayNight.NoActionBar` porque el proyecto no incorpora la dependencia Material Components.
+- [x] Corregir el tema Android para usar el tema del sistema `Theme.Material.Light.NoActionBar` sin dependencia adicional.
+- [ ] Confirmar que el workflow posterior al arreglo compile correctamente y entregue la APK.
 - [ ] Corregir el error de compilación y ejecutar nuevamente el workflow.
 - [ ] Confirmar que la APK se genere como artefacto descargable y que incluya la última versión de `index.html` e imágenes.
 - [ ] Verificar instalación y apertura en Android, navegación hacia atrás, orientación y diferentes tamaños de pantalla.
@@ -178,4 +180,6 @@ La app queda lista para funcionar como WebView local; la parte que falta para us
 ### Estado de la última compilación revisada
 - Commit de interfaz: `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`.
 - Workflow: [Generar APK de PiraRed](https://github.com/atake42je-gif/Pira-red/actions/runs/40175677335).
-- Resultado comprobado: **falló el paso “Compilar APK”**. La APK de ese commit no debe considerarse validada hasta corregir el error y lograr una compilación exitosa.
+- Resultado del commit `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`: **falló** en `:app:processDebugResources` porque no se encontró `Theme.Material3.DayNight.NoActionBar`.
+- Corrección aplicada en el commit `6662eb03bcead6164bf3601a40bd1784a80e9024`, archivo `app/src/main/res/values/themes.xml`.
+- Pendiente: comprobar el workflow que se dispara con esta corrección. La APK solo se considerará validada si la compilación y la comprobación del artefacto terminan correctamente.

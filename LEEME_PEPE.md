@@ -6,7 +6,9 @@ Este archivo es el **registro de lo que ya se hizo** en PiraRed. La lista de err
 
 ### Interfaz y pantallas
 - [x] Se mantuvo la interfaz principal dentro de `app/src/main/assets/www/index.html`, para que Android la abra desde los recursos locales de la app.
-- [x] Se preparó una portada de bienvenida grande, con la imagen de inicio y botones de acceso superpuestos.
+- [x] Se configuró la portada original del tren en `app/Img/01-inicio-pirared.png`, conservando el contenido de imagen sin alterarlo.
+- [x] Se amplió la portada a pantalla completa y se retiraron el título, el texto y la capa oscura añadidos por encima para evitar duplicados.
+- [x] Se dejaron zonas táctiles transparentes para mantener accesos a Explorar, Ingresar y Publicar sin dibujar botones duplicados; falta validar la ubicación táctil sobre los botones de la imagen en el teléfono.
 - [x] Se definió una interfaz clara, con tonos celestes, paneles translúcidos y navegación inferior.
 - [x] Se agregaron las secciones de Inicio, Explorar, Publicar, Comercios, Perfil/Mi cuenta e Información.
 - [x] Se incluyeron mensajes para estados sin publicaciones y errores de conexión, evitando inventar avisos para rellenar la pantalla.

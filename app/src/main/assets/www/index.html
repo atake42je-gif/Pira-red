@@ -689,6 +689,30 @@
               <p class="form-note">Necesitás iniciar sesión. No publiques tu número personal si no querés hacerlo público.</p>
             </div>
             <div class="panel">
+              <h3>Publicar en la comunidad</h3>
+              <p>Compra y venta, trabajos y servicios de Pirané. Tu publicación será revisada antes de aparecer públicamente.</p>
+              <form id="communityForm">
+                <label for="communityCategory">Tipo de publicación</label>
+                <select id="communityCategory" required>
+                  <option value="Compra / Venta">Compra / Venta</option>
+                  <option value="Trabajos">Trabajos</option>
+                  <option value="Servicios">Servicios</option>
+                </select>
+                <label for="communityTitle">Título</label>
+                <input id="communityTitle" required minlength="3" maxlength="100" placeholder="Ej. Busco trabajo de albañilería" />
+                <label for="communityDescription">Descripción</label>
+                <textarea id="communityDescription" required minlength="5" maxlength="1000" rows="4" placeholder="Contá los detalles importantes"></textarea>
+                <label for="communityPrice">Precio o remuneración (opcional)</label>
+                <input id="communityPrice" maxlength="80" placeholder="Ej. $15.000 / A convenir" />
+                <label for="communityLocation">Zona (opcional)</label>
+                <input id="communityLocation" maxlength="100" placeholder="Ej. Centro de Pirané" />
+                <label for="communityContact">Contacto público (opcional)</label>
+                <input id="communityContact" maxlength="120" placeholder="Solo si aceptás que lo vea cualquiera" />
+                <button class="primary" type="submit">Enviar para revisión</button>
+              </form>
+              <p class="form-note">Necesitás iniciar sesión. No incluyas datos privados que no quieras publicar.</p>
+            </div>
+            <div class="panel">
               <h3>Publicar una promoción</h3>
               <p>Disponible para comercios registrados. Las promociones se revisan antes de mostrarse.</p>
               <form id="adForm">
@@ -822,6 +846,8 @@
       let session = null;
       try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { session = null; }
       const listings = [];
+      const communityListings = [];
+      const commerceListings = [];
       const $ = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const apiHeaders = (token) => ({ 'apikey': PIRARED_SUPABASE_KEY, 'Authorization': 'Bearer ' + (token || PIRARED_SUPABASE_KEY), 'Content-Type':'application/json' });
@@ -884,6 +910,20 @@
         $('countLabel').textContent = filtered.length + ' publicaciones';
         container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small></div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
       }
+      async function loadCommunityPosts() {
+        try {
+          const rows = await api('community_posts?select=id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&order=created_at.desc');
+          communityListings.splice(0, communityListings.length, ...(rows || []).map(r => ({
+            id:r.id, category:r.category, title:r.title, description:r.description,
+            price:r.price_text || 'Consultar', place:r.location_text || 'Pirané',
+            contact:r.public_contact || '', icon:'📌'
+          })));
+          listings.splice(0, listings.length, ...communityListings, ...commerceListings);
+          renderHomeListings(); renderExploreList();
+        } catch (_) {
+          // No se muestran publicaciones inventadas si el backend no está disponible.
+        }
+      }
       async function loadAds() {
         $('adsStatus').innerHTML = '<p>Buscando promociones aprobadas…</p>';
         try {
@@ -892,10 +932,11 @@
           let businesses = [];
           if (businessIds.length) businesses = await api('businesses?select=id,name,category,status&id=in.(' + businessIds.join(',') + ')&status=eq.approved');
           const byId = Object.fromEntries(businesses.map(b => [b.id,b]));
-          const approved = (rows || []).filter(r => byId[r.business_id]).map(r => ({title:r.title,category:r.category || byId[r.business_id].category,description:r.description,price:r.offer_text || 'Consultar',place:byId[r.business_id].name,icon:'🏪'}));
+          const approved = (rows || []).filter(r => byId[r.business_id]).map(r => ({title:r.title,category:'Comercios',detailCategory:r.category || byId[r.business_id].category,description:r.description,price:r.offer_text || 'Consultar',place:byId[r.business_id].name,icon:'🏪'}));
           $('adsList').innerHTML = approved.map(r => '<article class="listing-card"><div class="listing-thumb"><img src="app/Img/03-plaza-juegos.jpg" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(r.category) + '</span><h3>' + escapeHtml(r.title) + '</h3><div class="listing-meta">' + escapeHtml(r.place) + '</div><p>' + escapeHtml(r.description) + '</p></div><div class="listing-price">' + escapeHtml(r.price) + '</div></article>').join('');
           $('adsStatus').innerHTML = approved.length ? '<p>' + approved.length + ' promociones aprobadas.</p>' : '<p>Todavía no hay promociones aprobadas para mostrar.</p>';
-          listings.splice(0, listings.length, ...approved);
+          commerceListings.splice(0, commerceListings.length, ...approved);
+          listings.splice(0, listings.length, ...communityListings, ...commerceListings);
           renderHomeListings(); renderExploreList();
         } catch (error) {
           $('adsStatus').innerHTML = '<p>No se pudieron cargar las promociones. Revisá la conexión y la configuración de Supabase.</p>';
@@ -945,6 +986,29 @@
         setSession(null); showToast('Sesión cerrada en este dispositivo.');
       });
       $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
+      $('communityForm')?.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
+        const body = {
+          owner_id:session.user.id,
+          category:$('communityCategory').value,
+          title:$('communityTitle').value.trim(),
+          description:$('communityDescription').value.trim(),
+          price_text:$('communityPrice').value.trim(),
+          location_text:$('communityLocation').value.trim() || 'Pirané',
+          public_contact:$('communityContact').value.trim(),
+          status:'pending'
+        };
+        const button = $('communityForm').querySelector('button[type="submit"]');
+        if (button) button.disabled = true;
+        try {
+          await api('community_posts', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+          $('communityForm').reset();
+          showToast('Publicación enviada. Se mostrará cuando sea aprobada.');
+        } catch (error) {
+          showToast('No se pudo enviar: ' + error.message + '. Revisá la conexión e iniciá sesión nuevamente si venció tu sesión.');
+        } finally { if (button) button.disabled = false; }
+      });
       $('businessForm')?.addEventListener('submit', async event => {
         event.preventDefault();
         if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
@@ -966,6 +1030,7 @@
       renderSession(); renderHomeListings(); renderExploreList();
       // Check the backend without blocking the initial screen.
       loadAds();
+      loadCommunityPosts();
     </script>
   </body>
 </html>

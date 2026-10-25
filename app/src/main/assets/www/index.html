@@ -116,43 +116,37 @@
         position: relative;
         display: block;
         width: 100%;
-        min-height: 88dvh;
+        height: 100dvh;
+        min-height: 100svh;
         overflow: hidden;
-        background: #dfeeff;
+        background: #eef9ff;
       }
 
       .welcome-hero > img {
         position: absolute;
         inset: 0;
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: saturate(0.96) brightness(1.08) contrast(1.02);
+        object-position: center;
+        filter: none;
       }
 
+      /* La portada original ya contiene la identidad visual. No se agrega otra
+         capa oscura ni se repiten el logo y los textos sobre la foto. */
       .welcome-hero::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(255,255,255,0.04) 0%,
-          rgba(13, 55, 88, 0.12) 20%,
-          rgba(12, 37, 60, 0.52) 66%,
-          rgba(9, 26, 42, 0.84) 100%
-        );
+        content: none;
       }
 
       .welcome-copy {
-        position: relative;
+        position: absolute;
         z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        text-align: center;
-        min-height: 88dvh;
-        padding: 24px 18px 20px;
+        inset: 0;
+        display: block;
+        min-height: 100%;
+        padding: 0;
+        pointer-events: none;
       }
 
       .welcome-logo {
@@ -183,21 +177,31 @@
       }
 
       .welcome-actions {
+        position: absolute;
+        left: 7%;
+        right: 7%;
+        bottom: 11%;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        width: min(100%, 430px);
-        margin-top: 8px;
+        gap: 8px;
+        margin: 0;
+        pointer-events: auto;
       }
 
+      /* Botones invisibles al ojo: la imagen conserva sus botones originales,
+         pero las zonas táctiles siguen llevando a pantallas reales. */
       .welcome-actions button {
-        min-height: 52px;
-        border: 1px solid rgba(255,255,255,0.14);
+        min-height: clamp(44px, 8vh, 72px);
+        padding: 0;
+        border: 0;
         border-radius: 14px;
-        font-weight: 800;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 14px 24px rgba(0,0,0,0.12);
+        color: transparent;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        opacity: 0.01;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .primary {
@@ -572,16 +576,14 @@
         <section class="screen active" id="home">
           <div class="welcome-hero">
             <img src="app/Img/Inicio%20login%20pira%20red.png" alt="PiraRed folklore y atardecer en Pirané" />
-            <div class="welcome-copy">
-              
-              <div class="welcome-kicker">Pirané FSA</div>
-              <h1 class="welcome-title">TODO CERCA<br />TODO CONECTADO</h1>
+            <div class="welcome-copy" aria-label="Accesos de la portada">
+              <!-- Zonas táctiles transparentes sobre los botones dibujados en la
+                   imagen original; conservan la portada sin duplicar elementos. -->
               <div class="welcome-actions">
-                <button class="primary" onclick="go('explore')">Ver anuncios</button>
-                <button class="secondary" onclick="go('account')">Ingresar</button>
-                <button class="ghost" onclick="go('publish')">Publicar</button>
+                <button class="primary" aria-label="Explorar anuncios" onclick="go('explore')">Explorar anuncios</button>
+                <button class="secondary" aria-label="Ingresar o crear cuenta" onclick="go('account')">Ingresar</button>
+                <button class="ghost" aria-label="Publicar" onclick="go('publish')">Publicar</button>
               </div>
-              <div class="instagram-mark">Pirané capital provincial del folklore</div>
             </div>
           </div>
 

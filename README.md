@@ -1,11 +1,19 @@
 # PiraRed — pendientes y revisión visual
 
-PiraRed es una app Android para la comunidad de Pirané. El registro de lo realizado está en [Léeme Pepe](LEEME_PEPE.md). Este README queda dedicado a lo que falta, las verificaciones y las imágenes de referencia.
+PiraRed es una app Android para la comunidad de Pirané. El registro de cambios realizados está en [Léeme Pepe](LEEME_PEPE.md). Este README se usa para seguir lo que falta y revisar los recursos visuales; no debe interpretarse como prueba de que una función ya funciona en el teléfono.
+
+## Estado visual comprobado en el código
+
+- La portada de Inicio usa `app/Img/Inicio login pira red.png`, la imagen original del tren con PiraRed.
+- La pantalla Información usa `app/Img/04-informacion-pirared.jpg`.
+- La interfaz HTML define fondos claros celestes; aun así, hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
+- La galería ordenada de abajo es una referencia de los archivos originales. **No significa que ya existan cinco pantallas separadas para mostrar esas fotos**: por ahora, las otras imágenes siguen siendo recursos que deben identificarse e integrarse donde corresponda.
+- Se limpiaron copias idénticas de imágenes. Se conservaron archivos visualmente distintos aunque todavía falte clasificarlos.
 
 ## Pendientes de desarrollo y verificación
 
 ### 1. APK y teléfono
-- [ ] Descargar e instalar la APK más reciente en el teléfono.
+- [ ] Generar/descargar e instalar la APK más reciente en el teléfono.
 - [ ] Probar todas las pantallas, botones, navegación atrás, orientación y distintos tamaños de pantalla.
 - [ ] Confirmar que la APK instalada contiene la última interfaz y las imágenes correctas.
 - [ ] Confirmar y probar una firma estable de lanzamiento antes de distribuir actualizaciones; no guardar keystore ni contraseñas en GitHub.
@@ -16,12 +24,13 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de lo reali
 - [ ] Verificar RLS y permisos de perfiles, comercios y promociones, incluyendo intentos de acceso no autorizado.
 - [ ] Probar registro, inicio/cierre de sesión, sesión persistente y recuperación de contraseña.
 - [ ] Probar errores de red, falta de conexión y respuestas inválidas sin exponer tokens ni datos privados.
-- [ ] No incluir service-role keys, credenciales administrativas ni contraseñas en el cliente o en GitHub.
+- [ ] No incluir claves service-role, credenciales administrativas ni contraseñas en el cliente o en GitHub.
 
 ### 3. Diseño, imágenes y navegación
 - [ ] Confirmar visualmente que la portada de inicio sea la imagen original del tren con PiraRed, grande y legible.
 - [ ] Identificar cuál de las imágenes originales sin nombre descriptivo corresponde a la estatua; no asignar una foto por suposición.
-- [ ] Verificar el orden de la galería: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
+- [ ] Verificar el orden solicitado: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
+- [ ] Integrar las imágenes 2 a 5 en la experiencia visual donde corresponda; no basta con que existan en la carpeta.
 - [ ] Revisar carga, calidad, recorte y legibilidad de cada imagen en el teléfono.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
 - [ ] Probar cada botón, enlace y regreso a Inicio; corregir los que no tengan una acción funcional.
@@ -45,7 +54,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de lo reali
 
 ## Galería de imágenes originales — orden solicitado
 
-> Estas son imágenes originales del repositorio, no capturas de pantallas en ejecución. La segunda foto (estatua) queda pendiente de identificación visual porque el nombre de los archivos restantes no permite confirmar cuál es sin adivinar.
+> Son archivos originales del repositorio, no capturas de la app funcionando. La estatua todavía debe identificarse visualmente. Los enlaces muestran los recursos disponibles, pero no prueban que todos estén conectados a una pantalla de la app.
 
 ### 1. Inicio — tren con PiraRed
 ![Portada original de inicio PiraRed con el tren](app/src/main/assets/www/app/Img/Inicio%20login%20pira%20red.png)
@@ -76,4 +85,4 @@ Se conservan porque son distintas y todavía no se ha confirmado si corresponden
 - [Imagen original 3 sin nombre descriptivo](app/src/main/assets/www/app/Img/images%20(9).jpeg)
 - [Logo original de PiraRed](app/src/main/assets/www/app/Img/logo-pirared-original.png)
 
-**Regla:** no marcar una función como terminada hasta probarla en la APK y, cuando corresponda, contra Supabase.
+**Regla de seguimiento:** no marcar una función como terminada hasta que exista un cambio concreto y se haya probado; cuando corresponda, verificar también contra Supabase y en la APK instalada.

@@ -75,3 +75,10 @@ Que la compilación haya terminado bien **no demuestra por sí solo que todas la
 ## Regla para mantener este archivo
 
 Solo registrar como realizado lo que tenga un cambio concreto en el repositorio o una prueba confirmada. Si algo está escrito pero no se ejecutó o no se probó, debe figurar como pendiente en el [README principal](README.md).
+
+
+### Limpieza del catálogo de imágenes
+- Se revisaron las imágenes del repositorio comparando hashes para distinguir duplicados exactos de fotos distintas.
+- Se usa `app/src/main/assets/www/app/Img/` como carpeta canónica y se eliminan copias idénticas de otras rutas y duplicados internos con nombres diferentes.
+- El README principal organiza la galería según la secuencia solicitada. La estatua queda pendiente de identificar visualmente; no se asigna una foto al azar.
+- La limpieza elimina copias exactas únicamente. Las imágenes distintas sin clasificar se conservan.

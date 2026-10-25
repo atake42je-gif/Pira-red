@@ -807,17 +807,11 @@
 
       /* Bienvenida breve: misma portada, sin los tres accesos visibles.
          Luego se revela Inicio con los botones táctiles sobre la misma imagen. */
+      /* La portada se muestra una sola vez dentro de Inicio; se desactiva la copia de carga superpuesta. */
       #pirared-splash {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        background: #03132f;
-        opacity: 1;
-        transition: opacity .28s ease;
+        display: none !important;
       }
+
       #pirared-splash img {
         display: block;
         width: 100%;

@@ -176,32 +176,54 @@
         text-shadow: 0 10px 24px rgba(0,0,0,0.48);
       }
 
+      /* No se dibuja ningún elemento encima de la portada. Estas zonas
+         transparentes coinciden con los botones que ya vienen en la imagen. */
       .welcome-actions {
         position: absolute;
-        left: 7%;
-        right: 7%;
-        bottom: 11%;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+        inset: 0;
+        display: block;
         margin: 0;
-        pointer-events: auto;
+        pointer-events: none;
       }
 
-      /* Botones invisibles al ojo: la imagen conserva sus botones originales,
-         pero las zonas táctiles siguen llevando a pantallas reales. */
       .welcome-actions button {
-        min-height: clamp(44px, 8vh, 72px);
+        position: absolute;
+        display: block;
+        min-height: 0;
         padding: 0;
         border: 0;
-        border-radius: 14px;
+        border-radius: 18px;
         color: transparent;
         background: transparent;
         box-shadow: none;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        opacity: 0.01;
+        opacity: 0;
+        pointer-events: auto;
         -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Iniciar sesión y Crear cuenta */
+      .welcome-actions button:nth-child(1) {
+        left: 5.5%;
+        top: 61.5%;
+        width: 44%;
+        height: 11%;
+      }
+
+      .welcome-actions button:nth-child(2) {
+        left: 51%;
+        top: 61.5%;
+        width: 43.5%;
+        height: 11%;
+      }
+
+      /* Acceso para comercios */
+      .welcome-actions button:nth-child(3) {
+        left: 5.5%;
+        top: 74%;
+        width: 89%;
+        height: 12%;
       }
 
       .primary {

@@ -11,7 +11,7 @@ grant insert, update on public.businesses, public.ads, public.community_posts to
 grant insert on public.private_messages to authenticated;
 grant update (read_at) on public.private_messages to authenticated;
 grant insert, update on public.user_reports to authenticated;
-grant all privileges on public.user_blocks to authenticated;
+grant select, insert, update, delete on public.user_blocks to authenticated;
 -- Never permit self-service role changes; only display_name is editable.
 grant update (display_name) on public.profiles to authenticated;
 commit;

@@ -45,9 +45,10 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Verificar el orden solicitado: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
 - [x] Agregar una pantalla Fotos con las 14 imágenes del directorio canónico, ordenando primero la secuencia principal y después los recursos complementarios.
 - [ ] Confirmar en el teléfono que las 14 imágenes de la galería carguen correctamente en la APK.
-- [ ] Revisar carga, calidad, recorte y legibilidad de cada imagen en el teléfono.
+- [x] Ajustar la galería para mostrar las fotos completas, evitando recortes agresivos; el ajuste visual todavía debe comprobarse en el teléfono.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
 - [ ] Probar cada botón, enlace y regreso a Inicio; corregir los que no tengan una acción funcional.
+- [x] Ajustar la navegación inferior para distribuir sus seis secciones sin forzarlas en una cuadrícula de cinco columnas.
 - [ ] Mantener separada la portada de Inicio del formulario de acceso: Iniciar sesión y Crear cuenta deben abrir la pantalla de cuenta; Acceso para comercios debe abrir su sección independiente.
 - [ ] Tomar capturas reales de Inicio, Explorar, Publicar, Comercios, Perfil e Información para documentar el aspecto real de la APK.
 
@@ -129,3 +130,11 @@ El usuario volvió a adjuntar las fotografías reales del pueblo, el logo y la i
 - La ejecución de GitHub Actions [40181089631](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631) compiló y verificó la APK correctamente para el commit `31907a51ad5c952e23edcda57cb6fed063e834ef`.
 - Artefacto `PiraRed-APK`: [descargar desde los artefactos de Actions](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631).
 - **Pendiente importante:** el éxito de compilación no demuestra que se instale sobre la versión ya instalada. El workflow genera una APK de prueba si no están configurados los secretos privados de firma (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). Una APK firmada con otra clave no puede actualizar la instalación existente; no subir el keystore ni sus contraseñas al repositorio.
+
+
+## Actualización visual — 25 de octubre de 2026
+
+- Se ajustó la galería para preservar la fotografía completa y evitar recortes agresivos, manteniendo tarjetas claras, bordes suaves y fondo celeste translúcido.
+- Se corrigió la cuadrícula de navegación inferior: ahora contempla las seis secciones visibles.
+- Se mantuvo intacta la portada original elegida por el usuario; no se agregó un lema ni textos visuales nuevos sobre la imagen.
+- Estos cambios ya están en `main`. La compilación automática y la prueba en el teléfono son pasos separados; no declarar terminada la app hasta revisar el resultado real.

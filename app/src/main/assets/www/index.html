@@ -750,9 +750,48 @@
       .photo-card figcaption { padding:9px 10px 11px; font-size:12px; line-height:1.35; font-weight:800; color:var(--text); }
       .gallery-note { margin:12px; padding:12px; border-radius:14px; background:rgba(255,255,255,.72); font-size:12px; line-height:1.5; color:var(--muted); }
 
+
+      /* Bienvenida breve: misma portada, sin los tres accesos visibles.
+         Luego se revela Inicio con los botones táctiles sobre la misma imagen. */
+      #pirared-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: #03132f;
+        opacity: 1;
+        transition: opacity .28s ease;
+      }
+      #pirared-splash img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+      #pirared-splash::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 59%;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(3,19,47,.96), #03132f 18%, #03132f);
+      }
+      #pirared-splash.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #pirared-splash { transition: none; }
+      }
+
     </style>
   </head>
   <body class="home-screen">
+    <div id="pirared-splash" aria-label="Bienvenido a PiraRed"><img src="app/Img/portada-pirared.png" alt="PiraRed, Pirané" /></div>
     <div class="app-shell">
       <header class="masthead">
         <img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed" />
@@ -1069,6 +1108,17 @@
         const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
         clearTimeout(showToast._timer); showToast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
       }
+      function hidePiraredSplash() {
+        const splash = document.getElementById('pirared-splash');
+        if (!splash || splash.dataset.hidden === '1') return;
+        splash.dataset.hidden = '1';
+        splash.classList.add('is-hidden');
+        window.setTimeout(() => splash.remove(), 350);
+      }
+      window.addEventListener('load', () => {
+        window.setTimeout(hidePiraredSplash, 1250);
+      }, { once: true });
+
       function go(screen) {
         document.body.classList.toggle('account-screen', screen === 'account');
         document.body.classList.toggle('home-screen', screen === 'home');

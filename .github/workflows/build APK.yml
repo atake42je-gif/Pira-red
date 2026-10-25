@@ -53,12 +53,12 @@ jobs:
             size="$2"
             dir="app/src/main/res/mipmap-$density"
             mkdir -p "$dir"
-            convert "$logo" -auto-orient -resize "${size}x${size}^" -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
+            convert "$logo" -auto-orient -resize "${size}x${size}" -background none -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
           done
           # Android 8+ usa el icono adaptativo, no los PNG mipmap anteriores.
           # Crear también su primer plano con el logo original para que se vea en el launcher.
           mkdir -p app/src/main/res/drawable-nodpi
-          convert "$logo" -auto-orient -resize "432x432" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
+          convert "$logo" -auto-orient -resize "320x320" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
 
       - name: Preparar firma de version estable (si esta configurada)
         shell: bash

@@ -1258,32 +1258,28 @@
         splash.classList.add('is-hidden');
         window.setTimeout(() => splash.remove(), 350);
       }
-      /* Conserva la proporción de la portada y alinea las zonas táctiles con
-         los botones que ya vienen dibujados en la imagen original. */
+      /* La portada ocupa toda la pantalla del móvil. Las zonas táctiles usan
+         el mismo rectángulo completo, así los botones impresos siguen activos. */
       function fitWelcomeImage() {
         const hero = document.querySelector('.welcome-hero');
         const img = hero?.querySelector(':scope > img');
         const actions = hero?.querySelector('.welcome-actions');
         if (!hero || !img || !actions) return;
-        hero.style.height = '100dvh';
         const applyFit = () => {
-          const box = hero.getBoundingClientRect();
-          const nw = img.naturalWidth, nh = img.naturalHeight;
-          if (!nw || !nh || !box.width || !box.height) return;
-          const scale = Math.min(box.width / nw, box.height / nh);
-          const width = nw * scale, height = nh * scale;
-          img.style.width = width + 'px';
-          img.style.height = height + 'px';
-          img.style.left = ((box.width - width) / 2) + 'px';
-          img.style.top = ((box.height - height) / 2) + 'px';
-          actions.style.left = img.style.left;
-          actions.style.top = img.style.top;
-          actions.style.width = width + 'px';
-          actions.style.height = height + 'px';
-          actions.style.inset = 'auto';
+          hero.style.height = '100dvh';
+          hero.style.minHeight = '100vh';
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.left = '0';
+          img.style.top = '0';
+          img.style.objectFit = 'fill';
+          actions.style.left = '0';
+          actions.style.top = '0';
+          actions.style.width = '100%';
+          actions.style.height = '100%';
+          actions.style.inset = '0';
         };
-        if (img.complete) applyFit();
-        else img.addEventListener('load', applyFit, { once: true });
+        applyFit();
       }
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);

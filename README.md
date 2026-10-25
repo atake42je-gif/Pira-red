@@ -135,8 +135,8 @@ La app queda lista para funcionar como WebView local; la parte que falta para us
 ### Prioridad 1 — compilación y APK
 - [x] Identificar el error de compilación: faltaba el recurso `Theme.Material3.DayNight.NoActionBar` porque el proyecto no incorpora la dependencia Material Components.
 - [x] Corregir el tema Android para usar el tema del sistema `Theme.Material.Light.NoActionBar` sin dependencia adicional.
-- [ ] Confirmar que el workflow posterior al arreglo compile correctamente y entregue la APK.
-- [ ] Corregir el error de compilación y ejecutar nuevamente el workflow.
+- [x] Confirmar que el workflow posterior al arreglo compile correctamente y entregue el artefacto APK (run `40175958981`, compilación y verificación del APK exitosas).
+- [x] Corregir el error de compilación y ejecutar nuevamente el workflow.
 - [ ] Confirmar que la APK se genere como artefacto descargable y que incluya la última versión de `index.html` e imágenes.
 - [ ] Verificar instalación y apertura en Android, navegación hacia atrás, orientación y diferentes tamaños de pantalla.
 - [ ] Confirmar una firma de lanzamiento estable antes de distribuir actualizaciones; no guardar keystore ni contraseñas en el repositorio.
@@ -178,8 +178,43 @@ La app queda lista para funcionar como WebView local; la parte que falta para us
 - [ ] Preparar instrucciones de instalación/actualización y documentar cómo recuperar la firma de lanzamiento de forma segura.
 
 ### Estado de la última compilación revisada
+- Última compilación: [workflow `40175958981`](https://github.com/atake42je-gif/Pira-red/actions/runs/40175958981) — **exitosa**; compilar APK, verificar APK/imágenes y guardar artefacto completados. La prueba de instalación y funcionamiento en el teléfono sigue pendiente.
 - Commit de interfaz: `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`.
 - Workflow: [Generar APK de PiraRed](https://github.com/atake42je-gif/Pira-red/actions/runs/40175677335).
 - Resultado del commit `298b589ac76b831aaa9acf0f6164d6f2b92ac4b5`: **falló** en `:app:processDebugResources` porque no se encontró `Theme.Material3.DayNight.NoActionBar`.
 - Corrección aplicada en el commit `6662eb03bcead6164bf3601a40bd1784a80e9024`, archivo `app/src/main/res/values/themes.xml`.
 - Pendiente: comprobar el workflow que se dispara con esta corrección. La APK solo se considerará validada si la compilación y la comprobación del artefacto terminan correctamente.
+
+
+## Estado visual por secciones (recursos actuales)
+
+> Estas imágenes son recursos originales que están guardados en el repositorio y que la interfaz referencia. **No son capturas de pantalla de la APK en ejecución.** Para mostrar el aspecto real de cada pantalla, hay que capturar la app instalada en el teléfono y añadir esas capturas aquí; no voy a presentar una maqueta como si fuera una captura real.
+
+### 1. Inicio — portada del tren
+![Recurso de portada de inicio de PiraRed](app/src/main/assets/www/app/Img/Inicio%20login%20pira%20red.png)
+
+### 2. Explorar — imagen local de apoyo
+![Imagen original de la placita de Pirané](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
+
+### 3. Publicar — imagen local de apoyo
+![Monumento de la plaza de Pirané](app/src/main/assets/www/app/Img/02-monumento-plaza.jpg)
+
+### 4. Comercios — imagen local de apoyo
+![Imagen local usada como apoyo visual en comercios](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
+
+### 5. Mi cuenta — pantalla de acceso
+La pantalla de cuenta contiene registro, inicio de sesión, recuperación de contraseña y cierre de sesión. Todavía falta adjuntar una captura real de esta pantalla en Android.
+
+### 6. Información de PiraRed
+![Imagen original de información de PiraRed](app/src/main/assets/www/app/Img/04-informacion-pirared.jpg)
+
+### Galería de imágenes originales de Pirané
+Orden de referencia solicitado para la app: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
+
+![Monumento y plaza](app/src/main/assets/www/app/Img/02-monumento-plaza.jpg)
+![Placita y juegos](app/src/main/assets/www/app/Img/03-plaza-juegos.jpg)
+![Monumento de los 50 años](app/src/main/assets/www/app/Img/08-monumento-50-anios.jpg)
+![Cartel Yo amo Pirané](app/src/main/assets/www/app/Img/09-cartel-yo-amo-pirane.jpg)
+![Información de PiraRed](app/src/main/assets/www/app/Img/04-informacion-pirared.jpg)
+
+**Pendiente para que esta galería sea una revisión visual real:** tomar capturas de Inicio, Explorar, Publicar, Comercios, Perfil y Información desde la APK instalada y reemplazar/complementar estas referencias. No marcar el diseño como validado solo porque los archivos existan.

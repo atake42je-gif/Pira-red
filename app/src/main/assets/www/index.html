@@ -143,7 +143,13 @@
       /* En Inicio la foto aprobada ocupa toda la pantalla, sin cabecera ni navegación superpuesta. */
       body.home-screen .masthead,
       body.home-screen .bottomnav {
-        display: none;
+        display: none !important;
+      }
+
+      /* La barra inferior es navegación de usuario autenticado:
+         no debe aparecer en portada ni antes de iniciar sesión. */
+      body:not(.authenticated) .bottomnav {
+        display: none !important;
       }
       body.home-screen main {
         padding: 0;
@@ -1232,6 +1238,7 @@
       }
       function renderSession() {
         const logged = !!session?.access_token;
+        document.body.classList.toggle('authenticated', logged);
         if ($('adminPanel')) $('adminPanel').hidden = true;
         $('sessionPanel').hidden = logged;
         $('loggedPanel').hidden = !logged;

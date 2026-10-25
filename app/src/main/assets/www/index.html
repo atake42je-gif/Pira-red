@@ -582,6 +582,13 @@
           min-height: calc(100dvh - 52px);
         }
       }
+    
+      .photo-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px; }
+      .photo-card { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.78); box-shadow:0 8px 20px rgba(18,79,131,.08); margin:0; }
+      .photo-card img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; background:#e8f4fc; }
+      .photo-card figcaption { padding:9px 10px 11px; font-size:12px; line-height:1.35; font-weight:800; color:var(--text); }
+      .gallery-note { margin:12px; padding:12px; border-radius:14px; background:rgba(255,255,255,.72); font-size:12px; line-height:1.5; color:var(--muted); }
+
     </style>
   </head>
   <body>
@@ -722,6 +729,29 @@
           </div>
         </section>
 
+
+        <section class="screen" id="photos">
+          <div class="home-body">
+            <div class="section-head"><h2>Fotos de Pirané y PiraRed</h2><small>Galería completa</small></div>
+            <p class="gallery-note">Todas las imágenes guardadas en la carpeta visual del proyecto se muestran aquí. Las fotos sin identificación confirmada se conservan como “foto por identificar”, sin atribuirles un lugar por suposición.</p>
+            <div class="photo-gallery">
+              <figure class="photo-card"><img src="app/Img/01-inicio-pirared.png" alt="Portada de inicio PiraRed" loading="lazy"><figcaption>1. Portada de inicio PiraRed</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/02-monumento-plaza.jpg" alt="Monumento de la plaza de Pirané" loading="lazy"><figcaption>2. Monumento de la plaza</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/03-plaza-juegos.jpg" alt="Plaza y juegos" loading="lazy"><figcaption>3. Placita / parque</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/04-informacion-pirared.jpg" alt="Información de PiraRed" loading="lazy"><figcaption>4. Información de la app</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/05-yo-amo-pirane.jpg" alt="Cartel Yo amo Pirané" loading="lazy"><figcaption>5. Cartel “YO ❤️ PIRANÉ”</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/06-logo-pirared.png" alt="Logo de PiraRed" loading="lazy"><figcaption>6. Logo PiraRed</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/07-vista-aerea-pirane.jpg" alt="Vista aérea de Pirané" loading="lazy"><figcaption>7. Vista aérea de Pirané</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/08-monumento-50-anios.jpg" alt="Monumento de los 50 años" loading="lazy"><figcaption>8. Monumento de los 50 años</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/11-detalles%20de%20la%20app%20-tren.jpg" alt="Detalles de PiraRed con tren" loading="lazy"><figcaption>9. Detalles de la app con tren</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/images%20(3).jpeg" alt="Foto original por identificar 1" loading="lazy"><figcaption>10. Foto original por identificar</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/images%20(4).jpeg" alt="Foto original por identificar 2" loading="lazy"><figcaption>11. Foto original por identificar</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/images%20(9).jpeg" alt="Foto original por identificar 3" loading="lazy"><figcaption>12. Foto original por identificar</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/logo-pirared-original.png" alt="Logo original de PiraRed" loading="lazy"><figcaption>13. Logo original de PiraRed</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/portada-pirared.png" alt="Portada visual PiraRed" loading="lazy"><figcaption>14. Portada visual PiraRed</figcaption></figure>
+            </div>
+          </div>
+        </section>
         <section class="screen" id="about">
           <div class="home-body">
             <div class="section-head"><h2>Información</h2><small>Sobre PiraRed</small></div>
@@ -751,6 +781,10 @@
         <button class="navbtn" data-screen="ads" onclick="go('ads')">
           <span class="icon-wrap"><span class="icon">◫</span></span>
           Comercios
+        </button>
+        <button class="navbtn" data-screen="photos" onclick="go('photos')">
+          <span class="icon-wrap"><span class="icon">▧</span></span>
+          Fotos
         </button>
         <button class="navbtn" data-screen="account" onclick="go('account')">
           <span class="icon-wrap"><span class="icon">☰</span></span>

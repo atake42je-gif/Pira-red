@@ -19,7 +19,7 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - La pantalla Información usa `app/Img/04-informacion-pirared.jpg`.
 - La portada se ajustó a pantalla completa y se quitaron los textos/capas duplicados sobre la imagen. Se conservaron zonas táctiles para los accesos; su alineación con los botones dibujados en la foto debe probarse en un teléfono.
 - La imagen original se muestra sin filtro ni capa oscura añadida; el recorte final depende de la proporción de cada dispositivo. Hay que comprobar la APK instalada porque el código del repositorio no demuestra qué versión está en el teléfono.
-- La galería ordenada de abajo es una referencia de los archivos originales. **No significa que ya existan cinco pantallas separadas para mostrar esas fotos**: por ahora, las otras imágenes siguen siendo recursos que deben identificarse e integrarse donde corresponda.
+- Se agregó a `index.html` una pantalla **Fotos** con una galería que muestra los 14 archivos de imagen presentes en `app/Img/`, incluyendo las fotos locales, las portadas y los logos. Las tres imágenes con nombres genéricos se etiquetan como pendientes de identificación; no se les atribuye un lugar por suposición. Esto integra las imágenes en la interfaz, pero todavía debe comprobarse visualmente en la APK instalada.
 - Se limpiaron copias idénticas de imágenes. Se conservaron archivos visualmente distintos aunque todavía falte clasificarlos.
 
 ## Pendientes de desarrollo y verificación
@@ -43,7 +43,8 @@ PiraRed es una app Android para la comunidad de Pirané. El registro de cambios 
 - [ ] Confirmar visualmente que la portada de inicio sea la imagen original del tren con PiraRed, grande y legible.
 - [ ] Identificar cuál de las imágenes originales sin nombre descriptivo corresponde a la estatua; no asignar una foto por suposición.
 - [ ] Verificar el orden solicitado: **tren/inicio → estatua → placita/parque → monumento de los 50 años → cartel “YO ❤️ PIRANÉ” → información de la app**.
-- [ ] Integrar las imágenes 2 a 5 en la experiencia visual donde corresponda; no basta con que existan en la carpeta.
+- [x] Agregar una pantalla Fotos con una galería que presenta todas las imágenes que actualmente existen en `app/Img/`.
+- [ ] Confirmar en el teléfono que las 14 imágenes de la galería carguen correctamente en la APK.
 - [ ] Revisar carga, calidad, recorte y legibilidad de cada imagen en el teléfono.
 - [ ] Comprobar que no aparezca un fondo negro involuntario.
 - [ ] Probar cada botón, enlace y regreso a Inicio; corregir los que no tengan una acción funcional.

@@ -175,20 +175,19 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Publicar actualización oficial (solo con firma estable)
+      - name: Publicar APK descargable directamente (sin ZIP)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${PIRARED_BUILD_TYPE:-debug}" != "release" ]; then
-            echo "::warning::APK compilada como prueba; no se publica para actualización porque falta configurar una firma estable."
-            exit 0
+          TAG="prueba-${GITHUB_RUN_NUMBER}"
+          if [ "${PIRARED_BUILD_TYPE:-debug}" = "release" ]; then
+            NOTES="APK de PiraRed firmada con la clave estable configurada. Se puede actualizar una instalación con la misma firma."
+            gh release create "$TAG" dist/PiraRed.apk --title "PiraRed ${TAG}" --notes "$NOTES" --latest
+          else
+            NOTES="APK de prueba de PiraRed. Se descarga directamente como archivo .apk, no como ZIP. Al ser una compilación debug, puede requerir desinstalar la versión anterior antes de instalar; desinstalar puede borrar datos locales."
+            gh release create "$TAG" dist/PiraRed.apk --title "PiraRed ${TAG} (prueba)" --notes "$NOTES" --prerelease
           fi
-          TAG="build-${GITHUB_RUN_NUMBER}"
-          gh release create "$TAG" dist/PiraRed.apk \
-            --title "PiraRed ${TAG}" \
-            --notes "Actualización oficial de PiraRed. Instalá sobre la versión anterior; debe conservarse la misma firma." \
-            --latest
 

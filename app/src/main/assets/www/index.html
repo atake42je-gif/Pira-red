@@ -821,7 +821,9 @@
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        /* La portada trae los botones dibujados; mantener la imagen completa
+           dentro de la pantalla hace que las zonas táctiles coincidan. */
+        object-fit: fill;
         object-position: center;
       }
       /* La bienvenida usa la misma portada que Inicio, sin una capa oscura

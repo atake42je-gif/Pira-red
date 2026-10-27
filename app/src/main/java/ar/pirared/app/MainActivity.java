@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View;
+import android.graphics.Color;
 import android.webkit.WebResourceRequest;
 import android.app.AlertDialog;
 import android.content.pm.PackageInfo;
@@ -38,10 +40,19 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
+        // Mantener visibles la barra superior de estado y la barra inferior
+        // de navegación del teléfono; el contenido se adapta al área disponible.
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.parseColor("#DFF5FF"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getWindow().setNavigationBarColor(Color.parseColor("#DFF5FF"));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0)
+            );
+        }
 
         // The app currently runs fully from bundled assets. Keep WebView locked
         // to those assets until a reviewed, HTTPS backend is added.

@@ -296,6 +296,29 @@
         background-repeat: no-repeat;
         background-attachment: scroll;
       }
+      /* Acceso y registro se abren como pantallas independientes, nunca debajo de la portada. */
+      body.account-screen #home { display: none !important; }
+      body.account-screen #account,
+      body.account-screen #account.active {
+        display: block;
+        width: 100%;
+        min-height: 100dvh;
+        margin: 0;
+      }
+      body.account-screen main {
+        padding: 0;
+        min-height: 100dvh;
+      }
+      body.account-screen .app-shell {
+        width: 100%;
+        max-width: 430px;
+        min-height: 100dvh;
+      }
+      body.account-screen #account .home-body {
+        min-height: 100dvh;
+        padding-top: max(22px, env(safe-area-inset-top, 0px));
+        padding-bottom: max(34px, env(safe-area-inset-bottom, 0px));
+      }
       /* Registro: sin logo pequeño en la cabecera; foto local visible y formulario ordenado. */
       body.account-screen .masthead-logo { display: none; }
       body.account-screen .masthead {

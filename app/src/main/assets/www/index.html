@@ -1064,6 +1064,24 @@
       .screen:not(#home) .primary:active,
       .screen:not(#home) .secondary:active,
       .screen:not(#home) .dashboard-tile:active { transform:scale(.985); }
+
+      /* Formularios de acceso y registro: acciones únicas, legibles y adaptables. */
+      #account .home-body { min-height:100dvh; justify-content:flex-start; padding-top:clamp(20px,5vh,48px); padding-bottom:calc(28px + env(safe-area-inset-bottom,0px)); }
+      #account .section-head { padding:8px 4px 16px; }
+      #account .panel { width:100%; margin:0; padding:clamp(18px,5vw,26px); border-radius:24px; }
+      #account #authForm { gap:7px; }
+      #account #authForm input { min-height:52px; background:rgba(3,20,38,.72); color:#fff; border:1px solid rgba(89,211,255,.78); border-radius:14px; }
+      #account #authForm input::placeholder { color:rgba(226,242,255,.68); }
+      #account #authForm input:focus { outline:3px solid rgba(58,190,255,.22); border-color:#5bd7ff; }
+      #account #authForm .cta-row { display:grid; grid-template-columns:minmax(0,1fr); gap:0; margin-top:14px; }
+      #account #authForm .cta-row button { width:100%; min-height:52px; border:1px solid #5bd7ff; border-radius:15px; font-size:16px; font-weight:800; }
+      #account #registerButton { display:none !important; }
+      #account #resetPasswordButton { margin-top:12px; min-height:48px; }
+      #account .auth-switch { display:block; width:100%; margin-top:10px; padding:12px 8px; background:transparent; border:0; color:#9ce7ff; font-size:14px; font-weight:750; text-decoration:underline; text-underline-offset:3px; }
+      #account .form-note { color:rgba(239,248,255,.86); }
+      #account #sessionPanel > p:first-of-type { font-size:15px; }
+      #account #sessionPanel [hidden] { display:none !important; }
+      @media (max-height:700px) { #account .home-body { padding-top:14px; } #account .section-head { padding-bottom:10px; } #account #sessionPanel > p:first-of-type { margin-bottom:12px; } }
     </style>
   </head>
   <body class="home-screen">
@@ -1217,17 +1235,16 @@
                 <div id="registerNameField" hidden><label for="authName">Nombre para mostrar</label>
                 <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre" /></div>
                 <label for="authEmail">Correo electrónico</label>
-                <input id="authEmail" type="email" required autocomplete="email" placeholder="vos@ejemplo.com" />
+                <input id="authEmail" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="vos@ejemplo.com" />
                 <label for="authPassword">Contraseña</label>
-                <input id="authPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
+                <input id="authPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres" />
                 <div class="cta-row">
                   <button class="primary" type="submit" id="loginButton">Iniciar sesión</button>
-                  <button class="secondary" type="button" id="registerButton">Crear cuenta</button>
                 </div>
               </form>
               <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
-              <button class="secondary full-button" type="button" id="switchAuthMode">¿No tenés cuenta? Crear cuenta</button>
-              <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
+              <button class="auth-switch" type="button" id="switchAuthMode">¿No tenés cuenta? Crear cuenta</button>
+              <p class="form-note">Usá una contraseña única de al menos 8 caracteres. Nunca la compartas. No necesitamos tu número de teléfono.</p>
             </div>
             <div class="panel" id="safetyPanel" hidden>
               <h3>Seguridad de la comunidad</h3>

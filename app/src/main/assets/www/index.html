@@ -296,6 +296,27 @@
         background-repeat: no-repeat;
         background-attachment: scroll;
       }
+      /* Todas las secciones de PiraRed reemplazan la pantalla anterior.
+         Ninguna sección se apila debajo de otra ni reserva espacio para una barra inferior. */
+      main { padding: 0 !important; }
+      .app-shell { width: 100%; max-width: 430px; min-height: 100dvh; }
+      .screen,
+      .screen.active {
+        width: 100%;
+        min-height: 100dvh;
+        box-sizing: border-box;
+      }
+      .screen { display: none; }
+      .screen.active { display: block; }
+      .bottomnav,
+      body.authenticated .bottomnav {
+        display: none !important;
+      }
+      .screen .home-body {
+        box-sizing: border-box;
+        padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+      }
+      .screen-title-back { padding-top: max(18px, env(safe-area-inset-top, 0px)); }
       /* Acceso y registro se abren como pantallas independientes, nunca debajo de la portada. */
       body.account-screen #home { display: none !important; }
       body.account-screen #account,

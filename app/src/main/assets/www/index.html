@@ -467,54 +467,50 @@
         text-shadow: 0 10px 24px rgba(0,0,0,0.48);
       }
 
-      /* No se dibuja ningún elemento encima de la portada. Estas zonas
-         transparentes coinciden con los botones que ya vienen en la imagen. */
-      /* Botones reales y visibles: no dependemos de zonas táctiles invisibles
-         sobre una imagen que puede escalar distinto en cada teléfono. */
+      /* Los botones están dibujados en la imagen original. Los controles
+         HTML solo son zonas táctiles transparentes, nunca se ven. */
       .welcome-actions {
         position: absolute;
         z-index: 5;
-        left: 0;
-        right: 0;
-        bottom: max(22px, env(safe-area-inset-bottom, 0px));
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-        padding: 16px;
-        pointer-events: auto;
+        inset: 0;
+        display: block;
+        padding: 0;
+        pointer-events: none;
       }
       .welcome-actions button {
-        position: static;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute;
+        display: block;
         min-width: 0;
-        min-height: 52px;
-        padding: 12px 10px;
-        border: 1px solid rgba(255,255,255,.78);
-        border-radius: 15px;
-        color: #123653;
-        background: rgba(255,255,255,.94);
-        box-shadow: 0 8px 24px rgba(10,45,75,.22);
-        font-size: 14px;
-        font-weight: 850;
-        line-height: 1.2;
-        text-align: center;
-        opacity: 1;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 12px;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: transparent !important;
+        font-size: 0;
+        opacity: 0;
         pointer-events: auto;
-        -webkit-tap-highlight-color: rgba(30,143,255,.25);
+        -webkit-tap-highlight-color: transparent;
       }
+      /* Áreas de toque en la zona inferior de la portada; la imagen queda intacta. */
       .welcome-actions button:nth-child(1) {
-        color: #fff;
-        background: linear-gradient(135deg, #1678d2, #22a6e8);
+        left: 8%;
+        width: 40%;
+        top: 68%;
+        height: 12%;
+      }
+      .welcome-actions button:nth-child(2) {
+        right: 8%;
+        width: 40%;
+        top: 68%;
+        height: 12%;
       }
       .welcome-actions button:nth-child(3) {
-        grid-column: 1 / -1;
-      }
-      @media (max-height: 620px) {
-        .welcome-actions { gap: 8px; padding: 10px 14px; bottom: 8px; }
-        .welcome-actions button { min-height: 44px; padding: 8px; }
+        left: 14%;
+        width: 72%;
+        top: 82%;
+        height: 11%;
       }
 
       .primary {
@@ -925,12 +921,11 @@
           <div class="welcome-hero">
             <img src="app/Img/file_000000005d30820e921dc8703d3997dc.png" alt="Portada de PiraRed con botones de acceso" />
             <div class="welcome-copy" aria-label="Accesos de la portada">
-              <!-- Zonas táctiles transparentes sobre los botones dibujados en la
-                   imagen original; conservan la portada sin duplicar elementos. -->
-              <div class="welcome-actions">
-                <button class="primary" aria-label="Iniciar sesión" onclick="go('account')">Iniciar sesión</button>
-                <button class="secondary" aria-label="Crear cuenta" onclick="go('account'); document.getElementById('registerButton')?.click()">Crear cuenta</button>
-                <button class="ghost" aria-label="Acceso para comercios" onclick="go('publish')">Acceso para comercios</button>
+              <!-- Controles accesibles e invisibles: los botones visibles son parte de la imagen original. -->
+              <div class="welcome-actions" aria-label="Accesos de la portada">
+                <button type="button" aria-label="Iniciar sesión" onclick="go('account')"></button>
+                <button type="button" aria-label="Crear cuenta" onclick="go('account'); document.getElementById('registerButton')?.click()"></button>
+                <button type="button" aria-label="Acceso para comercios" onclick="go('publish')"></button>
               </div>
             </div>
           </div>

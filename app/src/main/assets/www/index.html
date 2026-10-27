@@ -1166,6 +1166,92 @@
       #account #sessionPanel > p:first-of-type { font-size:15px; }
       #account #sessionPanel [hidden] { display:none !important; }
       @media (max-height:700px) { #account .home-body { padding-top:14px; } #account .section-head { padding-bottom:10px; } #account #sessionPanel > p:first-of-type { margin-bottom:12px; } }
+
+      /* Sistema visual unificado: todas las pantallas comparten el mismo
+         vidrio translúcido, contornos, radios, sombras y respuesta de botones.
+         Se mantienen las fotos locales distintas de cada sección. */
+      :root {
+        --glass-bg: rgba(5, 32, 57, 0.62);
+        --glass-border: rgba(143, 224, 255, 0.76);
+        --glass-shadow: 0 12px 30px rgba(0, 15, 35, 0.22);
+        --button-radius: 15px;
+      }
+      .screen:not(#home) {
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: scroll !important;
+      }
+      .screen:not(#home) .panel,
+      #account .panel,
+      #messages .panel, #saved .panel, #profile .panel,
+      #categories .panel, #jobs .panel, #services .panel {
+        color: #f5fbff !important;
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 22px !important;
+        box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.12) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(1.18) !important;
+        backdrop-filter: blur(14px) saturate(1.18) !important;
+      }
+      .screen:not(#home) .section-head {
+        color: #fff;
+        text-shadow: 0 2px 10px rgba(0, 15, 35, .72) !important;
+      }
+      .screen button:not(.welcome-actions button),
+      .screen input[type="button"],
+      .screen input[type="submit"] {
+        border-radius: var(--button-radius);
+        transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .screen button:not(.welcome-actions button):not(.navbtn) {
+        border: 1px solid rgba(143, 224, 255, .58);
+        box-shadow: 0 5px 14px rgba(0, 15, 35, .15);
+      }
+      .screen button:not(.welcome-actions button):active {
+        transform: scale(.98);
+        filter: brightness(1.08);
+      }
+      .screen .primary,
+      .screen button.primary,
+      .screen button[type="submit"] {
+        color: #fff !important;
+        background: linear-gradient(135deg, rgba(18, 111, 201, .98), rgba(40, 190, 242, .96)) !important;
+        border-color: rgba(178, 238, 255, .8) !important;
+      }
+      .screen .secondary,
+      .screen button.secondary {
+        color: #effaff !important;
+        background: rgba(9, 52, 82, .82) !important;
+        border-color: rgba(143, 224, 255, .65) !important;
+      }
+      .screen input:not([type="hidden"]),
+      .screen textarea,
+      .screen select {
+        border-radius: 13px;
+        border: 1px solid rgba(143, 224, 255, .72);
+        box-shadow: inset 0 1px 3px rgba(0, 15, 35, .08);
+      }
+      .screen .dashboard-tile,
+      .screen .shortcut-list button {
+        color: #fff !important;
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 18px !important;
+        box-shadow: var(--glass-shadow) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(1.18) !important;
+        backdrop-filter: blur(14px) saturate(1.18) !important;
+      }
+      .bottomnav {
+        background: rgba(3, 24, 43, .88) !important;
+        border-top: 1px solid rgba(143, 224, 255, .55) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(1.2) !important;
+        backdrop-filter: blur(16px) saturate(1.2) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .screen button { transition: none !important; }
+      }
     </style>
   </head>
   <body class="home-screen">

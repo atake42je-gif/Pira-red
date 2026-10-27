@@ -18,6 +18,7 @@ import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.Looper;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -29,7 +30,7 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCallback;
     private static final int FILE_REQUEST = 1001;
     private static final String LOCAL_ASSETS = "file:///android_asset/";
-    private static final String RELEASE_API = "https://api.github.com/repos/atake42je-gif/Pira-red/releases/latest";
+    private static final String RELEASE_API = "https://api.github.com/repos/atake42je-gif/Pira-red/releases?per_page=10";
     private static final String RELEASE_PAGE = "https://github.com/atake42je-gif/Pira-red/releases/latest";
 
     @Override
@@ -120,16 +121,28 @@ public class MainActivity extends Activity {
                 String line;
                 while ((line = reader.readLine()) != null) body.append(line);
                 reader.close();
-                JSONObject release = new JSONObject(body.toString());
-                String tag = release.optString("tag_name", "");
-                int latestBuild = parseBuildNumber(tag);
+                JSONArray releases = new JSONArray(body.toString());
+                JSONObject release = null;
+                int latestBuild = 0;
+                String releaseUrl = RELEASE_PAGE;
+                for (int i = 0; i < releases.length(); i++) {
+                    JSONObject candidate = releases.optJSONObject(i);
+                    if (candidate == null || candidate.optBoolean("draft", false)) continue;
+                    String candidateTag = candidate.optString("tag_name", "");
+                    int candidateBuild = parseBuildNumber(candidateTag);
+                    if (candidateBuild > latestBuild && candidate.has("assets") && candidate.optJSONArray("assets") != null && candidate.optJSONArray("assets").length() > 0) {
+                        latestBuild = candidateBuild;
+                        release = candidate;
+                        releaseUrl = candidate.optString("html_url", RELEASE_PAGE);
+                    }
+                }
+                if (release == null) return;
                 int installedBuild;
                 try {
                     PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
                     installedBuild = (int) (Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode);
                 } catch (Exception ignored) { installedBuild = 0; }
                 if (latestBuild > installedBuild) {
-                    String releaseUrl = release.optString("html_url", RELEASE_PAGE);
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (isFinishing() || isDestroyed()) return;
                         new AlertDialog.Builder(MainActivity.this)
@@ -152,8 +165,10 @@ public class MainActivity extends Activity {
     }
 
     private int parseBuildNumber(String tag) {
-        if (tag == null || !tag.startsWith("build-")) return 0;
-        try { return Integer.parseInt(tag.substring("build-".length())); }
+        if (tag == null) return 0;
+        String prefix = tag.startsWith("prueba-") ? "prueba-" : (tag.startsWith("build-") ? "build-" : null);
+        if (prefix == null) return 0;
+        try { return Integer.parseInt(tag.substring(prefix.length())); }
         catch (NumberFormatException ignored) { return 0; }
     }
 

@@ -413,12 +413,13 @@
         position: absolute;
         display: block;
         width: 100%;
-        height: 100%;
-        /* La portada y sus botones ya vienen integrados en la imagen.
-           Llenar el área completa mantiene las zonas táctiles alineadas
-           con los botones impresos y evita franjas vacías en el teléfono. */
-        object-fit: fill;
-        object-position: center;
+        height: 106%;
+        top: -3%;
+        left: 0;
+        /* Recorta la franja clara del borde superior y cubre toda la pantalla
+           sin estirar la portada original. */
+        object-fit: cover;
+        object-position: center center;
         filter: none;
       }
 
@@ -1278,11 +1279,11 @@
         hero.style.height = '100dvh';
         hero.style.minHeight = '100vh';
         img.style.width = '100%';
-        img.style.height = '100%';
+        img.style.height = '106%';
         img.style.left = '0';
-        img.style.top = '0';
+        img.style.top = '-3%';
         img.style.objectFit = 'cover';
-        img.style.objectPosition = 'center';
+        img.style.objectPosition = 'center center';
       }
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);

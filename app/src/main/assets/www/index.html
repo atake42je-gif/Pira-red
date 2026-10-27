@@ -1655,7 +1655,7 @@
         try {
           const data = await authRequest('token?grant_type=password', {email,password});
           if (!data?.access_token) throw new Error('No se recibió una sesión. Si te registraste recién, confirmá el correo y volvé a ingresar.');
-          setSession(data); go('home'); showToast('Sesión iniciada correctamente.');
+          setSession(data); go('home'); renderSession(); loadCommunityPosts(); loadAds(); loadMessages(); loadAdminQueue(); showToast('Sesión iniciada correctamente.');
         } catch (error) { showToast(error.message || 'No se pudo iniciar sesión.'); }
         finally { $('loginButton').disabled = false; }
       });
@@ -1671,7 +1671,7 @@
         $('loginButton').disabled = true;
         try {
           const data = await authRequest('signup', {email,password,data:{display_name:name,dni_number:dni}});
-          if (data?.access_token) { setSession(data); go('home'); }
+          if (data?.access_token) { setSession(data); go('home'); renderSession(); loadCommunityPosts(); loadAds(); loadMessages(); loadAdminQueue(); }
           showToast(data?.access_token ? 'Cuenta creada. Falta completar la carga segura de tu selfie para que quede guardada como foto de perfil.' : 'Cuenta solicitada. Confirmá el correo para continuar; la selfie seleccionada todavía debe guardarse de forma segura en el perfil.');
         } catch (error) {
           const message = error.message || 'No se pudo crear la cuenta.';

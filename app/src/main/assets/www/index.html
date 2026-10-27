@@ -151,6 +151,7 @@
       body:not(.authenticated) .bottomnav {
         display: none !important;
       }
+      body.authenticated .bottomnav { display: flex !important; }
       body.home-screen main {
         padding: 0;
       }
@@ -1614,12 +1615,15 @@
         try {
           const uid = encodeURIComponent(session.user.id);
           const rows = await api('private_messages?select=id,sender_id,recipient_id,body,read_at,created_at&or=(sender_id.eq.'+uid+',recipient_id.eq.'+uid+')&order=created_at.desc&limit=50');
-          $('messageInbox').innerHTML = rows?.length ? rows.map(m => {
+          const inboxHtml = rows?.length ? rows.map(m => {
             const sent = m.sender_id === session.user.id;
             return '<article class="panel"><small>'+(sent?'Enviado':'Recibido')+' · '+escapeHtml(new Date(m.created_at).toLocaleString('es-AR'))+'</small><p>'+escapeHtml(m.body)+'</p>' + (!sent ? '<button class="secondary" type="button" data-reply-to="'+escapeHtml(m.sender_id)+'">Responder en privado</button>' : '') + '</article>';
           }).join('') : '<p>Todavía no tenés mensajes privados.</p>';
+          $('messageInbox').innerHTML = inboxHtml;
+          if ($('messagesScreenList')) $('messagesScreenList').innerHTML = inboxHtml;
         } catch (_) {
           $('messageInbox').innerHTML = '<p>No se pudieron cargar los mensajes. Iniciá sesión nuevamente si tu sesión venció.</p>';
+          if ($('messagesScreenList')) $('messagesScreenList').innerHTML = $('messageInbox').innerHTML;
         }
       }
       $('refreshMessages')?.addEventListener('click', loadMessages);

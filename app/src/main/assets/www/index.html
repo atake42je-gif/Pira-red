@@ -231,6 +231,34 @@
       .screen.active {
         display: block;
       }
+      /* Navegación por pantallas reales: una sola sección visible a la vez.
+         Cada pantalla ocupa el alto del dispositivo y su contenido se desplaza
+         dentro de ella, nunca se agrega debajo de la pantalla anterior. */
+      .screen[hidden] {
+        display: none !important;
+      }
+      .app-shell > main {
+        position: relative;
+        width: 100%;
+        min-width: 0;
+      }
+      .app-shell > main > .screen {
+        width: 100%;
+        min-width: 0;
+        min-height: 100dvh;
+        overflow-wrap: anywhere;
+      }
+      .app-shell > main > .screen.active {
+        display: block;
+        animation: screen-enter 160ms ease-out;
+      }
+      @keyframes screen-enter {
+        from { opacity: 0.72; }
+        to { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .app-shell > main > .screen.active { animation: none; }
+      }
 
       /* Las pantallas interiores también deben mostrar Pirané: foto nítida,
          velo suave y tarjetas menos opacas para que el fondo tenga presencia. */
@@ -1563,7 +1591,12 @@
         }
         document.body.classList.toggle('account-screen', screen === 'account');
         document.body.classList.toggle('home-screen', screen === 'home' && !session?.access_token);
-        document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
+        document.querySelectorAll('.screen').forEach(s => {
+          const isCurrent = s.id === screen;
+          s.classList.toggle('active', isCurrent);
+          s.hidden = !isCurrent;
+          s.setAttribute('aria-hidden', String(!isCurrent));
+        });
         window.scrollTo(0, 0);
         document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
         if (screen === 'ads') loadAds();

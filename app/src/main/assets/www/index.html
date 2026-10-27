@@ -250,8 +250,12 @@
       #categories { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/03-plaza-juegos.jpg') !important; }
       #jobs { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/08-monumento-50-anios.jpg') !important; }
       #services { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
-      #home .home-body { display:none; }
-      body.authenticated #home .home-body { display:block; }
+      #home .home-body { display:block; }
+      body.home-screen #home .home-body { display:none; }
+      body:not(.home-screen) #home .welcome-hero { height:42vh; min-height:300px; max-height:440px; }
+      body:not(.home-screen) #home .welcome-hero > img { object-position:center 28%; }
+      body:not(.home-screen) #home .welcome-actions { display:none; }
+      body:not(.home-screen) #home .home-body { display:block; }
       .dashboard-greeting { color:#fff; text-shadow:0 2px 10px #00182a; padding:24px 18px 12px; }
       .dashboard-greeting img { width:82px; height:82px; object-fit:contain; display:block; margin:0 auto 8px; }
       .dashboard-greeting h2 { text-align:center; margin:4px 0; font-size:27px; }
@@ -1152,11 +1156,11 @@
           <div class="home-body">
             <div class="section-head"><h2>Mi cuenta</h2><small>Acceso seguro</small></div>
             <div class="panel" id="sessionPanel">
-              <h3>Ingresar o crear una cuenta</h3>
-              <p>Usá tu correo para registrarte. Supabase puede pedirte que confirmes el correo antes de iniciar sesión.</p>
-              <form id="authForm">
-                <label for="authName">Nombre para mostrar (solo al registrarte)</label>
-                <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre" />
+              <h3 id="authTitle">Iniciar sesión</h3>
+              <p id="authDescription">Ingresá con el correo y la contraseña de tu cuenta PiraRed.</p>
+              <form id="authForm" data-mode="login">
+                <div id="registerNameField" hidden><label for="authName">Nombre para mostrar</label>
+                <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre" /></div>
                 <label for="authEmail">Correo electrónico</label>
                 <input id="authEmail" type="email" required autocomplete="email" placeholder="vos@ejemplo.com" />
                 <label for="authPassword">Contraseña</label>
@@ -1167,6 +1171,7 @@
                 </div>
               </form>
               <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
+              <button class="secondary full-button" type="button" id="switchAuthMode">¿No tenés cuenta? Crear cuenta</button>
               <p class="form-note">Nunca compartas tu contraseña. PiraRed no necesita tu número de teléfono para iniciar sesión.</p>
             </div>
             <div class="panel" id="safetyPanel" hidden>
@@ -1525,7 +1530,21 @@
         if (chip) { document.querySelectorAll('.category-chip').forEach(btn => btn.classList.toggle('active', btn === chip)); renderHomeListings(); }
       });
       $('searchInput')?.addEventListener('input', renderExploreList);
+      function setAuthMode(mode) {
+        const registering = mode === 'register';
+        $('authForm').dataset.mode = registering ? 'register' : 'login';
+        $('authTitle').textContent = registering ? 'Crear cuenta' : 'Iniciar sesión';
+        $('authDescription').textContent = registering ? 'Completá tus datos para crear tu cuenta de PiraRed.' : 'Ingresá con el correo y la contraseña de tu cuenta PiraRed.';
+        $('registerNameField').hidden = !registering;
+        $('loginButton').textContent = registering ? 'Registrarme' : 'Iniciar sesión';
+        $('registerButton').hidden = registering;
+        $('resetPasswordButton').hidden = registering;
+        $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
+        $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
+      }
+      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
       $('authForm')?.addEventListener('submit', async event => {
+        if ($('authForm').dataset.mode === 'register') { event.preventDefault(); await createAccount(); return; }
         event.preventDefault();
         const email = $('authEmail').value.trim(); const password = $('authPassword').value;
         if (password.length < 8) return showToast('La contraseña debe tener al menos 8 caracteres.');
@@ -1537,7 +1556,7 @@
         } catch (error) { showToast(error.message || 'No se pudo iniciar sesión.'); }
         finally { $('loginButton').disabled = false; }
       });
-      $('registerButton')?.addEventListener('click', async () => {
+      async function createAccount() {
         const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
         if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
         $('registerButton').disabled = true;
@@ -1550,7 +1569,8 @@
           showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);
         }
         finally { $('registerButton').disabled = false; }
-      });
+      }
+      $('registerButton')?.addEventListener('click', () => setAuthMode('register'));
       $('resetPasswordButton')?.addEventListener('click', async () => {
         const email = $('authEmail').value.trim();
         if (!email) return showToast('Escribí tu correo y volvé a tocar recuperar contraseña.');

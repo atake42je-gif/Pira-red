@@ -1232,8 +1232,17 @@
               <h3 id="authTitle">Iniciar sesión</h3>
               <p id="authDescription">Ingresá con el correo y la contraseña de tu cuenta PiraRed.</p>
               <form id="authForm" data-mode="login">
-                <div id="registerNameField" hidden><label for="authName">Nombre para mostrar</label>
-                <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre" /></div>
+                <div id="registerNameField" hidden>
+                  <label for="authName">Nombre y apellido</label>
+                  <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre y apellido" />
+                  <label for="authDni">Número de DNI</label>
+                  <input id="authDni" type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]{7,8}" maxlength="8" placeholder="Solo números, sin puntos" aria-describedby="dniHelp" />
+                  <small id="dniHelp" class="form-note">Obligatorio para crear la cuenta. No subas fotos del documento.</small>
+                  <label for="authSelfie">Selfie para tu foto de perfil</label>
+                  <input id="authSelfie" type="file" accept="image/*" capture="user" aria-describedby="selfieHelp" />
+                  <small id="selfieHelp" class="form-note">Obligatoria. Se abre la cámara del dispositivo cuando esté disponible; no elijas una foto de DNI.</small>
+                  <img id="authSelfiePreview" alt="Vista previa de la selfie de perfil" hidden style="width:112px;height:112px;object-fit:cover;border-radius:50%;border:2px solid #64cfff;margin:8px 0 12px" />
+                </div>
                 <label for="authEmail">Correo electrónico</label>
                 <input id="authEmail" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="vos@ejemplo.com" />
                 <label for="authPassword">Contraseña</label>
@@ -1603,12 +1612,27 @@
         $('authDescription').textContent = registering ? 'Completá tus datos para crear tu cuenta de PiraRed.' : 'Ingresá con el correo y la contraseña de tu cuenta PiraRed.';
         $('registerNameField').hidden = !registering;
         $('authName').required = registering;
+        $('authDni').required = registering;
+        $('authSelfie').required = registering;
+        $('authDni').disabled = !registering;
+        $('authSelfie').disabled = !registering;
         $('loginButton').textContent = registering ? 'Crear mi cuenta' : 'Iniciar sesión';
         $('registerButton').hidden = true;
         $('resetPasswordButton').hidden = registering;
         $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
         $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
       }
+      let pendingProfileSelfie = null;
+      $('authSelfie')?.addEventListener('change', () => {
+        const file = $('authSelfie').files?.[0] || null;
+        pendingProfileSelfie = file;
+        const preview = $('authSelfiePreview');
+        if (!file) { preview.hidden = true; preview.removeAttribute('src'); return; }
+        if (!file.type.startsWith('image/')) { pendingProfileSelfie = null; $('authSelfie').value = ''; preview.hidden = true; return showToast('Elegí una imagen tomada con la cámara.'); }
+        if (file.size > 5 * 1024 * 1024) { pendingProfileSelfie = null; $('authSelfie').value = ''; preview.hidden = true; return showToast('La selfie debe pesar menos de 5 MB.'); }
+        preview.src = URL.createObjectURL(file); preview.hidden = false;
+      });
+      $('authDni')?.addEventListener('input', () => { $('authDni').value = $('authDni').value.replace(/\\D/g, '').slice(0, 8); });
       $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
       $('authForm')?.addEventListener('submit', async event => {
         if ($('authForm').dataset.mode === 'register') { event.preventDefault(); await createAccount(); return; }
@@ -1625,12 +1649,18 @@
       });
       async function createAccount() {
         const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
+        const dni = $('authDni').value.trim();
+        const selfie = $('authSelfie').files?.[0] || pendingProfileSelfie;
         if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
+        if (!name) return showToast('Ingresá tu nombre y apellido.');
+        if (!/^[0-9]{7,8}$/.test(dni)) return showToast('Ingresá un DNI válido de 7 u 8 números, sin puntos.');
+        if (!selfie || !selfie.type.startsWith('image/')) return showToast('La selfie tomada con la cámara es obligatoria para registrarte.');
+        if (selfie.size > 5 * 1024 * 1024) return showToast('La selfie debe pesar menos de 5 MB.');
         $('loginButton').disabled = true;
         try {
-          const data = await authRequest('signup', {email,password,data:{display_name:name}});
+          const data = await authRequest('signup', {email,password,data:{display_name:name,dni_number:dni}});
           if (data?.access_token) { setSession(data); go('home'); }
-          showToast(data?.access_token ? 'Cuenta creada y sesión iniciada.' : 'Solicitud recibida. Si Supabase requiere confirmación, revisá la bandeja de entrada y correo no deseado.');
+          showToast(data?.access_token ? 'Cuenta creada. Falta completar la carga segura de tu selfie para que quede guardada como foto de perfil.' : 'Cuenta solicitada. Confirmá el correo para continuar; la selfie seleccionada todavía debe guardarse de forma segura en el perfil.');
         } catch (error) {
           const message = error.message || 'No se pudo crear la cuenta.';
           showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);

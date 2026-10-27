@@ -142,6 +142,7 @@ public class MainActivity extends Activity {
                     PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
                     installedBuild = (int) (Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode);
                 } catch (Exception ignored) { installedBuild = 0; }
+                final String updatePageUrl = releaseUrl;
                 if (latestBuild > installedBuild) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (isFinishing() || isDestroyed()) return;
@@ -150,7 +151,7 @@ public class MainActivity extends Activity {
                             .setMessage("Hay una nueva versión. Abrí la página oficial para descargarla e instalarla. Android te pedirá confirmar la instalación.")
                             .setNegativeButton("Más tarde", (dialog, which) -> dialog.dismiss())
                             .setPositiveButton("Ver actualización", (dialog, which) -> {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl));
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updatePageUrl));
                                 try { startActivity(intent); } catch (Exception ignored) { }
                             })
                             .show();
@@ -204,8 +205,15 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
+        if (webView != null) {
+            webView.evaluateJavascript(
+                "(function(){return window.piraredHandleBack ? window.piraredHandleBack() : 'exit';})()",
+                value -> {
+                    if (value == null || value.contains("exit")) {
+                        finish();
+                    }
+                }
+            );
         } else {
             super.onBackPressed();
         }

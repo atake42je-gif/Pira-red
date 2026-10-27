@@ -1333,6 +1333,83 @@
         backdrop-filter:blur(16px) saturate(1.2) !important;
       }
       @media (prefers-reduced-motion:reduce) { .screen button { transition:none !important; } }
+
+      /* Portada adaptable: se muestra completa en cualquier móvil para que
+         el botón inferior nunca quede cortado. Las zonas táctiles siguen
+         porcentajes de la imagen, no posiciones fijas del dispositivo. */
+      body.home-screen,
+      body.home-screen .app-shell,
+      body.home-screen main,
+      body.home-screen #home {
+        width:100% !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:0 !important;
+      }
+      body.home-screen .welcome-hero {
+        position:relative !important;
+        display:block !important;
+        width:100% !important;
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        aspect-ratio:832 / 1792 !important;
+        overflow:hidden !important;
+        padding:0 !important;
+        background:#071426 !important;
+      }
+      body.home-screen .welcome-hero > img {
+        position:absolute !important;
+        inset:0 !important;
+        display:block !important;
+        width:100% !important;
+        height:100% !important;
+        max-width:none !important;
+        object-fit:fill !important;
+        object-position:center !important;
+      }
+      body.home-screen .welcome-copy,
+      body.home-screen .welcome-actions {
+        position:absolute !important;
+        inset:0 !important;
+        width:100% !important;
+        height:100% !important;
+        min-height:0 !important;
+      }
+      body.home-screen .welcome-actions { display:block !important; pointer-events:none; }
+      body.home-screen .welcome-actions button {
+        position:absolute !important;
+        display:block !important;
+        pointer-events:auto !important;
+        opacity:0 !important;
+        margin:0 !important;
+        padding:0 !important;
+        border:0 !important;
+        box-shadow:none !important;
+        background:transparent !important;
+        transform:none !important;
+      }
+      body.home-screen .welcome-actions button:nth-child(1) {
+        left:6% !important; top:69% !important; width:88% !important; height:9% !important;
+      }
+      body.home-screen .welcome-actions button:nth-child(2) {
+        left:6% !important; top:80.5% !important; width:88% !important; height:9% !important;
+      }
+      body.home-screen .welcome-actions button:nth-child(3) {
+        left:14% !important; top:93% !important; width:72% !important; height:6% !important;
+      }
+      /* En el resto de la aplicación, dejar espacio real para las barras
+         del sistema Android y evitar que controles queden debajo de ellas. */
+      .app-shell > main > .screen:not(#home) {
+        min-height:calc(100dvh - env(safe-area-inset-top, 0px)) !important;
+        padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      .screen:not(#home) .home-body {
+        padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      @media (max-width:360px) {
+        .welcome-actions button { border-radius:8px !important; }
+      }
     </style>
   </head>
   <body class="home-screen">

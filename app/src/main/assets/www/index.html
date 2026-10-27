@@ -873,6 +873,66 @@
         transform: translateX(-50%) translateY(0);
       }
 
+      /* Fondos distintos por sector: el vidrio deja ver las fotos originales. */
+      #explore { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/02-monumento-plaza.jpg') !important; }
+      #publish { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/08-monumento-50-anios.jpg') !important; }
+      #ads { background-image: linear-gradient(180deg,rgba(3,19,38,.10),rgba(3,19,38,.28)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
+      #account { background-image: linear-gradient(180deg,rgba(3,19,38,.18),rgba(3,19,38,.38)),url('app/Img/04-informacion-pirared.jpg') !important; }
+      #photos { background-image: linear-gradient(180deg,rgba(3,19,38,.10),rgba(3,19,38,.24)),url('app/Img/03-plaza-juegos.jpg') !important; }
+      #about { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
+
+      /* Vidrio liviano: botones y tarjetas no deben tapar las fotografías. */
+      .screen:not(#home) .panel,
+      .screen:not(#home) .compact-item,
+      .screen:not(#home) .listing-card,
+      .screen:not(#home) .search-box,
+      .screen:not(#home) .photo-card {
+        color: #f5fbff;
+        background: rgba(5, 30, 54, .43);
+        border: 1px solid rgba(157, 226, 255, .58);
+        box-shadow: 0 8px 24px rgba(0, 10, 25, .18), inset 0 1px 0 rgba(255,255,255,.12);
+        -webkit-backdrop-filter: blur(5px) saturate(1.18);
+        backdrop-filter: blur(5px) saturate(1.18);
+      }
+      .screen:not(#home) .panel h3,
+      .screen:not(#home) .panel p,
+      .screen:not(#home) .compact-item strong,
+      .screen:not(#home) .compact-item small,
+      .screen:not(#home) .listing-card h3,
+      .screen:not(#home) .listing-meta,
+      .screen:not(#home) .section-head,
+      .screen:not(#home) .photo-card figcaption,
+      .screen:not(#home) .gallery-note { color: #f5fbff; }
+      .screen:not(#home) .panel form label { color: #e6f7ff; }
+      .screen:not(#home) .primary,
+      .screen:not(#home) .secondary,
+      .screen:not(#home) .category-chip {
+        border: 1px solid rgba(164, 231, 255, .72);
+        border-radius: 13px;
+        background: rgba(7, 91, 145, .46);
+        color: #fff;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+      }
+      .screen:not(#home) .primary { background: rgba(0, 139, 255, .64); }
+      .screen:not(#home) .category-chip.active { background: rgba(0, 139, 255, .72); color: #fff; }
+      .feed-list { display:grid; gap:16px; padding:0 12px 18px; }
+      .feed-post { overflow:hidden; border:1px solid rgba(151,225,255,.68); border-radius:18px; background:rgba(4,27,49,.44); color:#f7fbff; box-shadow:0 10px 26px rgba(0,10,25,.22); backdrop-filter:blur(5px) saturate(1.16); -webkit-backdrop-filter:blur(5px) saturate(1.16); }
+      .feed-post-head { display:flex; align-items:center; gap:10px; padding:12px; }
+      .feed-avatar { width:38px; height:38px; flex:0 0 38px; object-fit:cover; border-radius:50%; border:1px solid rgba(150,225,255,.8); }
+      .feed-author { min-width:0; flex:1; font-size:13px; font-weight:800; }
+      .feed-author small { display:block; margin-top:3px; font-size:11px; font-weight:500; color:#d6efff; }
+      .feed-expiry { font-size:10px; white-space:nowrap; padding:5px 7px; border:1px solid rgba(167,230,255,.58); border-radius:9px; background:rgba(2,75,124,.45); }
+      .feed-photo { display:block; width:100%; height:240px; object-fit:cover; background:rgba(0,0,0,.15); }
+      .feed-content { padding:12px 14px 14px; }
+      .feed-content h3 { margin:0 0 7px; font-size:16px; color:#fff; }
+      .feed-content p { color:#eaf7ff; font-size:13px; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; }
+      .feed-meta { display:flex; justify-content:space-between; gap:8px; margin-top:10px; font-size:11px; color:#d5edff; }
+      .feed-actions { display:flex; gap:8px; padding:0 12px 12px; }
+      .feed-actions button { flex:1; min-height:40px; border:1px solid rgba(155,226,255,.62); border-radius:12px; color:#fff; background:rgba(5,94,150,.46); }
+      .feed-empty { margin:12px; padding:18px; color:#fff; background:rgba(4,27,49,.45); border:1px solid rgba(151,225,255,.6); border-radius:18px; backdrop-filter:blur(5px); }
+
       @media (min-width: 480px) {
         body {
           padding: 26px 0;
@@ -964,16 +1024,15 @@
         <section class="screen" id="explore">
           <div class="home-body">
             <div class="section-head">
-              <h2>Explorar</h2>
-              <small id="countLabel">0 publicaciones</small>
+              <h2>Publicaciones</h2>
+              <small id="countLabel">Feed de la comunidad</small>
             </div>
-
+            <p class="gallery-note">Como en Instagram: publicaciones aprobadas con fotos de Pirané. Cada publicación deja de mostrarse después de 7 días.</p>
             <div class="search-box">
               <span>🔎</span>
               <input id="searchInput" type="text" placeholder="Buscar publicaciones..." />
             </div>
-
-            <div class="list-compact" id="exploreList"></div>
+            <div class="feed-list" id="exploreList"></div>
           </div>
         </section>
 
@@ -1125,7 +1184,8 @@
             <div class="section-head"><h2>Fotos de Pirané y PiraRed</h2><small>Galería completa</small></div>
             <p class="gallery-note">Las seis imágenes originales de la secuencia PiraRed, respetando el orden elegido.</p>
             <div class="photo-gallery">
-              <figure class="photo-card"><img src="app/Img/01-inicio-pirared.png" alt="Portada original de inicio PiraRed" loading="lazy"><figcaption>1. Inicio: portada original del tren</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/06-logo-pirared.png" alt="Logo original de PiraRed" loading="lazy"><figcaption>Logo de PiraRed</figcaption></figure>
+              <figure class="photo-card"><img src="app/Img/01-inicio-pirared.png" alt="Portada original de inicio PiraRed" loading="lazy"><figcaption>1. Inicio: portada original</figcaption></figure>
               <figure class="photo-card"><img src="app/Img/02-monumento-plaza.jpg" alt="Monumento de la plaza; falta confirmar si corresponde a la estatua solicitada" loading="lazy"><figcaption>2. Monumento de la plaza — confirmar si es la estatua solicitada</figcaption></figure>
               <figure class="photo-card"><img src="app/Img/03-plaza-juegos.jpg" alt="Placita y juegos de Pirané" loading="lazy"><figcaption>3. Placita / parque</figcaption></figure>
               <figure class="photo-card"><img src="app/Img/08-monumento-50-anios.jpg" alt="Monumento de los 50 años" loading="lazy"><figcaption>4. Monumento de los 50 años</figcaption></figure>
@@ -1162,8 +1222,8 @@
           Inicio
         </button>
         <button class="navbtn" data-screen="explore" onclick="go('explore')">
-          <span class="icon-wrap"><span class="icon">⌕</span></span>
-          Explorar
+          <span class="icon-wrap"><span class="icon">▤</span></span>
+          Publicaciones
         </button>
         <button class="navbtn" data-screen="publish" onclick="go('publish')">
           <span class="icon-wrap"><span class="icon">＋</span></span>
@@ -1326,17 +1386,41 @@
       function renderExploreList() {
         const container = $('exploreList'); if (!container) return;
         const query = ($('searchInput')?.value || '').trim().toLowerCase();
-        const filtered = listings.filter(item => !query || [item.title,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
-        $('countLabel').textContent = filtered.length + ' publicaciones';
-        container.innerHTML = filtered.length ? filtered.map(item => '<article class="compact-item"><div class="left"><div class="compact-icon">📌</div><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.category) + ' · ' + escapeHtml(item.place || 'Pirané') + '</small>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<div class="cta-row"><button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button class="secondary" type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button class="secondary" type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button></div>' : '') + '</div></div><span style="font-weight:900;color:#0d5ca8;">' + escapeHtml(item.price || 'Consultar') + '</span></article>').join('') : '<div class="panel"><p>No encontramos publicaciones que coincidan. Probá con otra búsqueda.</p></div>';
+        const now = Date.now();
+        const photoSet = [
+          'app/Img/07-vista-aerea-pirane.jpg',
+          'app/Img/03-plaza-juegos.jpg',
+          'app/Img/08-monumento-50-anios.jpg',
+          'app/Img/05-yo-amo-pirane.jpg',
+          'app/Img/02-monumento-plaza.jpg',
+          'app/Img/04-informacion-pirared.jpg'
+        ];
+        const filtered = communityListings.filter(item => {
+          const created = Date.parse(item.createdAt || '');
+          const recent = Number.isFinite(created) && now - created < 7 * 24 * 60 * 60 * 1000 && created <= now + 5 * 60 * 1000;
+          return recent && (!query || [item.title,item.description,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
+        });
+        $('countLabel').textContent = filtered.length + ' publicaciones · últimos 7 días';
+        container.innerHTML = filtered.length ? filtered.map((item, index) => {
+          const created = Date.parse(item.createdAt);
+          const ageHours = Math.max(0, Math.floor((now - created) / 3600000));
+          const daysLeft = Math.max(0, 7 - Math.floor((now - created) / 86400000));
+          const when = ageHours < 1 ? 'Hace unos minutos' : ageHours < 24 ? 'Hace ' + ageHours + ' h' : 'Hace ' + Math.floor(ageHours / 24) + ' días';
+          const ownerLabel = item.ownerName || 'Vecino de Pirané';
+          return '<article class="feed-post"><div class="feed-post-head"><img class="feed-avatar" src="app/Img/06-logo-pirared.png" alt="PiraRed"><div class="feed-author">' + escapeHtml(ownerLabel) + '<small>' + escapeHtml(item.category) + ' · ' + escapeHtml(when) + '</small></div><span class="feed-expiry">Vence en ' + daysLeft + ' d</span></div><img class="feed-photo" src="' + photoSet[index % photoSet.length] + '" alt="Fotografía local de Pirané" loading="lazy"><div class="feed-content"><h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.description || '') + '</p><div class="feed-meta"><span>' + escapeHtml(item.place || 'Pirané') + '</span><strong>' + escapeHtml(item.price || 'Consultar') + '</strong></div></div><div class="feed-actions">' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button>' : '<button type="button" onclick="go(\'account\')">Iniciá sesión para contactar</button>') + '</div></article>';
+        }).join('') : '<div class="feed-empty"><h3>No hay publicaciones recientes</h3><p>Las publicaciones aprobadas aparecen acá durante 7 días. ¡Podés ser el primero en compartir algo con Pirané!</p></div>';
       }
       async function loadCommunityPosts() {
         try {
-          const rows = await api('community_posts?select=id,owner_id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&order=created_at.desc');
-          communityListings.splice(0, communityListings.length, ...(rows || []).map(r => ({
+          const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+          const rows = await api('community_posts?select=id,owner_id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&created_at=gte.' + encodeURIComponent(cutoff) + '&order=created_at.desc');
+          communityListings.splice(0, communityListings.length, ...(rows || []).filter(r => {
+            const created = Date.parse(r.created_at || '');
+            return Number.isFinite(created) && Date.now() - created < 7 * 24 * 60 * 60 * 1000;
+          }).map(r => ({
             id:r.id, ownerId:r.owner_id, category:r.category, title:r.title, description:r.description,
             price:r.price_text || 'Consultar', place:r.location_text || 'Pirané',
-            contact:r.public_contact || '', icon:'📌'
+            contact:r.public_contact || '', createdAt:r.created_at, icon:'📌'
           })));
           listings.splice(0, listings.length, ...communityListings, ...commerceListings);
           renderHomeListings(); renderExploreList();

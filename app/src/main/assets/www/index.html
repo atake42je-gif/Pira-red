@@ -1602,8 +1602,9 @@
         $('authTitle').textContent = registering ? 'Crear cuenta' : 'Iniciar sesión';
         $('authDescription').textContent = registering ? 'Completá tus datos para crear tu cuenta de PiraRed.' : 'Ingresá con el correo y la contraseña de tu cuenta PiraRed.';
         $('registerNameField').hidden = !registering;
-        $('loginButton').textContent = registering ? 'Registrarme' : 'Iniciar sesión';
-        $('registerButton').hidden = registering;
+        $('authName').required = registering;
+        $('loginButton').textContent = registering ? 'Crear mi cuenta' : 'Iniciar sesión';
+        $('registerButton').hidden = true;
         $('resetPasswordButton').hidden = registering;
         $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
         $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
@@ -1625,7 +1626,7 @@
       async function createAccount() {
         const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
         if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
-        $('registerButton').disabled = true;
+        $('loginButton').disabled = true;
         try {
           const data = await authRequest('signup', {email,password,data:{display_name:name}});
           if (data?.access_token) { setSession(data); go('home'); }
@@ -1634,7 +1635,7 @@
           const message = error.message || 'No se pudo crear la cuenta.';
           showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);
         }
-        finally { $('registerButton').disabled = false; }
+        finally { $('loginButton').disabled = false; }
       }
       $('registerButton')?.addEventListener('click', () => setAuthMode('register'));
       $('resetPasswordButton')?.addEventListener('click', async () => {

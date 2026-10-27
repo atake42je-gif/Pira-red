@@ -1410,6 +1410,29 @@
       @media (max-width:360px) {
         .welcome-actions button { border-radius:8px !important; }
       }
+
+      /* Última defensa: mostrar exclusivamente la pantalla activa. */
+      .app-shell > main > section.screen:not(.active),
+      .app-shell > main > section.screen[hidden] {
+        display: none !important;
+      }
+      .app-shell > main > section.screen.active:not([hidden]) {
+        display: block !important;
+        position: relative;
+        width: 100%;
+        min-height: 100dvh;
+        box-sizing: border-box;
+      }
+      body.account-screen #home,
+      body.account-screen #home[hidden],
+      body.account-screen #home.active {
+        display: none !important;
+      }
+      body.account-screen #account {
+        display: block !important;
+        width: 100%;
+        min-height: 100dvh;
+      }
     </style>
   </head>
   <body class="home-screen">
@@ -1839,6 +1862,7 @@
           const isCurrent = s.id === screen;
           s.classList.toggle('active', isCurrent);
           s.hidden = !isCurrent;
+          s.style.setProperty('display', isCurrent ? 'block' : 'none', 'important');
           s.setAttribute('aria-hidden', String(!isCurrent));
         });
         window.scrollTo(0, 0);

@@ -1272,23 +1272,17 @@
       function fitWelcomeImage() {
         const hero = document.querySelector('.welcome-hero');
         const img = hero?.querySelector(':scope > img');
-        const actions = hero?.querySelector('.welcome-actions');
-        if (!hero || !img || !actions) return;
-        const applyFit = () => {
-          hero.style.height = '100dvh';
-          hero.style.minHeight = '100vh';
-          img.style.width = '100%';
-          img.style.height = '100%';
-          img.style.left = '0';
-          img.style.top = '0';
-          img.style.objectFit = 'fill';
-          actions.style.left = '0';
-          actions.style.top = '0';
-          actions.style.width = '100%';
-          actions.style.height = '100%';
-          actions.style.inset = '0';
-        };
-        applyFit();
+        if (!hero || !img) return;
+        // Mantener la portada a pantalla completa sin estirar la foto ni
+        // convertir la capa de botones en una cuadrícula de toda la pantalla.
+        hero.style.height = '100dvh';
+        hero.style.minHeight = '100vh';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.left = '0';
+        img.style.top = '0';
+        img.style.objectFit = 'cover';
+        img.style.objectPosition = 'center';
       }
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);

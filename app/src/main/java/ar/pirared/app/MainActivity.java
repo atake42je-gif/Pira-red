@@ -133,7 +133,12 @@ public class MainActivity extends Activity {
                     if (candidateBuild > latestBuild && candidate.has("assets") && candidate.optJSONArray("assets") != null && candidate.optJSONArray("assets").length() > 0) {
                         latestBuild = candidateBuild;
                         release = candidate;
-                        releaseUrl = candidate.optString("html_url", RELEASE_PAGE);
+                        JSONArray assets = candidate.optJSONArray("assets");
+                        releaseUrl = RELEASE_PAGE;
+                        if (assets != null && assets.length() > 0) {
+                            JSONObject apkAsset = assets.optJSONObject(0);
+                            if (apkAsset != null) releaseUrl = apkAsset.optString("browser_download_url", RELEASE_PAGE);
+                        }
                     }
                 }
                 if (release == null) return;
@@ -147,12 +152,13 @@ public class MainActivity extends Activity {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (isFinishing() || isDestroyed()) return;
                         new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Actualización de PiraRed disponible")
-                            .setMessage("Hay una nueva versión. Abrí la página oficial para descargarla e instalarla. Android te pedirá confirmar la instalación.")
-                            .setNegativeButton("Más tarde", (dialog, which) -> dialog.dismiss())
-                            .setPositiveButton("Ver actualización", (dialog, which) -> {
+                            .setTitle("Actualización necesaria")
+                            .setMessage("Vamos a descargar la última versión de PiraRed. Cuando termine, Android puede pedirte autorización para instalarla.")
+                            .setCancelable(false)
+                            .setPositiveButton("Actualizar ahora", (dialog, which) -> {
                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updatePageUrl));
                                 try { startActivity(intent); } catch (Exception ignored) { }
+                                finish();
                             })
                             .show();
                     });

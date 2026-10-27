@@ -166,6 +166,7 @@
       }
 
       .masthead {
+        display: none !important;
         position: sticky;
         top: 0;
         z-index: 30;
@@ -1364,7 +1365,16 @@
         window.setTimeout(hidePiraredSplash, 1250);
       }, { once: true });
 
-      function go(screen) {
+      const screenHistory = [];
+      let currentScreen = 'home';
+      function go(screen, fromBack = false) {
+        if (!screen || !$(screen)) return;
+        if (!fromBack && screen !== currentScreen) {
+          screenHistory.push(currentScreen);
+          currentScreen = screen;
+        } else if (fromBack) {
+          currentScreen = screen;
+        }
         document.body.classList.toggle('account-screen', screen === 'account');
         document.body.classList.toggle('home-screen', screen === 'home');
         document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === screen));
@@ -1373,6 +1383,16 @@
         if (screen === 'ads') loadAds();
         if (screen === 'account') { renderSession(); if (session?.access_token) { loadAdminQueue(); loadMessages(); } else if ($('messagesPanel')) $('messagesPanel').hidden = true; }
       }
+      // Android usa esta función para volver a la pantalla anterior sin cerrar la app.
+      window.piraredHandleBack = function () {
+        if (screenHistory.length) {
+          const previous = screenHistory.pop();
+          go(previous, true);
+          return 'handled';
+        }
+        return 'exit';
+      };
+
       function renderHomeListings() {
         const container = $('homeListings'); if (!container) return;
         if (!listings.length) {

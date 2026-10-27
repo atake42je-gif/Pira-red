@@ -250,10 +250,12 @@
 
       /* Fondo local de Pirané también en la pantalla de registro e ingreso. */
       #account {
-        min-height: calc(100dvh - 90px);
-        background-image: linear-gradient(180deg, rgba(226,244,255,0.72), rgba(239,248,255,0.88)), url('app/Img/02-monumento-plaza.jpg');
+        min-height: 100dvh;
+        background-color: #071426;
+        background-image: linear-gradient(180deg, rgba(2,12,29,0.22), rgba(2,12,29,0.52)), url('app/Img/05-yo-amo-pirane.jpg');
         background-size: cover;
-        background-position: center;
+        background-position: center center;
+        background-repeat: no-repeat;
         background-attachment: scroll;
       }
       /* Registro: sin logo pequeño en la cabecera; foto local visible y formulario ordenado. */
@@ -261,31 +263,43 @@
       body.account-screen .masthead {
         min-height: 62px;
         padding: 10px 16px;
-        background: rgba(255,255,255,0.76);
+        color: #fff;
+        background: rgba(4,16,34,0.62);
+        border-bottom: 1px solid rgba(255,255,255,0.18);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
       }
       #account {
         position: relative;
-        background-image: linear-gradient(180deg, rgba(218,241,255,0.38), rgba(235,247,255,0.78)), url('app/Img/02-monumento-plaza.jpg');
+        min-height: 100dvh;
+        background-image: linear-gradient(180deg, rgba(3,13,30,0.20), rgba(3,13,30,0.58)), url('app/Img/05-yo-amo-pirane.jpg');
         background-size: cover;
-        background-position: center top;
+        background-position: center center;
+        background-repeat: no-repeat;
       }
       #account .home-body {
-        min-height: calc(100dvh - 90px);
+        min-height: 100dvh;
+        box-sizing: border-box;
         padding: 22px 16px 34px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       #account .section-head {
         padding: 16px 4px 18px;
         margin: 0;
-        color: #123653;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.72);
       }
       #account .panel {
-        background: rgba(255,255,255,0.92);
-        border: 1px solid rgba(255,255,255,0.9);
-        border-radius: 24px;
+        color: #f5faff;
+        background: linear-gradient(145deg, rgba(13,48,75,0.78), rgba(3,18,38,0.82));
+        border: 1px solid rgba(148,222,255,0.72);
+        border-radius: 26px;
         padding: 22px 20px;
-        box-shadow: 0 16px 42px rgba(20,78,125,0.2);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 18px 48px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.12);
+        backdrop-filter: blur(14px) saturate(1.2);
+        -webkit-backdrop-filter: blur(14px) saturate(1.2);
       }
       #account #sessionPanel h3 {
         font-size: 22px;
@@ -305,7 +319,7 @@
         margin: 5px 0 0;
         font-size: 13px;
         font-weight: 800;
-        color: #234966;
+        color: #e5f5ff;
       }
       #account #authForm input {
         width: 100%;
@@ -315,8 +329,8 @@
         padding: 12px 14px;
         border: 1px solid #c9ddec;
         border-radius: 13px;
-        background: rgba(255,255,255,0.96);
-        color: #173954;
+        background: rgba(247,252,255,0.96);
+        color: #102a42;
         font-size: 16px;
       }
       #account .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }

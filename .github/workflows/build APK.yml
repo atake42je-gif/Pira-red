@@ -120,6 +120,29 @@ jobs:
           PY
           node --check /tmp/pirared-inline.js
 
+      - name: Verificar adaptacion movil y privacidad del registro
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("app/src/main/assets/www/index.html").read_text(encoding="utf-8")
+          checks = {
+              "sin portada de carga duplicada": 'id="pirared-splash"' not in html,
+              "zoom accesible": "maximum-scale=1" not in html and "user-scalable=no" not in html,
+              "portada proporcional": "46.43dvh" in html and "object-fit:contain" in html,
+              "zonas tactiles separadas": "welcome-actions button:nth-child(3)" in html,
+              "pantallas independientes": "s.hidden = !isCurrent" in html,
+              "no recolecta DNI sin verificacion segura": "authDni" not in html and "dni_number" not in html,
+              "no solicita selfie sin almacenamiento seguro": "authSelfie" not in html and "pendingProfileSelfie" not in html,
+          }
+          failed = [name for name, passed in checks.items() if not passed]
+          for name, passed in checks.items():
+              print(("OK: " if passed else "ERROR: ") + name)
+          if failed:
+              raise SystemExit("Fallaron validaciones de interfaz: " + ", ".join(failed))
+          PY
+
       - name: Compilar APK
         shell: bash
         run: |

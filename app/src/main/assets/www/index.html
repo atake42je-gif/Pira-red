@@ -2,7 +2,7 @@
 <html lang="es-AR">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#dff5ff" />
     <title>PiraRed</title>
     <style>
@@ -1360,17 +1360,36 @@
         padding:0 !important;
         background:#071426 !important;
       }
+      /* La portada y sus zonas táctiles comparten exactamente el mismo marco
+         proporcional (832×1792). Así no se estira ni se desalinean los botones
+         cuando cambia la relación de aspecto entre móviles Android. */
       body.home-screen .welcome-hero > img {
         position:absolute !important;
-        inset:0 !important;
+        left:50% !important;
+        top:50% !important;
+        right:auto !important;
+        bottom:auto !important;
         display:block !important;
-        width:100% !important;
-        height:100% !important;
+        width:min(100vw, 46.43dvh) !important;
+        height:auto !important;
+        aspect-ratio:832 / 1792 !important;
         max-width:none !important;
-        object-fit:cover !important;
+        object-fit:contain !important;
         object-position:center center !important;
+        transform:translate(-50%,-50%) !important;
       }
-      body.home-screen .welcome-copy,
+      body.home-screen .welcome-copy {
+        position:absolute !important;
+        left:50% !important;
+        top:50% !important;
+        right:auto !important;
+        bottom:auto !important;
+        width:min(100vw, 46.43dvh) !important;
+        height:auto !important;
+        aspect-ratio:832 / 1792 !important;
+        min-height:0 !important;
+        transform:translate(-50%,-50%) !important;
+      }
       body.home-screen .welcome-actions {
         position:absolute !important;
         inset:0 !important;
@@ -1588,13 +1607,7 @@
                 <div id="registerNameField" hidden>
                   <label for="authName">Nombre y apellido</label>
                   <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre y apellido" />
-                  <label for="authDni">Número de DNI</label>
-                  <input id="authDni" type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]{7,8}" maxlength="8" placeholder="Solo números, sin puntos" aria-describedby="dniHelp" />
-                  <small id="dniHelp" class="form-note">Obligatorio para crear la cuenta. No subas fotos del documento.</small>
-                  <label for="authSelfie">Selfie para tu foto de perfil</label>
-                  <input id="authSelfie" type="file" accept="image/*" capture="user" aria-describedby="selfieHelp" />
-                  <small id="selfieHelp" class="form-note">Obligatoria. Se abre la cámara del dispositivo cuando esté disponible; no elijas una foto de DNI.</small>
-                  <img id="authSelfiePreview" alt="Vista previa de la selfie de perfil" hidden style="width:112px;height:112px;object-fit:cover;border-radius:50%;border:2px solid #64cfff;margin:8px 0 12px" />
+                  <p class="form-note">Por ahora la cuenta se crea con correo y contraseña. No pedimos DNI ni selfie hasta tener un proceso de verificación seguro y privado.</p>
                 </div>
                 <label for="authEmail">Correo electrónico</label>
                 <input id="authEmail" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="vos@ejemplo.com" />
@@ -1826,19 +1839,24 @@
       function fitWelcomeImage() {
         const hero = document.querySelector('.welcome-hero');
         const img = hero?.querySelector(':scope > img');
-        if (!hero || !img) return;
-        // Mantener la portada a pantalla completa sin estirar la foto ni
-        // convertir la capa de botones en una cuadrícula de toda la pantalla.
+        const copy = hero?.querySelector('.welcome-copy');
+        if (!hero || !img || !copy) return;
+        // El CSS limita imagen y botones al mismo rectángulo con proporción
+        // original, centrado dentro de la pantalla disponible.
         hero.style.height = '100dvh';
-        hero.style.minHeight = '100vh';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.left = '0';
-        img.style.top = '0';
-        img.style.objectFit = 'cover';
+        hero.style.minHeight = '100svh';
+        img.style.width = 'min(100vw, 46.43dvh)';
+        img.style.height = 'auto';
+        img.style.left = '50%';
+        img.style.top = '50%';
+        img.style.objectFit = 'contain';
         img.style.objectPosition = 'center center';
-        img.style.transform = 'none';
-        img.style.transformOrigin = 'center center';
+        img.style.transform = 'translate(-50%, -50%)';
+        copy.style.width = 'min(100vw, 46.43dvh)';
+        copy.style.height = 'auto';
+        copy.style.left = '50%';
+        copy.style.top = '50%';
+        copy.style.transform = 'translate(-50%, -50%)';
       }
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);
@@ -1971,28 +1989,13 @@
         $('authDescription').textContent = registering ? 'Completá tus datos para crear tu cuenta de PiraRed.' : 'Ingresá con el correo y la contraseña de tu cuenta PiraRed.';
         $('registerNameField').hidden = !registering;
         $('authName').required = registering;
-        $('authDni').required = registering;
-        $('authSelfie').required = registering;
-        $('authDni').disabled = !registering;
-        $('authSelfie').disabled = !registering;
         $('loginButton').textContent = registering ? 'Crear mi cuenta' : 'Iniciar sesión';
         $('registerButton').hidden = true;
         $('resetPasswordButton').hidden = registering;
         $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
         $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
       }
-      let pendingProfileSelfie = null;
-      $('authSelfie')?.addEventListener('change', () => {
-        const file = $('authSelfie').files?.[0] || null;
-        pendingProfileSelfie = file;
-        const preview = $('authSelfiePreview');
-        if (!file) { preview.hidden = true; preview.removeAttribute('src'); return; }
-        if (!file.type.startsWith('image/')) { pendingProfileSelfie = null; $('authSelfie').value = ''; preview.hidden = true; return showToast('Elegí una imagen tomada con la cámara.'); }
-        if (file.size > 5 * 1024 * 1024) { pendingProfileSelfie = null; $('authSelfie').value = ''; preview.hidden = true; return showToast('La selfie debe pesar menos de 5 MB.'); }
-        preview.src = URL.createObjectURL(file); preview.hidden = false;
-      });
-      $('authDni')?.addEventListener('input', () => { $('authDni').value = $('authDni').value.replace(/\\D/g, '').slice(0, 8); });
-      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
+quitar manejadores de datos biométricos no implementados      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
       $('authForm')?.addEventListener('submit', async event => {
         if ($('authForm').dataset.mode === 'register') { event.preventDefault(); await createAccount(); return; }
         event.preventDefault();
@@ -2008,18 +2011,13 @@
       });
       async function createAccount() {
         const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
-        const dni = $('authDni').value.trim();
-        const selfie = $('authSelfie').files?.[0] || pendingProfileSelfie;
         if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
         if (!name) return showToast('Ingresá tu nombre y apellido.');
-        if (!/^[0-9]{7,8}$/.test(dni)) return showToast('Ingresá un DNI válido de 7 u 8 números, sin puntos.');
-        if (!selfie || !selfie.type.startsWith('image/')) return showToast('La selfie tomada con la cámara es obligatoria para registrarte.');
-        if (selfie.size > 5 * 1024 * 1024) return showToast('La selfie debe pesar menos de 5 MB.');
         $('loginButton').disabled = true;
         try {
-          const data = await authRequest('signup', {email,password,data:{display_name:name,dni_number:dni}});
+          const data = await authRequest('signup', {email,password,data:{display_name:name}});
           if (data?.access_token) { setSession(data); go('home'); renderSession(); loadCommunityPosts(); loadAds(); loadMessages(); loadAdminQueue(); }
-          showToast(data?.access_token ? 'Cuenta creada. Falta completar la carga segura de tu selfie para que quede guardada como foto de perfil.' : 'Cuenta solicitada. Confirmá el correo para continuar; la selfie seleccionada todavía debe guardarse de forma segura en el perfil.');
+          showToast(data?.access_token ? 'Cuenta creada correctamente.' : 'Cuenta solicitada. Confirmá el correo para continuar.');
         } catch (error) {
           const message = error.message || 'No se pudo crear la cuenta.';
           showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);

@@ -1454,7 +1454,7 @@
               <!-- Controles accesibles e invisibles: los botones visibles son parte de la imagen original. -->
               <div class="welcome-actions" aria-label="Accesos de la portada">
                 <button type="button" aria-label="Iniciar sesión" onclick="go('account')"></button>
-                <button type="button" aria-label="Crear cuenta" onclick="go('account'); document.getElementById('registerButton')?.click()"></button>
+                <button type="button" aria-label="Crear cuenta" onclick="go('account'); setAuthMode('register')"></button>
                 <button type="button" aria-label="Acceso para comercios" onclick="go('publish')"></button>
               </div>
             </div>

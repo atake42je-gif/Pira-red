@@ -1334,15 +1334,17 @@
       }
       @media (prefers-reduced-motion:reduce) { .screen button { transition:none !important; } }
 
-      /* Portada adaptable: se muestra completa en cualquier móvil para que
-         el botón inferior nunca quede cortado. Las zonas táctiles siguen
-         porcentajes de la imagen, no posiciones fijas del dispositivo. */
+      /* Portada adaptable: ocupa la pantalla completa sin deformar la foto.
+         object-fit:cover conserva la proporción original y recorta solo lo
+         imprescindible en móviles con una relación de aspecto diferente. */
       body.home-screen,
       body.home-screen .app-shell,
       body.home-screen main,
       body.home-screen #home {
         width:100% !important;
         max-width:none !important;
+        min-height:100dvh !important;
+        height:100dvh !important;
         margin:0 !important;
         padding:0 !important;
       }
@@ -1350,10 +1352,10 @@
         position:relative !important;
         display:block !important;
         width:100% !important;
-        height:auto !important;
-        min-height:0 !important;
+        height:100dvh !important;
+        min-height:100dvh !important;
         max-height:none !important;
-        aspect-ratio:832 / 1792 !important;
+        aspect-ratio:auto !important;
         overflow:hidden !important;
         padding:0 !important;
         background:#071426 !important;
@@ -1365,8 +1367,8 @@
         width:100% !important;
         height:100% !important;
         max-width:none !important;
-        object-fit:fill !important;
-        object-position:center !important;
+        object-fit:cover !important;
+        object-position:center center !important;
       }
       body.home-screen .welcome-copy,
       body.home-screen .welcome-actions {

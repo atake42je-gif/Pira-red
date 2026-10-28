@@ -114,3 +114,21 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 - [x] La galería usa un ajuste de imagen que prioriza mostrar las fotos completas y no cortar detalles importantes; se conserva el estilo claro de tarjetas con efecto vidrio.
 - [x] Se dejó documentado que la prueba visual final debe realizarse sobre la APK instalada y que no se debe sumar texto o lema sobre la portada original.
 - [ ] Verificar la galería y el menú en el teléfono, porque una modificación de código y una compilación correcta no reemplazan la prueba real.
+
+
+### Revisión técnica — 28 de octubre de 2026
+
+- [x] Se ajustó la portada para conservar la proporción original y mantener las zonas táctiles alineadas en pantallas Android con distintas proporciones; los laterales usan la misma foto como fondo cuando sobra espacio.
+- [x] Se quitó la restricción de zoom del navegador para mejorar accesibilidad.
+- [x] Se eliminó el segundo elemento HTML de portada de carga y su espera de 1,25 segundos; la portada principal queda como única portada de la interfaz.
+- [x] Se amplió moderadamente el área de contenido en tabletas (ancho de pantalla desde 600 px CSS).
+- [x] Se dejó el registro de cuenta con correo, contraseña y nombre; DNI y selfie no se solicitan ni se guardan hasta implementar una verificación de identidad segura, privada y real. No presentar la cuenta como identidad verificada.
+- [x] Se mantuvo el WebView con depuración desactivada, acceso universal desde archivos desactivado, contenido mixto bloqueado y navegación restringida a recursos locales.
+- [x] Se cambió el fondo del icono adaptativo a azul PiraRed.
+- [ ] Confirmar que GitHub Actions compile correctamente los últimos commits y publique una APK nueva.
+- [ ] Probar en el Moto G51 y, si es posible, en otro móvil y una tableta: botones de portada, zoom, registro, vuelta atrás, imágenes y navegación entre pantallas.
+- [ ] Confirmar una firma estable para actualizaciones; no está demostrado que el APK de prueba pueda actualizar una instalación firmada con otra clave.
+
+**Commits de esta revisión:** `82785294b16e2c1ab10f14e9848658052fd4b041`, `b17812b51a60a8ce1aedf0a734a59cdbd4286e24`, `41281d9d06952b6d62276a4dbafadb58552fb3ad`. El cambio de fondo del icono quedó en `0e83a7d1b09a3c70a70adb442785105b4ca379e4`.
+
+Estos cambios están guardados en GitHub. La compilación y la prueba visual en dispositivos todavía deben confirmarse antes de declarar la APK lista.

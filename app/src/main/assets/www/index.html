@@ -1989,7 +1989,7 @@
         $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
         $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
       }
-quitar manejadores de datos biométricos no implementados      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
+// Nota: no se solicitan datos biométricos porque esa función no está implementada.      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
       $('authForm')?.addEventListener('submit', async event => {
         if ($('authForm').dataset.mode === 'register') { event.preventDefault(); await createAccount(); return; }
         event.preventDefault();

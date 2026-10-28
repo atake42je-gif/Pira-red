@@ -1463,7 +1463,6 @@
     </style>
   </head>
   <body class="home-screen">
-    <div id="pirared-splash" aria-label="Bienvenido a PiraRed"><img src="app/Img/file_000000005d30820e921dc8703d3997dc.png" alt="Portada de PiraRed con botones de acceso" /></div>
     <div class="app-shell">
       <header class="masthead">
         <img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed" />
@@ -1833,13 +1832,6 @@
         const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
         clearTimeout(showToast._timer); showToast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
       }
-      function hidePiraredSplash() {
-        const splash = document.getElementById('pirared-splash');
-        if (!splash || splash.dataset.hidden === '1') return;
-        splash.dataset.hidden = '1';
-        splash.classList.add('is-hidden');
-        window.setTimeout(() => splash.remove(), 350);
-      }
       /* La portada ocupa toda la pantalla del móvil. Las zonas táctiles usan
          el mismo rectángulo completo, así los botones impresos siguen activos. */
       function fitWelcomeImage() {
@@ -1867,10 +1859,6 @@
       fitWelcomeImage();
       window.addEventListener('resize', fitWelcomeImage);
       window.addEventListener('orientationchange', fitWelcomeImage);
-
-      window.addEventListener('load', () => {
-        window.setTimeout(hidePiraredSplash, 1250);
-      }, { once: true });
 
       const screenHistory = [];
       let currentScreen = 'home';

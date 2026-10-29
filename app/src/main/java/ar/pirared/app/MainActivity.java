@@ -75,12 +75,17 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
-                return !isLocalAsset(uri);
+                if (isLocalAsset(uri)) return false;
+                openExternalUrl(uri);
+                return true;
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return !isLocalAsset(Uri.parse(url));
+                Uri uri = Uri.parse(url);
+                if (isLocalAsset(uri)) return false;
+                openExternalUrl(uri);
+                return true;
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {
@@ -190,6 +195,18 @@ public class MainActivity extends Activity {
         if (prefix == null) return 0;
         try { return Integer.parseInt(tag.substring(prefix.length())); }
         catch (NumberFormatException ignored) { return 0; }
+    }
+
+    private void openExternalUrl(Uri uri) {
+        if (uri == null) return;
+        String scheme = uri.getScheme();
+        // Solo permitir enlaces web externos; bloquear esquemas inesperados.
+        if (!"https".equalsIgnoreCase(scheme) && !"http".equalsIgnoreCase(scheme)) return;
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        } catch (Exception ignored) {
+            // No cerrar la app si no hay navegador disponible.
+        }
     }
 
     private boolean isLocalAsset(Uri uri) {

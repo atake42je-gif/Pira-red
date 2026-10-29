@@ -143,6 +143,16 @@ jobs:
               raise SystemExit("Fallaron validaciones de interfaz: " + ", ".join(failed))
           PY
 
+      - name: Verificar inicio no bloqueante y orientacion adaptable
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'setCancelable(true)' app/src/main/java/ar/pirared/app/MainActivity.java
+          grep -q 'Ahora no' app/src/main/java/ar/pirared/app/MainActivity.java
+          ! grep -q 'finish();' app/src/main/java/ar/pirared/app/MainActivity.java
+          ! grep -q 'screenOrientation=' app/src/main/AndroidManifest.xml
+          echo "OK: actualización opcional y orientación Android adaptable."
+ 
       - name: Compilar APK
         shell: bash
         run: |

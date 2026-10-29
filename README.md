@@ -4,6 +4,16 @@ PiraRed es una aplicación Android orientada a la comunidad de Pirané y alreded
 
 
 
+## Estado actual — revisión del 29 de octubre de 2026
+
+**Última revisión de interfaz:** se corrigieron en `index.html` el ajuste de la portada para llenar la pantalla sin deformarla, la visibilidad del panel de Inicio para visitantes y las consultas de red que retrasaban el arranque. También se cambió el fondo de Categorías porque la imagen anterior se veía pixelada y se completó el contenido de Información.
+
+- **Commit de la corrección más reciente:** `8185b6c19213583ff5d411d4637a779547361667`.
+- **Código actualizado:** [abrir index.html](app/src/main/assets/www/index.html).
+- **Estado de APK:** estas modificaciones están guardadas en el código; todavía hay que confirmar que una ejecución nueva de GitHub Actions termine correctamente y publique una APK con ellas.
+- **Actualización automática:** no se debe prometer que la APK instalada se actualiza sola. La APK nueva debe compilarse y publicarse, y el actualizador debe detectarla; Android puede solicitar confirmación. Para actualizar la instalación existente hace falta mantener la misma firma de lanzamiento.
+- **Pruebas pendientes:** la compilación no reemplaza la prueba de navegación, botones y adaptación en el teléfono real.
+
 ## Estado actual — portadas nuevas incorporadas al código
 
 Se agregaron al repositorio dos imágenes nuevas que el usuario subió y se actualizó `index.html` para usarlas por separado:
@@ -217,12 +227,13 @@ La imagen de pantallas compartida por el usuario es **una referencia de diseño*
 El usuario volvió a adjuntar las fotografías reales del pueblo, el logo y la imagen de información. Antes de agregarlas o reemplazar recursos, comparar cada archivo con los recursos existentes en `app/src/main/assets/www/app/Img/`, identificar duplicados y conservar los originales distintos. No asignar una foto a la estatua ni a otro lugar por suposición. Registrar en este README cualquier recurso nuevo y su función solo después de verificarlo.
 
 
-## Última compilación verificada — 25 de octubre de 2026
+## Última compilación verificada
 
-- La ejecución de GitHub Actions [40181089631](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631) compiló y verificó la APK correctamente para el commit `31907a51ad5c952e23edcda57cb6fed063e834ef`.
-- Artefacto `PiraRed-APK`: [descargar desde los artefactos de Actions](https://github.com/atake42je-gif/Pira-red/actions/runs/40181089631).
-- **Pendiente importante:** el éxito de compilación no demuestra que se instale sobre la versión ya instalada. El workflow genera una APK de prueba si no están configurados los secretos privados de firma (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). Una APK firmada con otra clave no puede actualizar la instalación existente; no subir el keystore ni sus contraseñas al repositorio.
+La última compilación documentada anteriormente corresponde al 25 de octubre de 2026 y al commit `31907a51ad5c952e23edcda57cb6fed063e834ef`. **No representa las correcciones del 29 de octubre.** Para obtener una APK con el código más reciente, revisar la ejecución de [GitHub Actions](https://github.com/atake42je-gif/Pira-red/actions) y confirmar que se haya ejecutado después del commit `8185b6c19213583ff5d411d4637a779547361667`.
 
+- No presentar el artefacto de una ejecución anterior como si contuviera los cambios nuevos.
+- El éxito de compilación no demuestra que la APK se instale sobre una versión ya instalada.
+- Si no están configurados los secretos privados de firma (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`), puede generarse una APK de prueba con firma distinta. No subir el keystore ni sus contraseñas a GitHub.
 
 ## Actualización visual — 25 de octubre de 2026
 

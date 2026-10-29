@@ -162,14 +162,16 @@ public class MainActivity extends Activity {
                 if (latestBuild > installedBuild) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (isFinishing() || isDestroyed()) return;
+                        // La actualización nunca debe bloquear el inicio ni cerrar la app.
+                        // El usuario decide si quiere abrir la página de descarga.
                         new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Actualización necesaria")
-                            .setMessage("Vamos a descargar la última versión de PiraRed. Cuando termine, Android puede pedirte autorización para instalarla.")
-                            .setCancelable(false)
-                            .setPositiveButton("Actualizar ahora", (dialog, which) -> {
+                            .setTitle("Hay una versión nueva de PiraRed")
+                            .setMessage("Podés seguir usando la aplicación. Si querés, abrí la página para consultar la actualización.")
+                            .setCancelable(true)
+                            .setNegativeButton("Ahora no", (dialog, which) -> dialog.dismiss())
+                            .setPositiveButton("Ver actualización", (dialog, which) -> {
                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updatePageUrl));
                                 try { startActivity(intent); } catch (Exception ignored) { }
-                                finish();
                             })
                             .show();
                     });

@@ -1847,7 +1847,7 @@
           const ratio = naturalWidth / naturalHeight;
           const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
           const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-          const scale = Math.min(viewportWidth / naturalWidth, viewportHeight / naturalHeight);
+          const scale = Math.max(viewportWidth / naturalWidth, viewportHeight / naturalHeight);
           const width = Math.floor(naturalWidth * scale);
           const height = Math.floor(naturalHeight * scale);
           [img, copy].forEach(element => {
@@ -1857,7 +1857,7 @@
             element.style.top = '50%';
             element.style.transform = 'translate(-50%, -50%)';
           });
-          img.style.objectFit = 'contain';
+          img.style.objectFit = 'cover';
           img.style.objectPosition = 'center center';
           copy.style.aspectRatio = ratio;
         };
@@ -2226,7 +2226,11 @@
           $('adForm').reset(); showToast('Promoción enviada para revisión. No se publicará hasta ser aprobada.');
         } catch (error) { showToast('No se pudo enviar: ' + error.message + '. Necesitás un comercio aprobado y la base configurada.'); }
       });
-      renderSession(); renderHomeListings(); renderExploreList();
+      renderSession();
+      // Inicializar una única pantalla visible antes de consultar el servidor.
+      // Los visitantes ven solo la portada; el panel interno aparece tras entrar.
+      go('home', true);
+      renderHomeListings(); renderExploreList();
       // Check the backend without blocking the initial screen.
       loadAds();
       loadCommunityPosts();

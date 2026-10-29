@@ -32,19 +32,45 @@ jobs:
       - name: Instalar herramientas Android
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Compilar APK de prueba
-        run: gradle --no-daemon clean assembleDebug
-
-      - name: Verificar que el APK exista
+      - name: Preparar firma persistente si está configurada
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          test -s app/build/outputs/apk/debug/app-debug.apk
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
-          sha256sum app/build/outputs/apk/debug/app-debug.apk
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pirared-release.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pirared-release.jks" >> "$GITHUB_ENV"
+            echo "PIRARED_BUILD_TYPE=release" >> "$GITHUB_ENV"
+            echo "Se usará la firma de lanzamiento configurada en los secretos."
+          else
+            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+            echo "No hay todos los secretos de firma; se generará APK debug para instalación de prueba."
+          fi
+
+      - name: Compilar APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ "$PIRARED_BUILD_TYPE" = "release" ]; then
+            gradle --no-daemon clean assembleRelease
+            APK_PATH="app/build/outputs/apk/release/app-release.apk"
+          else
+            gradle --no-daemon clean assembleDebug
+            APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+          fi
+          test -s "$APK_PATH"
+          echo "PIRARED_APK_PATH=$APK_PATH" >> "$GITHUB_ENV"
+          ls -lh "$APK_PATH"
+          sha256sum "$APK_PATH"
 
       - name: Publicar APK como artefacto
         uses: actions/upload-artifact@v4
         with:
           name: PiraRed-APK-prueba
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: ${{ env.PIRARED_APK_PATH }}
           if-no-files-found: error
           retention-days: 14

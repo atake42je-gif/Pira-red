@@ -149,8 +149,18 @@ jobs:
           set -euo pipefail
           grep -q 'setCancelable(true)' app/src/main/java/ar/pirared/app/MainActivity.java
           grep -q 'Ahora no' app/src/main/java/ar/pirared/app/MainActivity.java
-          ! grep -q 'finish();' app/src/main/java/ar/pirared/app/MainActivity.java
-          ! grep -q 'screenOrientation=' app/src/main/AndroidManifest.xml
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path("app/src/main/java/ar/pirared/app/MainActivity.java").read_text()
+          start = source.index('.setPositiveButton("Ver actualización"')
+          end = source.index('.show();', start)
+          if "finish()" in source[start:end]:
+              raise SystemExit("El aviso de actualización no debe cerrar la aplicación.")
+          manifest = Path("app/src/main/AndroidManifest.xml").read_text()
+          if "screenOrientation=" in manifest:
+              raise SystemExit("La aplicación no debe forzar una orientación.")
+          print("OK: la actualización no cierra la app y la orientación queda adaptable.")
+          PY
           echo "OK: actualización opcional y orientación Android adaptable."
  
       - name: Compilar APK

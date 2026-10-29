@@ -281,7 +281,12 @@
       #messages { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
       #saved { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
       #profile { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/02-monumento-plaza.jpg') !important; }
-      #categories { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/03-plaza-juegos.jpg') !important; }
+      /* La foto anterior de juegos se ampliaba demasiado y se veía pixelada. */
+      #categories {
+        background-image: linear-gradient(180deg,rgba(2,18,38,.28),rgba(2,18,38,.64)),url('app/Img/02-monumento-plaza.jpg') !important;
+        background-size: cover !important;
+        background-position: center center !important;
+      }
       #jobs { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/08-monumento-50-anios.jpg') !important; }
       #services { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
       #home .home-body { display:block; }
@@ -1701,8 +1706,21 @@
             <div class="section-head"><h2>Información</h2><small>Sobre PiraRed</small></div>
             <div class="panel">
               <img class="about-image" src="app/Img/11-detalles de la app -tren.jpg" alt="Información de PiraRed" />
-              <h3>Pirané conectada</h3>
-              <p>PiraRed reúne oportunidades, servicios y comercio local para fortalecer la comunidad. Los anuncios públicos deben respetar las normas de la comunidad.</p>
+              <h3>Aquí Pirané, mi pueblo</h3>
+              <p><strong>Capital provincial del folklore.</strong> PiraRed es una aplicación hecha en Pirané por un piranense, para conectar a vecinos, trabajadores y comercios de nuestra comunidad, con humildad y sin partidos políticos.</p>
+              <h3>¿Qué podés hacer en PiraRed?</h3>
+              <ul>
+                <li>Comprar y vender productos de la zona.</li>
+                <li>Encontrar trabajos, changas y servicios locales.</li>
+                <li>Conocer comercios y promociones aprobadas.</li>
+                <li>Crear una cuenta, administrar tu perfil y conversar mediante mensajes privados.</li>
+                <li>Guardar publicaciones para encontrarlas después.</li>
+              </ul>
+              <h3>Información de la aplicación</h3>
+              <p><strong>Nombre:</strong> PiraRed — Comunidad de Pirané, Formosa.</p>
+              <p><strong>Versión:</strong> 1.0 (versión en pruebas).</p>
+              <p><strong>Instagram:</strong> <a href="https://www.instagram.com/escalantepepe22/" target="_blank" rel="noopener noreferrer">@escalantepepe22</a></p>
+              <p class="form-note">Las funciones de publicación requieren conexión. Los anuncios se revisan antes de aparecer públicamente. No se deben ofrecer pagos destacados hasta que la integración de pago esté activada y verificada.</p>
               <p class="form-note">Cuidamos tus datos: los contactos privados no se muestran automáticamente y las publicaciones comerciales quedan sujetas a revisión.</p>
               <h3>Privacidad y normas de la comunidad</h3>
               <ul>

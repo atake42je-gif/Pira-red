@@ -630,6 +630,70 @@
         padding-bottom: max(28px, env(safe-area-inset-bottom));
       }
 
+    
+      /* Ajuste Android: fija la bienvenida al viewport real del WebView.
+         Evita que el alto calculado por vh/dvh deje un bloque vacío debajo. */
+      html, body.home-screen {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      body.home-screen {
+        display: block !important;
+      }
+      body.home-screen .app-shell {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      body.home-screen #home {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      body.home-screen #home .welcome-hero {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: max(20px, env(safe-area-inset-top)) 16px max(22px, env(safe-area-inset-bottom)) !important;
+        justify-content: flex-end !important;
+      }
+      body.home-screen #home .welcome-hero > img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+        object-position: center center !important;
+      }
+      body.home-screen #home .welcome-content {
+        position: relative;
+        z-index: 2;
+        width: min(100%, 460px);
+      }
+      @media (max-height: 740px) {
+        body.home-screen #home .welcome-hero { padding-top: 12px !important; padding-bottom: 14px !important; }
+        body.home-screen #home .welcome-tagline { margin: 7px 0 12px; }
+        body.home-screen #home .welcome-buttons button { min-height: 48px; }
+        body.home-screen #home .welcome-foot { margin-top: 9px; }
+      }
+
     </style>
   </head>
   <body class="home-screen">

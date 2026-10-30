@@ -135,6 +135,15 @@ jobs:
               "pantallas independientes": "s.hidden = !isCurrent" in html,
               "no recolecta DNI sin verificacion segura": "authDni" not in html and "dni_number" not in html,
               "no solicita selfie sin almacenamiento seguro": "authSelfie" not in html and "pendingProfileSelfie" not in html,
+              "pantalla de inicio de sesión independiente": 'id="login"' in html,
+              "pantalla de registro independiente": 'id="register"' in html,
+              "acceso de comercios independiente": 'id="commerce"' in html,
+              "mensajes privados conectados": "/rest/v1/private_messages" in html,
+              "publicaciones conectadas": "/rest/v1/community_posts" in html,
+              "promociones aprobadas conectadas": "/rest/v1/ads" in html and "loadPublicAds();" in html,
+              "registro conectado a Supabase Auth": "/auth/v1/signup" in html,
+              "sin campo de teléfono público en el alta": 'name="public_contact"' not in html,
+              "clave pública, sin clave de servicio": "sb_publishable_" in html and "service_role" not in html,
           }
           failed = [name for name, passed in checks.items() if not passed]
           for name, passed in checks.items():

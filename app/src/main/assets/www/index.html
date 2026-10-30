@@ -396,7 +396,8 @@
         }
       }
 
-      .feed-subtitle { margin:22px 0 10px; color:var(--text); font-size:18px; font-weight:900; }\n      .glass-panel { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.68); margin: 18px 14px 100px; }
+      .feed-subtitle { margin:22px 0 10px; color:var(--text); font-size:18px; font-weight:900; }
+      .glass-panel { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.68); margin: 18px 14px 100px; }
       .glass-panel h2 { margin: 8px 0 10px; font-size: 24px; color: var(--text); }
       .app-form { display: grid; gap: 13px; margin-top: 18px; }
       .app-form label { display: grid; gap: 6px; color: var(--text); font-size: 13px; font-weight: 800; }
@@ -726,7 +727,8 @@
     try{
       const specs=[["community_posts","Publicaciones"],["businesses","Comercios"],["ads","Anuncios"]];
       for(const [table,label] of specs){
-        const columns=table==="businesses"?"id,name,status,category":"id,title,status,category";\n        const rows=await api("/rest/v1/"+table+"?select="+columns+"&status=eq.pending&order=created_at.asc&limit=50");
+        const columns=table==="businesses"?"id,name,status,category":"id,title,status,category";
+        const rows=await api("/rest/v1/"+table+"?select="+columns+"&status=eq.pending&order=created_at.asc&limit=50");
         const heading=document.createElement("h3");heading.textContent=label;box.append(heading);
         (rows||[]).forEach(row=>{const card=document.createElement("article");card.className="listing-card";const title=document.createElement("p");title.textContent=row.title||row.name||row.category;card.append(title);const approve=document.createElement("button");approve.textContent="Aprobar";approve.addEventListener("click",()=>moderate(table,row.id,"approved"));const reject=document.createElement("button");reject.textContent="Rechazar";reject.addEventListener("click",()=>moderate(table,row.id,"rejected"));card.append(approve,reject);box.append(card);});
       }

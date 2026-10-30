@@ -62,4 +62,6 @@ La compilación genera `dist/PiraRed.apk` y la publica como artefacto. En builds
 - [ ] Completar las pruebas reales de autenticación, publicaciones, comercios, moderación y mensajes con dos cuentas.
 - [ ] Configurar firma privada estable y resolver los pendientes de privacidad y seguridad indicados arriba.
 
+- [x] Se corrigió el cierre de sesión para enviar a Supabase el token de acceso de la sesión antes de limpiar la sesión local.
+
 **Nota:** los cambios de código están guardados en GitHub. No se consideran verificados en dispositivo hasta completar las pruebas indicadas.

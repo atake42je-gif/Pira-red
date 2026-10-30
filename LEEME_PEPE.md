@@ -167,3 +167,16 @@ Se incorporó una nueva revisión de la interfaz y se conectaron las pantallas p
 - [ ] Si se desea publicidad destacada paga, desplegar y probar el webhook de pago antes de cobrar.
 
 **Importante:** la incorporación del código y una compilación correcta no sustituyen las pruebas en teléfonos reales. No marcar como terminada la publicación pública hasta resolver los pendientes anteriores.
+
+
+## Revisión técnica aplicada — 30 de octubre de 2026
+
+- [x] Se corrigió la referencia de portada: la interfaz ahora usa `app/Img/01-inicio-pirared.png`, que es el archivo oficial documentado y validado por el workflow.
+- [x] Se eliminó la segunda imagen de fondo tipo `cover` detrás de la portada `contain`, para evitar una copia ampliada/cortada y conservar la proporción de la foto original.
+- [x] Se activó la clase de inicio a pantalla completa desde la carga inicial y se actualiza al navegar, para que el inicio use todo el ancho disponible y las demás pantallas mantengan su contenedor.
+- [x] Se corrigió el historial: volver desde una pantalla secundaria recupera la pantalla anterior y volver a Inicio limpia el historial para que el botón Atrás de Android no reabra una pantalla vieja.
+- [ ] Confirmar compilación del commit y probar visualmente la portada y los botones en el Moto G51 y otro tamaño de pantalla.
+- [ ] Completar las pruebas reales de autenticación, publicaciones, comercios, moderación y mensajes con dos cuentas.
+- [ ] Configurar firma privada estable y resolver los pendientes de privacidad y seguridad indicados arriba.
+
+**Nota:** los cambios de código están guardados en GitHub. No se consideran verificados en dispositivo hasta completar las pruebas indicadas.

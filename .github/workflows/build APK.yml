@@ -136,7 +136,7 @@ jobs:
           checks = {
               "sin portada de carga duplicada": 'id="pirared-splash"' not in html,
               "zoom accesible": "maximum-scale=1" not in html and "user-scalable=no" not in html,
-              "portada proporcional y adaptable": "img.naturalWidth" in html and "img.naturalHeight" in html and "object-fit:contain" in html,
+              "portada proporcional y adaptable": "cover.naturalWidth" in html and "cover.naturalHeight" in html and "object-fit:contain" in html and "layoutWelcomeActions();" in html,
               "zonas tactiles separadas": "welcome-actions button:nth-child(3)" in html,
               "pantallas independientes": "s.hidden = !isCurrent" in html,
               "no recolecta DNI sin verificacion segura": "authDni" not in html and "dni_number" not in html,

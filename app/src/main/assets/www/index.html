@@ -536,7 +536,7 @@
   const PIRARED_SUPABASE_KEY = "sb_publishable_QNdAcWGllSEpRrUqoHKoig_YBNWfxDA";
   const API = PIRARED_SUPABASE_URL;
   const $ = (s, root=document) => root.querySelector(s);
-  const $ = (s, root=document) => Array.from(root.querySelectorAll(s));
+  const all = (s, root=document) => Array.from(root.querySelectorAll(s));
   const state = { session:null, user:null, profile:null, posts:[], businesses:[], filter:"", recipient:null, backStack:["home"] };
   const SESSION_KEY = "pirared.auth.session.v1";
   const SAVED_KEY = "pirared.saved.posts.v1";

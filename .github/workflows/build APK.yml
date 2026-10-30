@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -73,15 +73,15 @@ jobs:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
           set -euo pipefail
-          if [ -z "${ANDROID_KEYSTORE_BASE64:-}" ] || [ -z "${ANDROID_KEYSTORE_PASSWORD:-}" ] || [ -z "${ANDROID_KEY_PASSWORD:-}" ]; then
+          if [ -z "${ANDROID_KEYSTORE_BASE64:-}" ] || [ -z "${ANDROID_KEYSTORE_PASSWORD:-}" ] || [ -z "${ANDROID_KEY_PASSWORD:-}" ] || [ -z "${ANDROID_KEY_ALIAS:-}" ]; then
             echo "::warning::Faltan secretos de firma. Se compilará una APK debug para que el workflow no falle."
             echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
             exit 0
           fi
 
-          ANDROID_KEY_ALIAS="pirared-release"
           KEYSTORE="$RUNNER_TEMP/pirared-release.jks"
           echo "Validación 1/3: decodificando el almacén."
           if ! printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"; then
@@ -118,7 +118,7 @@ jobs:
       - name: Compilar APK
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: pirared-release
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         shell: bash
         run: |
@@ -149,3 +149,24 @@ jobs:
           path: ${{ env.PIRARED_APK_PATH }}
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publicar APK directo para descargar
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APK_PATH: ${{ env.PIRARED_APK_PATH }}
+          PIRARED_BUILD_TYPE: ${{ env.PIRARED_BUILD_TYPE }}
+        run: |
+          set -euo pipefail
+          TAG="prueba-${GITHUB_RUN_NUMBER}"
+          APK_SHA256="$(sha256sum "$APK_PATH" | cut -d' ' -f1)"
+          if [ "$PIRARED_BUILD_TYPE" = "release" ]; then
+            NOTE="APK de prueba firmada con la clave de lanzamiento. Build ${GITHUB_RUN_NUMBER}. SHA-256: ${APK_SHA256}."
+          else
+            NOTE="APK DEBUG de prueba. Puede requerir desinstalar una versión instalada con otra firma; eso puede borrar datos locales. Build ${GITHUB_RUN_NUMBER}. SHA-256: ${APK_SHA256}."
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK_PATH#PiraRed.apk" --clobber
+          else
+            gh release create "$TAG" "$APK_PATH#PiraRed.apk" --title "PiraRed ${TAG}" --notes "$NOTE" --prerelease --target "$GITHUB_SHA"
+          fi

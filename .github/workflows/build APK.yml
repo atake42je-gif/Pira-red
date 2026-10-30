@@ -197,6 +197,9 @@ jobs:
             "app/src/main/assets/www/app/Img/04-informacion-pirared.jpg"
             "app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg"
             "app/src/main/assets/www/app/Img/06-logo-pirared.png"
+            "app/src/main/assets/www/app/Img/07-vista-aerea-pirane.jpg"
+            "app/src/main/assets/www/app/Img/08-monumento-50-anios.jpg"
+            "app/src/main/assets/www/app/Img/09-cartel-yo-amo-pirane.jpg"
           )
           for image in "${images[@]}"; do
             test -s "$image" || { echo "Falta la imagen original: $image"; exit 1; }

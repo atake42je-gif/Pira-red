@@ -1,36 +1,54 @@
-# PiraRed — estado del backend y publicación
+# PiraRed — estado del backend Supabase
 
-## Funciones conectadas
-- Registro e inicio de sesión con Supabase Auth, confirmación por correo y recuperación de contraseña.
-- Perfiles privados con políticas RLS.
-- Alta de comercios en estado pendiente.
-- Envío de promociones por comercios aprobados.
-- Listado público limitado a promociones y comercios aprobados.
-- Moderación de anuncios mediante políticas de base de datos; el cliente no incluye botones públicos para aprobar anuncios.
-- Las claves de servicio no deben incluirse en la APK. La interfaz usa únicamente una clave publicable.
+## Proyecto activo
+- Proyecto: `slgqcrcktczuvmivwdst`
+- Región: `us-east-1` (Estados Unidos)
+- Estado comprobado: activo y saludable.
+- El cliente Android usa una clave publicable. Nunca incluir service-role/secret keys en el APK.
 
-## Funciones todavía no listas para lanzamiento completo
-- Publicaciones comunitarias de productos, changas y servicios.
-- Mensajería privada entre vecinos.
-- Panel administrativo dentro de la aplicación, denuncias y bloqueo de usuarios.
-- Política de privacidad y condiciones revisadas para el lanzamiento público.
-- Pruebas funcionales de registro/correo en el dispositivo y revisión final de RLS en el proyecto de producción.
+## Tablas comprobadas
+- `profiles`: perfil básico y rol administrado.
+- `businesses`: solicitudes de alta de comercios.
+- `ads`: anuncios de comercios.
+- `community_posts`: Compra / Venta, Trabajos y Servicios.
+- `private_messages`: mensajes internos.
+- `user_reports` y `user_blocks`: base de denuncias y bloqueos.
+- `payment_orders`: estructura de órdenes de pago.
 
-La interfaz informa cuando estas funciones no están disponibles y no simula envíos de anuncios ni aprobaciones administrativas.
+Las tablas públicas comprobadas tienen RLS activado. Las políticas consultadas restringen mensajes a sus participantes y bloquean mensajes entre personas que se bloquearon. El cliente nunca debe poder asignar el rol admin desde el registro.
 
-## Configuración de Supabase
+## Funciones conectadas en la interfaz Android
+- Registro, inicio/cierre de sesión y solicitud de recuperación mediante Supabase Auth.
+- Perfil básico.
+- Envío de publicaciones comunitarias en estado pendiente.
+- Consulta pública de publicaciones aprobadas.
+- Solicitud de alta de comercios en estado pendiente.
+- Envío y consulta pública de anuncios aprobados.
+- Mensajes privados entre el autor de una publicación y la persona interesada.
+- Cola de moderación para perfiles con rol `admin`.
 
-La interfaz apunta al proyecto `https://slgqcrcktczuvmivwdst.supabase.co` y usa una clave publicable. El proyecto activo tiene tablas `profiles`, `businesses`, `ads`, `payment_orders` y `community_posts`, todas con RLS activado. La migración de publicaciones comunitarias es `202610250001_pirared_community_posts.sql`. Se verificó el estado de los asesores de seguridad de Supabase y no devolvieron alertas en la última consulta; esto no reemplaza las pruebas funcionales ni una revisión de permisos completa.
+Los guardados se conservan localmente en el dispositivo, no en Supabase.
 
-Para el primer administrador, registrá y confirmá una cuenta y luego asigná el rol `admin` manualmente en SQL Editor usando su UUID real. Nunca permitas que el formulario público establezca el rol de administrador.
+## Pendientes del backend y de lanzamiento
+1. Probar registro, confirmación de correo, inicio de sesión y recuperación desde el APK real.
+2. Probar RLS con dos cuentas normales y una cuenta admin.
+3. Completar UI de denuncias y bloqueos; las tablas ya existen.
+4. Configurar Storage y sus políticas si se habilitan fotos de publicaciones.
+5. Habilitar la protección contra contraseñas filtradas en Auth. El asesor de seguridad la reportó desactivada.
+6. Definir el procedimiento de eliminación de cuenta y datos.
+7. Completar y revisar legalmente la política de privacidad y los términos de uso.
+8. Las funciones Edge de pagos no están desplegadas; no activar anuncios destacados pagos hasta implementar y probar preferencia de pago y webhook.
 
-## APK y firma
-El workflow compila y valida el APK. Sin los secretos de firma de Android, genera una APK de depuración. Para publicar y permitir actualizaciones consistentes en dispositivos existentes, configurá una clave de firma privada estable en GitHub Actions Secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). No compartas ni subas la clave privada al repositorio.
+## Primer administrador
+Después de crear y confirmar la cuenta que será administradora, obtené su UUID en Supabase Auth y asigná el rol manualmente en SQL Editor. Reemplazá el marcador por el UUID correcto:
 
-## Antes de anunciar el lanzamiento
-1. Confirmá que la migración y RLS están activas en el proyecto correcto.
-2. Probá registro, confirmación de correo, inicio de sesión, recuperación y envío de una promoción con cuentas de prueba.
-3. Aprobá el comercio y el anuncio con una cuenta administradora separada y verificá que solo lo aprobado sea visible.
-4. Agregá y probá las funciones comunitarias y de mensajería si forman parte del alcance inicial.
-5. Publicá una política de privacidad y condiciones adecuadas a la operación en Argentina.
-6. Generá la APK firmada con la clave estable y probá la actualización en un dispositivo limpio y otro con la versión anterior.
+```sql
+update public.profiles
+set role = 'admin'
+where id = 'UUID-DE-LA-CUENTA-ADMIN';
+```
+
+No agregues una opción pública para que un usuario se asigne a sí mismo el rol administrador.
+
+## Claves
+La clave publicable se puede incluir en la aplicación. Las claves secretas y service-role son privadas y nunca deben almacenarse en GitHub, HTML, JavaScript ni APK.

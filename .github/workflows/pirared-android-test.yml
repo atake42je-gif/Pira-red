@@ -1,8 +1,6 @@
 name: Generar APK de prueba PiraRed
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -61,37 +59,21 @@ jobs:
           mkdir -p app/src/main/res/drawable-nodpi
           convert "$logo" -auto-orient -resize "260x260" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
 
-      - name: Preparar firma persistente si está configurada
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      - name: Preparar compilación de prueba
         run: |
-          set -euo pipefail
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
-            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pirared-release.jks"
-            test -s "$RUNNER_TEMP/pirared-release.jks"
-            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pirared-release.jks" >> "$GITHUB_ENV"
-            echo "PIRARED_BUILD_TYPE=release" >> "$GITHUB_ENV"
-            echo "Se usará la firma de lanzamiento configurada en los secretos."
-          else
-            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
-            echo "No hay todos los secretos de firma; se generará APK debug para instalación de prueba."
-          fi
+          echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+          echo "Esta tarea manual siempre genera una APK DEBUG de prueba."
 
       - name: Compilar APK
         env:
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
           if [ "$PIRARED_BUILD_TYPE" = "release" ]; then
-            gradle --no-daemon clean assembleRelease
+            ./gradlew --no-daemon clean assembleRelease
             APK_PATH="app/build/outputs/apk/release/app-release.apk"
           else
-            gradle --no-daemon clean assembleDebug
+            chmod +x ./gradlew
+            ./gradlew --no-daemon clean assembleDebug
             APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
           fi
           test -s "$APK_PATH"

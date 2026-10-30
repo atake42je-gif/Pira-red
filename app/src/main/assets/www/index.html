@@ -64,7 +64,7 @@
         width: 100%;
         height: 100dvh;
         overflow: hidden;
-        background: #eef9ff;
+        background: #eef9ff url("app/Img/file_000000005d30820e921dc8703d3997dc.png") center / cover no-repeat;
       }
 
       .welcome-hero > img {
@@ -72,7 +72,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center center;
         filter: none;
       }
@@ -162,9 +162,11 @@
         height: 11%;
       }
 
-      .home-body {
-        padding: 18px 16px 8px;
-      }
+      .screen { display: none; min-height: 100dvh; padding-bottom: 90px; }
+      .screen.active { display: block; }
+      #home { padding-bottom: 0; }
+      main { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+      .home-body { padding: 18px 16px 8px; }
 
       .section-head {
         display: flex;
@@ -393,22 +395,39 @@
           min-width: 0;
         }
       }
+
+      .glass-panel { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.68); margin: 18px 14px 100px; }
+      .glass-panel h2 { margin: 8px 0 10px; font-size: 24px; color: var(--text); }
+      .app-form { display: grid; gap: 13px; margin-top: 18px; }
+      .app-form label { display: grid; gap: 6px; color: var(--text); font-size: 13px; font-weight: 800; }
+      .app-form input, .app-form textarea, .app-form select { width: 100%; min-height: 46px; padding: 12px 13px; border: 1px solid rgba(28,102,170,.18); border-radius: 13px; background: rgba(255,255,255,.94); color: var(--text); font: inherit; font-size: 15px; }
+      .app-form textarea { min-height: 92px; resize: vertical; }
+      .app-form button, .full-button { min-height: 48px; border-radius: 13px; border: 0; padding: 12px 16px; font-weight: 850; }
+      .full-button { width: 100%; margin-top: 10px; }
+      .back-link, .text-button { border: 0; background: transparent; color: #126ab4; font-weight: 800; padding: 8px 0; }
+      .form-status { min-height: 20px; margin-top: 12px; color: #174e76; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+      .small-note { margin-top: 12px !important; font-size: 12px; }
+      .empty-state { padding: 18px; border-radius: 16px; background: rgba(255,255,255,.72); color: var(--muted); line-height: 1.5; }
+      .listing-card { grid-template-columns: minmax(0,1fr); align-items: start; }
+      .listing-card .listing-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+      .listing-card .listing-actions button { border:1px solid rgba(30,143,255,.18); background:rgba(30,143,255,.08); color:#145b91; border-radius:10px; padding:8px 11px; font-weight:800; }
+      .hidden { display:none !important; }
+      .bottomnav { padding-bottom: calc(8px + env(safe-area-inset-bottom,0px)); }
+      .navbtn { min-width:0; padding:0 2px; }
+      .category-chip { border:1px solid rgba(49,122,204,.18); cursor:pointer; }
+      .welcome-actions button { cursor:pointer; }
+      @media (min-width:600px) { .app-shell { max-width:760px; } .bottomnav { width:min(100%,760px); } .listing-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     </style>
   </head>
   <body>
     <div class="app-shell">
       <section id="home" class="screen active">
         <div class="welcome-hero">
-          <img src="app/Img/file_000000005d30820e921dc8703d3997dc.png" alt="PiraRed" />
-          <div class="welcome-copy">
-            <img class="welcome-logo" src="app/Img/01-inicio-pirared.png" alt="PiraRed logo" />
-            <div class="welcome-kicker">Pirané</div>
-            <h1 class="welcome-title">PiraRed</h1>
-          </div>
-          <div class="welcome-actions" aria-label="Acciones de portada">
-            <button type="button" aria-label="Explorar"></button>
-            <button type="button" aria-label="Publicar"></button>
-            <button type="button" aria-label="Ingresar"></button>
+          <img src="app/Img/file_000000005d30820e921dc8703d3997dc.png" alt="Portada original de PiraRed en Pirané" />
+          <div class="welcome-actions" aria-label="Accesos de PiraRed">
+            <button type="button" data-go="login" aria-label="Iniciar sesión"></button>
+            <button type="button" data-go="register" aria-label="Crear cuenta"></button>
+            <button type="button" data-go="commerce" aria-label="Acceso exclusivo para comercios"></button>
           </div>
         </div>
       </section>
@@ -423,24 +442,17 @@
               <span class="category-chip">Servicios</span>
               <span class="category-chip">Home</span>
             </div>
-            <div class="listing-grid">
-              <article class="listing-card">
-                <div class="listing-thumb"><img src="app/Img/03-plaza-juegos.jpg" alt="Casa" /></div>
-                <div class="listing-main">
-                  <span class="listing-badge">Destacado</span>
-                  <h3>Departamento céntrico</h3>
-                  <div class="listing-meta"><span>2 dorm.</span><span>1 baño</span><span>65 m²</span></div>
-                </div>
-                <div class="listing-price">U$S 180</div>
-              </article>
+            <div class="category-strip" aria-label="Categorías">
+              <button class="category-chip" type="button" data-filter="Compra / Venta">Compra / Venta</button>
+              <button class="category-chip" type="button" data-filter="Trabajos">Trabajos y changas</button>
+              <button class="category-chip" type="button" data-filter="Servicios">Servicios</button>
+              <button class="category-chip" type="button" data-filter="Publicidad">Publicidad</button>
+            </div>
+            <div id="public-posts" class="listing-grid" aria-live="polite"><p class="empty-state">Cargando publicaciones aprobadas…</p></div>
+          </div>
+        </section>
 
-              <article class="listing-card">
-                <div class="listing-thumb"><img src="app/Img/02-monumento-plaza.jpg" alt="Terreno" /></div>
-                <div class="listing-main">
-                  <span class="listing-badge">Popular</span>
-                  <h3>Terreno en zona tranquila</h3>
-                  <div class="listing-meta"><span>500 m²</span><span>Urbanizado</span></div>
-                </div>
+
                 <div class="listing-price">U$S 95</div>
               </article>
             </div>
@@ -464,34 +476,313 @@
             <p>Conectamos vendedores y compradores de Pirané con una experiencia simple, rápida y visual.</p>
           </div>
         </section>
+        <section id="login" class="screen"><div class="panel glass-panel">
+          <button class="back-link" type="button" data-go="home">← Volver al inicio</button>
+          <h2>Iniciar sesión</h2><p>Entrá a tu cuenta de PiraRed.</p>
+          <form id="login-form" class="app-form"><label>Correo electrónico<input name="email" type="email" autocomplete="email" required maxlength="254"></label><label>Contraseña<input name="password" type="password" autocomplete="current-password" required minlength="6"></label><button class="primary" type="submit">Ingresar</button></form>
+          <button class="text-button" type="button" data-go="recover">¿Olvidaste tu contraseña?</button>
+          <p>¿Todavía no tenés cuenta? <button class="text-button" type="button" data-go="register">Crear cuenta</button></p><div id="login-status" class="form-status" role="status"></div>
+        </div></section>
+        <section id="register" class="screen"><div class="panel glass-panel">
+          <button class="back-link" type="button" data-go="home">← Volver al inicio</button>
+          <h2>Crear cuenta</h2><p>Registrate gratis para participar de la comunidad.</p>
+          <form id="register-form" class="app-form"><label>Nombre y apellido<input name="display_name" autocomplete="name" required minlength="2" maxlength="80"></label><label>Correo electrónico<input name="email" type="email" autocomplete="email" required maxlength="254"></label><label>Contraseña<input name="password" type="password" autocomplete="new-password" required minlength="8"></label><button class="primary" type="submit">Crear mi cuenta</button></form>
+          <p class="small-note">No pedimos DNI ni selfie. Confirmá tu correo para activar la cuenta.</p><div id="register-status" class="form-status" role="status"></div>
+        </div></section>
+        <section id="recover" class="screen"><div class="panel glass-panel">
+          <button class="back-link" type="button" data-go="login">← Volver</button><h2>Recuperar contraseña</h2>
+          <form id="recover-form" class="app-form"><label>Correo electrónico<input name="email" type="email" required maxlength="254"></label><button class="primary" type="submit">Enviar enlace</button></form><div id="recover-status" class="form-status" role="status"></div>
+        </div></section>
+        <section id="commerce" class="screen"><div class="panel glass-panel">
+          <button class="back-link" type="button" data-go="home">← Volver al inicio</button><h2>Acceso exclusivo para comercios</h2><p>Ingresá con tu cuenta o registrate. Las altas y publicidades quedan pendientes de revisión antes de mostrarse.</p>
+          <button class="primary full-button" type="button" data-go="login">Ingresar como comercio</button><button class="secondary full-button" type="button" data-go="business">Solicitar alta de comercio</button>
+          <div id="commerce-status" class="form-status"></div>
+        </div></section>
+        <section id="business" class="screen"><div class="panel glass-panel">
+          <button class="back-link" type="button" data-go="commerce">← Volver</button><h2>Registrar mi comercio</h2>
+          <form id="business-form" class="app-form"><label>Nombre del comercio<input name="name" required minlength="2" maxlength="100"></label><label>Rubro<input name="category" required minlength="2" maxlength="80" placeholder="Ej.: almacén, indumentaria"></label><label>Descripción<textarea name="description" maxlength="700" rows="3"></textarea></label><label>Contacto público opcional<input name="public_contact" maxlength="120" placeholder="Solo si querés publicarlo"></label><button class="primary" type="submit">Enviar solicitud</button></form><div id="business-status" class="form-status"></div>
+        </div></section>
+        <section id="publish" class="screen"><div class="panel glass-panel">
+          <h2>Publicar en PiraRed</h2><p>Compra y venta, trabajos y changas, o servicios. Las publicaciones se revisan antes de hacerse públicas.</p>
+          <form id="post-form" class="app-form"><label>Categoría<select name="category" required><option>Compra / Venta</option><option>Trabajos</option><option>Servicios</option></select></label><label>Título<input name="title" required minlength="3" maxlength="100"></label><label>Descripción<textarea name="description" required minlength="5" maxlength="1000" rows="4"></textarea></label><label>Precio (opcional)<input name="price_text" maxlength="80"></label><label>Ubicación<input name="location_text" value="Pirané" maxlength="100"></label><button class="primary" type="submit">Enviar a revisión</button></form><p class="small-note">No publicamos tu número de teléfono. El contacto entre usuarios se realiza por mensajes internos.</p><div id="post-status" class="form-status"></div>
+        </div></section>
+        <section id="ads" class="screen"><div class="panel glass-panel"><h2>Publicidad de comercios</h2><p>Los anuncios básicos son gratuitos. Cada anuncio se revisa antes de publicarse. Los destacados pagos se habilitarán cuando quede verificado el cobro.</p>
+          <form id="ad-form" class="app-form"><label>Comercio<select name="business_id" id="business-select" required><option value="">Cargando tus comercios…</option></select></label><label>Título<input name="title" required minlength="3" maxlength="90"></label><label>Descripción<textarea name="description" required minlength="5" maxlength="600" rows="3"></textarea></label><label>Rubro<input name="category" required minlength="2" maxlength="80"></label><label>Oferta (opcional)<input name="offer_text" maxlength="100"></label><button class="primary" type="submit">Enviar anuncio gratuito</button></form><div id="ad-status" class="form-status"></div>
+        </div></section>
+        <section id="messages" class="screen"><div class="panel glass-panel"><h2>Mensajes privados</h2><p>Conversaciones internas. No mostramos números de teléfono.</p><div id="message-list" class="listing-grid"><p class="empty-state">Iniciá sesión para ver tus mensajes.</p></div>
+          <form id="message-form" class="app-form hidden"><input type="hidden" name="recipient_id"><label>Mensaje<textarea name="body" required maxlength="2000" rows="3"></textarea></label><button class="primary" type="submit">Enviar mensaje</button></form><div id="message-status" class="form-status"></div>
+        </div></section>
+        <section id="saved" class="screen"><div class="panel glass-panel"><h2>Guardados</h2><p>Tus publicaciones favoritas quedan guardadas en este dispositivo.</p><div id="saved-list" class="listing-grid"><p class="empty-state">Todavía no guardaste publicaciones.</p></div></div></section>
+        <section id="profile" class="screen"><div class="panel glass-panel"><h2>Mi perfil</h2><div id="profile-content"><p>Ingresá para ver tu perfil y tus publicaciones.</p></div>
+          <div class="cta-row"><button class="primary" type="button" data-go="login">Iniciar sesión</button><button class="secondary" type="button" data-go="register">Crear cuenta</button></div>
+          <button class="secondary full-button" type="button" data-go="ads">Publicidad de mi comercio</button><button class="secondary full-button hidden" id="admin-open" type="button" data-go="admin">Administración</button><button class="text-button hidden" id="logout-button" type="button">Cerrar sesión</button>
+        </div></section>
+        <section id="admin" class="screen"><div class="panel glass-panel"><h2>Administración PiraRed</h2><p>Revisá solicitudes y aprobá únicamente contenido legítimo.</p><div id="admin-queue" class="listing-grid">Cargando…</div><div id="admin-status" class="form-status"></div></div></section>
       </main>
 
       <nav class="bottomnav" aria-label="Navegación principal">
-        <button class="navbtn active" type="button">
+        <button class="navbtn active" type="button" data-screen="home">
           <span class="icon-wrap"><span class="icon">🏠</span></span>
           <span>Inicio</span>
         </button>
-        <button class="navbtn" type="button">
+        <button class="navbtn" type="button" data-screen="explore">
           <span class="icon-wrap"><span class="icon">🔍</span></span>
           <span>Explorar</span>
         </button>
-        <button class="navbtn" type="button">
+        <button class="navbtn" type="button" data-screen="publish">
           <span class="icon-wrap"><span class="icon">➕</span></span>
           <span>Publicar</span>
         </button>
-        <button class="navbtn" type="button">
+        <button class="navbtn" type="button" data-screen="messages">
           <span class="icon-wrap"><span class="icon">💬</span></span>
           <span>Mensajes</span>
         </button>
-        <button class="navbtn" type="button">
+        <button class="navbtn" type="button" data-screen="saved">
           <span class="icon-wrap"><span class="icon">💾</span></span>
           <span>Guardados</span>
         </button>
-        <button class="navbtn" type="button">
+        <button class="navbtn" type="button" data-screen="profile">
           <span class="icon-wrap"><span class="icon">👤</span></span>
           <span>Perfil</span>
         </button>
       </nav>
     </div>
+<script>
+(() => {
+  "use strict";
+  const PIRARED_SUPABASE_URL = "https://slgqcrcktczuvmivwdst.supabase.co";
+  const PIRARED_SUPABASE_KEY = "sb_publishable_QNdAcWGllSEpRrUqoHKoig_YBNWfxDA";
+  const API = PIRARED_SUPABASE_URL;
+  const $ = (s, root=document) => root.querySelector(s);
+  const $ = (s, root=document) => Array.from(root.querySelectorAll(s));
+  const state = { session:null, user:null, profile:null, posts:[], businesses:[], filter:"", recipient:null, backStack:["home"] };
+  const SESSION_KEY = "pirared.auth.session.v1";
+  const SAVED_KEY = "pirared.saved.posts.v1";
+  const getSaved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); } catch (_) { return []; } };
+  const setStatus = (id, msg, bad=false) => { const el=$("#"+id); if(el){el.textContent=msg;el.style.color=bad?"#a32e35":"#174e76";} };
+  const escapeText = value => String(value ?? "");
+  function showScreen(id, push=true) {
+    const target = $("#"+id);
+    if(!target || !target.classList.contains("screen")) id="home";
+    $(".screen").forEach(s => { const isCurrent=s.id===id; s.hidden = !isCurrent; s.classList.toggle("active",isCurrent); });
+    $(".navbtn").forEach(b => b.classList.toggle("active",b.dataset.screen===id));
+    if(push && state.backStack[state.backStack.length-1]!==id) state.backStack.push(id);
+    window.scrollTo(0,0);
+    if(id==="profile") renderProfile();
+    if(id==="saved") renderSaved();
+    if(id==="messages") loadMessages();
+    if(id==="ads") loadBusinessesForAds();
+    if(id==="admin") loadAdminQueue();
+    if(id==="explore") loadPosts();
+  }
+  function messageFor(error) {
+    const m=error?.message || error?.msg || "No se pudo completar la operación.";
+    if(/Invalid login credentials/i.test(m)) return "Correo o contraseña incorrectos.";
+    if(/Email not confirmed/i.test(m)) return "Primero confirmá tu correo electrónico.";
+    if(/already registered/i.test(m)) return "Ese correo ya tiene una cuenta. Probá iniciar sesión.";
+    if(/Failed to fetch|NetworkError/i.test(m)) return "No hay conexión con el servidor. Revisá internet e intentá otra vez.";
+    return m;
+  }
+  function currentToken(){ return state.session?.access_token || PIRARED_SUPABASE_KEY; }
+  async function request(path, options={}) {
+    const headers = Object.assign({"apikey":PIRARED_SUPABASE_KEY,"Authorization":"Bearer "+currentToken()},options.headers||{});
+    if(options.body && !headers["Content-Type"]) headers["Content-Type"]="application/json";
+    const response = await fetch(API+path,Object.assign({},options,{headers}));
+    const raw=await response.text(); let data=null; try{data=raw?JSON.parse(raw):null;}catch(_){data=raw;}
+    if(!response.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||("Error HTTP "+response.status));err.status=response.status;throw err;}
+    return data;
+  }
+  async function authRequest(path, body, method="POST") {
+    const response=await fetch(API+path,{method,headers:{"apikey":PIRARED_SUPABASE_KEY,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.msg||data.message||data.error_description||"No se pudo autenticar.");
+    return data;
+  }
+  function saveSession(session){ state.session=session; if(session) localStorage.setItem(SESSION_KEY,JSON.stringify(session)); else localStorage.removeItem(SESSION_KEY); }
+  async function refreshSession(){
+    if(!state.session?.refresh_token) return false;
+    try { const data=await authRequest("/auth/v1/token?grant_type=refresh_token",{refresh_token:state.session.refresh_token}); saveSession(data); return true; }
+    catch(_){saveSession(null);state.user=null;state.profile=null;return false;}
+  }
+  async function api(path, options={}) {
+    try{return await request(path,options);}
+    catch(e){if(e.status===401 && await refreshSession()) return await request(path,options);throw e;}
+  }
+  async function initAuth(){
+    try{const raw=localStorage.getItem(SESSION_KEY);if(raw)state.session=JSON.parse(raw);}catch(_){saveSession(null);}
+    if(!state.session) return;
+    try{
+      if(state.session.expires_at && state.session.expires_at*1000<Date.now()+30000) await refreshSession();
+      if(!state.session) return;
+      state.user=await api("/auth/v1/user");
+      await loadProfile();
+    }catch(_){saveSession(null);state.user=null;state.profile=null;}
+  }
+  async function loadProfile(){
+    if(!state.user?.id) return;
+    const rows=await api("/rest/v1/profiles?id=eq."+encodeURIComponent(state.user.id)+"&select=id,display_name,role");
+    state.profile=rows?.[0]||null;
+  }
+  function requireLogin(statusId){
+    if(state.user) return true;
+    if(statusId) setStatus(statusId,"Para usar esta función primero iniciá sesión.");
+    showScreen("login"); return false;
+  }
+  function formObject(form){return Object.fromEntries(new FormData(form).entries());}
+  function addEmpty(container,msg){container.replaceChildren();const p=document.createElement("p");p.className="empty-state";p.textContent=msg;container.append(p);}
+  function makePostCard(post){
+    const card=document.createElement("article");card.className="listing-card";
+    const title=document.createElement("h3");title.textContent=post.title;card.append(title);
+    const meta=document.createElement("div");meta.className="listing-meta";meta.textContent=[post.category,post.location_text,post.price_text].filter(Boolean).join(" · ");card.append(meta);
+    const desc=document.createElement("p");desc.textContent=post.description;card.append(desc);
+    const actions=document.createElement("div");actions.className="listing-actions";
+    const save=document.createElement("button");const saved=getSaved().some(x=>x.id===post.id);save.textContent=saved?"Quitar guardado":"Guardar";save.addEventListener("click",()=>toggleSaved(post));actions.append(save);
+    if(state.user && post.owner_id!==state.user.id){const contact=document.createElement("button");contact.textContent="Enviar mensaje";contact.addEventListener("click",()=>startMessage(post.owner_id));actions.append(contact);}
+    card.append(actions);return card;
+  }
+  function renderPosts(rows){
+    const box=$("#public-posts");if(!box)return;box.replaceChildren();
+    const filtered=rows.filter(p=>!state.filter||p.category===state.filter);
+    if(!filtered.length){addEmpty(box,state.filter?"No hay publicaciones aprobadas en esta categoría todavía.":"Todavía no hay publicaciones aprobadas. ¡Podés ser de los primeros en publicar!");return;}
+    filtered.forEach(p=>box.append(makePostCard(p)));
+  }
+  async function loadPosts(){
+    const box=$("#public-posts");if(!box)return;
+    try{
+      const rows=await api("/rest/v1/community_posts?select=id,owner_id,category,title,description,price_text,location_text,created_at&status=eq.approved&order=created_at.desc&limit=100");
+      state.posts=rows||[];renderPosts(state.posts);
+    }catch(e){addEmpty(box,"No pudimos cargar publicaciones. "+messageFor(e));}
+  }
+  function toggleSaved(post){
+    let saved=getSaved();if(saved.some(x=>x.id===post.id))saved=saved.filter(x=>x.id!==post.id);else saved.unshift(post);
+    localStorage.setItem(SAVED_KEY,JSON.stringify(saved.slice(0,100)));renderPosts(state.posts);if($("#saved").classList.contains("active"))renderSaved();
+  }
+  function renderSaved(){
+    const box=$("#saved-list");if(!box)return;box.replaceChildren();
+    const rows=getSaved();if(!rows.length){addEmpty(box,"Todavía no guardaste publicaciones.");return;}
+    rows.forEach(p=>box.append(makePostCard(p)));
+  }
+  async function renderProfile(){
+    const box=$("#profile-content");if(!box)return;
+    if(!state.user){box.textContent="Ingresá o creá una cuenta para ver tu perfil.";$("#logout-button").classList.add("hidden");$("#admin-open").classList.add("hidden");return;}
+    const name=state.profile?.display_name||state.user.email||"Usuario PiraRed";
+    box.replaceChildren();const h=document.createElement("h3");h.textContent=name;box.append(h);
+    const p=document.createElement("p");p.textContent=state.user.email||"";box.append(p);
+    const role=document.createElement("p");role.textContent=state.profile?.role==="admin"?"Administrador":"Cuenta de vecino";box.append(role);
+    $("#logout-button").classList.remove("hidden");
+    $("#admin-open").classList.toggle("hidden",state.profile?.role!=="admin");
+    try{
+      const rows=await api("/rest/v1/community_posts?select=id,title,status,category&owner_id=eq."+encodeURIComponent(state.user.id)+"&order=created_at.desc");
+      const h2=document.createElement("h3");h2.textContent="Mis publicaciones";box.append(h2);
+      if(!rows.length){const p2=document.createElement("p");p2.textContent="Todavía no enviaste publicaciones.";box.append(p2);}
+      rows.forEach(r=>{const p2=document.createElement("p");p2.textContent=r.title+" — "+(r.status==="approved"?"Aprobada":r.status==="rejected"?"Rechazada":"Pendiente de revisión");box.append(p2);});
+    }catch(_){}
+  }
+  async function loadBusinessesForAds(){
+    const select=$("#business-select");if(!select||!state.user)return;
+    try{
+      const rows=await api("/rest/v1/businesses?select=id,name,status&owner_id=eq."+encodeURIComponent(state.user.id)+"&order=created_at.desc");
+      state.businesses=rows||[];select.replaceChildren();const first=document.createElement("option");first.value="";first.textContent="Elegí un comercio aprobado";select.append(first);
+      rows.forEach(b=>{if(b.status==="approved"){const o=document.createElement("option");o.value=b.id;o.textContent=b.name;select.append(o);}});
+      if(!rows.some(b=>b.status==="approved"))setStatus("ad-status","Todavía no tenés un comercio aprobado. Primero enviá la solicitud de alta.");
+    }catch(e){setStatus("ad-status",messageFor(e),true);}
+  }
+  async function loadMessages(){
+    const box=$("#message-list");if(!box)return;
+    if(!state.user){addEmpty(box,"Iniciá sesión para ver tus mensajes.");$("#message-form").classList.add("hidden");return;}
+    $("#message-form").classList.remove("hidden");box.replaceChildren();
+    try{
+      const rows=await api("/rest/v1/private_messages?select=id,sender_id,recipient_id,body,read_at,created_at&or=(sender_id.eq."+state.user.id+",recipient_id.eq."+state.user.id+")&order=created_at.desc&limit=100");
+      if(!rows.length){addEmpty(box,"Todavía no tenés mensajes. Podés escribir desde una publicación aprobada.");return;}
+      rows.forEach(m=>{const item=document.createElement("article");item.className="listing-card";const p=document.createElement("p");p.textContent=(m.sender_id===state.user.id?"Vos: ":"Mensaje recibido: ")+m.body;item.append(p);const b=document.createElement("button");b.textContent="Responder";b.addEventListener("click",()=>startMessage(m.sender_id===state.user.id?m.recipient_id:m.sender_id));item.append(b);box.append(item);});
+    }catch(e){addEmpty(box,"No pudimos cargar los mensajes. "+messageFor(e));}
+  }
+  function startMessage(recipient){
+    if(!requireLogin("message-status"))return;
+    if(!recipient||recipient===state.user.id)return;
+    state.recipient=recipient;$("#message-form").elements.recipient_id.value=recipient;showScreen("messages");
+    setStatus("message-status","Conversación privada. No se muestran teléfonos.");
+  }
+  async function loadAdminQueue(){
+    const box=$("#admin-queue");if(!box)return;
+    if(state.profile?.role!=="admin"){addEmpty(box,"Esta sección es exclusiva del administrador.");return;}
+    box.replaceChildren();
+    try{
+      const specs=[["community_posts","Publicaciones"],["businesses","Comercios"],["ads","Anuncios"]];
+      for(const [table,label] of specs){
+        const rows=await api("/rest/v1/"+table+"?select=id,title,name,status,category&status=eq.pending&order=created_at.asc&limit=50");
+        const heading=document.createElement("h3");heading.textContent=label;box.append(heading);
+        (rows||[]).forEach(row=>{const card=document.createElement("article");card.className="listing-card";const title=document.createElement("p");title.textContent=row.title||row.name||row.category;card.append(title);const approve=document.createElement("button");approve.textContent="Aprobar";approve.addEventListener("click",()=>moderate(table,row.id,"approved"));const reject=document.createElement("button");reject.textContent="Rechazar";reject.addEventListener("click",()=>moderate(table,row.id,"rejected"));card.append(approve,reject);box.append(card);});
+      }
+    }catch(e){addEmpty(box,"No se pudo cargar la cola de revisión. "+messageFor(e));}
+  }
+  async function moderate(table,id,status){
+    try{await api("/rest/v1/"+table+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify({status,...(table==="ads"||table==="businesses"?{reviewed_by:state.user.id,reviewed_at:new Date().toISOString() }:{})})});setStatus("admin-status","Estado actualizado.");loadAdminQueue();}
+    catch(e){setStatus("admin-status",messageFor(e),true);}
+  }
+  document.addEventListener("click",e=>{
+    const go=e.target.closest("[data-go]");if(go){showScreen(go.dataset.go);return;}
+    const nav=e.target.closest("[data-screen]");if(nav){showScreen(nav.dataset.screen);return;}
+    const filter=e.target.closest("[data-filter]");if(filter){state.filter=filter.dataset.filter;showScreen("explore");renderPosts(state.posts);return;}
+  });
+  $("#login-form").addEventListener("submit",async e=>{
+    e.preventDefault();const f=formObject(e.currentTarget);setStatus("login-status","Ingresando…");
+    try{const data=await authRequest("/auth/v1/token?grant_type=password",{email:f.email.trim(),password:f.password});saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();setStatus("login-status","Sesión iniciada.");showScreen("profile");}
+    catch(err){setStatus("login-status",messageFor(err),true);}
+  });
+  $("#register-form").addEventListener("submit",async e=>{
+    e.preventDefault();const f=formObject(e.currentTarget);setStatus("register-status","Creando cuenta…");
+    try{const data=await authRequest("/auth/v1/signup",{email:f.email.trim(),password:f.password,data:{display_name:f.display_name.trim()}});
+      if(data.access_token){saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();showScreen("profile");setStatus("register-status","Cuenta creada.");}
+      else setStatus("register-status","Te enviamos un correo para confirmar tu cuenta. Confirmalo y después iniciá sesión.");
+    }catch(err){setStatus("register-status",messageFor(err),true);}
+  });
+  $("#recover-form").addEventListener("submit",async e=>{
+    e.preventDefault();const email=formObject(e.currentTarget).email.trim();setStatus("recover-status","Enviando…");
+    try{await authRequest("/auth/v1/recover",{email});setStatus("recover-status","Si el correo está registrado, recibirás un enlace para recuperar tu contraseña.");}
+    catch(err){setStatus("recover-status",messageFor(err),true);}
+  });
+  $("#logout-button").addEventListener("click",async()=>{
+    try{if(state.session)await authRequest("/auth/v1/logout",null);}catch(_){}
+    saveSession(null);state.user=null;state.profile=null;showScreen("home");
+  });
+  $("#post-form").addEventListener("submit",async e=>{
+    e.preventDefault();if(!requireLogin("post-status"))return;const f=formObject(e.currentTarget);setStatus("post-status","Enviando a revisión…");
+    try{await api("/rest/v1/community_posts",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,category:f.category,title:f.title.trim(),description:f.description.trim(),price_text:f.price_text.trim(),location_text:f.location_text.trim()||"Pirané",public_contact:"",status:"pending"})});e.currentTarget.reset();e.currentTarget.elements.location_text.value="Pirané";setStatus("post-status","¡Listo! Tu publicación quedó pendiente de revisión. No se mostrará hasta ser aprobada.");}
+    catch(err){setStatus("post-status",messageFor(err),true);}
+  });
+  $("#business-form").addEventListener("submit",async e=>{
+    e.preventDefault();if(!requireLogin("business-status"))return;const f=formObject(e.currentTarget);setStatus("business-status","Enviando solicitud…");
+    try{await api("/rest/v1/businesses",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,name:f.name.trim(),category:f.category.trim(),description:f.description.trim(),public_contact:f.public_contact.trim(),status:"pending"})});e.currentTarget.reset();setStatus("business-status","Solicitud enviada. El comercio quedará pendiente de aprobación.");}
+    catch(err){setStatus("business-status",messageFor(err),true);}
+  });
+  $("#ad-form").addEventListener("submit",async e=>{
+    e.preventDefault();if(!requireLogin("ad-status"))return;const f=formObject(e.currentTarget);if(!f.business_id){setStatus("ad-status","Necesitás tener un comercio aprobado para publicar anuncios.",true);return;}setStatus("ad-status","Enviando anuncio…");
+    try{await api("/rest/v1/ads",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({business_id:f.business_id,owner_id:state.user.id,title:f.title.trim(),description:f.description.trim(),category:f.category.trim(),offer_text:f.offer_text.trim(),ad_type:"basic",status:"pending"})});e.currentTarget.reset();setStatus("ad-status","Anuncio gratuito enviado a revisión. Se publicará cuando sea aprobado.");}
+    catch(err){setStatus("ad-status",messageFor(err),true);}
+  });
+  $("#message-form").addEventListener("submit",async e=>{
+    e.preventDefault();if(!requireLogin("message-status"))return;const f=formObject(e.currentTarget);const recipient=f.recipient_id;
+    if(!recipient){setStatus("message-status","Elegí una publicación para iniciar la conversación.",true);return;}
+    try{await api("/rest/v1/private_messages",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({sender_id:state.user.id,recipient_id:recipient,body:f.body.trim()})});e.currentTarget.elements.body.value="";setStatus("message-status","Mensaje enviado de forma privada.");loadMessages();}
+    catch(err){setStatus("message-status",messageFor(err),true);}
+  });
+  $("#message-form").classList.add("hidden");
+  $("#ad-form").addEventListener("focusin",()=>{if(!state.user)requireLogin("ad-status");},{once:true});
+  window.piraredHandleBack=()=>{
+    if(state.backStack.length>1){state.backStack.pop();const previous=state.backStack[state.backStack.length-1];showScreen(previous,false);return "handled";}
+    return "exit";
+  };
+  window.addEventListener("load",async()=>{
+    const cover=$(".welcome-hero > img");
+    if(cover){cover.addEventListener("load",()=>{if(cover.naturalWidth>0&&cover.naturalHeight>0)cover.dataset.ready="true";});}
+    await initAuth();
+    if(state.user){renderProfile();}
+    loadPosts();
+    if(location.hash && $("#"+location.hash.slice(1))?.classList.contains("screen"))showScreen(location.hash.slice(1),false);
+    else showScreen("home",false);
+  });
+})();
+</script>
   </body>
 </html>

@@ -504,7 +504,7 @@
         </div></section>
         <section id="business" class="screen"><div class="panel glass-panel">
           <button class="back-link" type="button" data-go="commerce">← Volver</button><h2>Registrar mi comercio</h2>
-          <form id="business-form" class="app-form"><label>Nombre del comercio<input name="name" required minlength="2" maxlength="100"></label><label>Rubro<input name="category" required minlength="2" maxlength="80" placeholder="Ej.: almacén, indumentaria"></label><label>Descripción<textarea name="description" maxlength="700" rows="3"></textarea></label><label>Contacto público opcional<input name="public_contact" maxlength="120" placeholder="Solo si querés publicarlo"></label><button class="primary" type="submit">Enviar solicitud</button></form><div id="business-status" class="form-status"></div>
+          <form id="business-form" class="app-form"><label>Nombre del comercio<input name="name" required minlength="2" maxlength="100"></label><label>Rubro<input name="category" required minlength="2" maxlength="80" placeholder="Ej.: almacén, indumentaria"></label><label>Descripción<textarea name="description" maxlength="700" rows="3"></textarea></label><button class="primary" type="submit">Enviar solicitud</button></form><div id="business-status" class="form-status"></div>
         </div></section>
         <section id="publish" class="screen"><div class="panel glass-panel">
           <h2>Publicar en PiraRed</h2><p>Compra y venta, trabajos y changas, o servicios. Las publicaciones se revisan antes de hacerse públicas.</p>
@@ -775,7 +775,7 @@
   });
   $("#business-form").addEventListener("submit",async e=>{
     e.preventDefault();if(!requireLogin("business-status"))return;const f=formObject(e.currentTarget);setStatus("business-status","Enviando solicitud…");
-    try{await api("/rest/v1/businesses",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,name:f.name.trim(),category:f.category.trim(),description:f.description.trim(),public_contact:f.public_contact.trim(),status:"pending"})});e.currentTarget.reset();setStatus("business-status","Solicitud enviada. El comercio quedará pendiente de aprobación.");}
+    try{await api("/rest/v1/businesses",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,name:f.name.trim(),category:f.category.trim(),description:f.description.trim(),public_contact:"",status:"pending"})});e.currentTarget.reset();setStatus("business-status","Solicitud enviada. El comercio quedará pendiente de aprobación.");}
     catch(err){setStatus("business-status",messageFor(err),true);}
   });
   $("#ad-form").addEventListener("submit",async e=>{

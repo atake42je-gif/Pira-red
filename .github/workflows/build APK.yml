@@ -31,13 +31,22 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Instalar herramientas Android
+      - name: Configurar e instalar Android SDK
         shell: bash
         run: |
-          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          set -euo pipefail
+          echo "ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          if [ -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          else
+            SDKMANAGER="$(command -v sdkmanager)"
+          fi
           test -x "$SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses || true
-          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
 
       - name: Crear iconos de PiraRed
         shell: bash
@@ -55,10 +64,7 @@ jobs:
             mkdir -p "$dir"
             convert "$logo" -auto-orient -resize "${size}x${size}" -background none -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
           done
-          # Android 8+ usa el icono adaptativo, no los PNG mipmap anteriores.
-          # Crear también su primer plano con el logo original para que se vea en el launcher.
           mkdir -p app/src/main/res/drawable-nodpi
-          # Dejar margen de seguridad para que el launcher no recorte el borde ni las letras del logo.
           convert "$logo" -auto-orient -resize "260x260" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
 
       - name: Preparar firma de version estable (si esta configurada)
@@ -171,7 +177,7 @@ jobs:
           print("OK: la actualización no cierra la app y la orientación queda adaptable.")
           PY
           echo "OK: actualización opcional y orientación Android adaptable."
- 
+
       - name: Compilar APK
         shell: bash
         run: |
@@ -217,8 +223,8 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          html = Path("app/src/main/assets/www/index.html").read_text(encoding="utf-8")
           from urllib.parse import unquote
+          html = Path("app/src/main/assets/www/index.html").read_text(encoding="utf-8")
           refs = sorted(set(unquote(ref) for ref in re.findall(r'''(?:src|href)=["'](app/Img/[^"'#?]+)''', html)))
           missing = [ref for ref in refs if not (Path("app/src/main/assets/www") / ref).is_file()]
           if missing:
@@ -258,4 +264,3 @@ jobs:
             NOTES="APK de prueba de PiraRed. Se descarga directamente como archivo .apk, no como ZIP. Al ser una compilación debug, puede requerir desinstalar la versión anterior antes de instalar; desinstalar puede borrar datos locales."
             gh release create "$TAG" dist/PiraRed.apk --title "PiraRed ${TAG} (prueba)" --notes "$NOTES" --prerelease
           fi
-

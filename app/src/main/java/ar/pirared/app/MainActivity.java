@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
     }
 
 
-    // Comprueba actualizaciones publicadas y firmadas para evitar instalar paquetes incompatibles.
+    // Comprueba actualizaciones estables publicadas; ignora APKs prerelease de prueba.
     private void checkForUpdate() {
         new Thread(() -> {
             HttpURLConnection connection = null;
@@ -143,18 +143,30 @@ public class MainActivity extends Activity {
                 String releaseUrl = RELEASE_PAGE;
                 for (int i = 0; i < releases.length(); i++) {
                     JSONObject candidate = releases.optJSONObject(i);
-                    if (candidate == null || candidate.optBoolean("draft", false)) continue;
+                    // Las versiones de prueba son prerelease y nunca deben ofrecerse como actualización estable.
+                    if (candidate == null || candidate.optBoolean("draft", false) || candidate.optBoolean("prerelease", false)) continue;
                     String candidateTag = candidate.optString("tag_name", "");
                     int candidateBuild = parseBuildNumber(candidateTag);
-                    if (candidateBuild > latestBuild && candidate.has("assets") && candidate.optJSONArray("assets") != null && candidate.optJSONArray("assets").length() > 0) {
+                    JSONArray assets = candidate.optJSONArray("assets");
+                    String candidateApkUrl = null;
+                    if (assets != null) {
+                        for (int j = 0; j < assets.length(); j++) {
+                            JSONObject asset = assets.optJSONObject(j);
+                            if (asset == null) continue;
+                            String assetName = asset.optString("name", "");
+                            if (assetName.toLowerCase().endsWith(".apk")) {
+                                String url = asset.optString("browser_download_url", "");
+                                if (!url.isEmpty()) {
+                                    candidateApkUrl = url;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (candidateBuild > latestBuild && candidateApkUrl != null) {
                         latestBuild = candidateBuild;
                         release = candidate;
-                        JSONArray assets = candidate.optJSONArray("assets");
-                        releaseUrl = RELEASE_PAGE;
-                        if (assets != null && assets.length() > 0) {
-                            JSONObject apkAsset = assets.optJSONObject(0);
-                            if (apkAsset != null) releaseUrl = apkAsset.optString("browser_download_url", RELEASE_PAGE);
-                        }
+                        releaseUrl = candidateApkUrl;
                     }
                 }
                 if (release == null) return;

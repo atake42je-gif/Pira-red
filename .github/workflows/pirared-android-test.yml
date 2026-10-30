@@ -65,7 +65,6 @@ jobs:
           echo "Esta tarea manual siempre genera una APK DEBUG de prueba."
 
       - name: Compilar APK
-        env:
         run: |
           set -euo pipefail
           if [ "$PIRARED_BUILD_TYPE" = "release" ]; then

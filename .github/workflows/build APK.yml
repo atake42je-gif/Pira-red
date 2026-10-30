@@ -1,61 +1,70 @@
-name: Generar APK de PiraRed
+name: Generar APK de prueba PiraRed
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Descargar codigo
-        uses: actions/checkout@v5
+      - name: Descargar código
+        uses: actions/checkout@v4
 
-      - name: Configurar Java
-        uses: actions/setup-java@v5
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Preparar Gradle
-        uses: gradle/actions/setup-gradle@v5
+      - name: Configurar Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Configurar e instalar Android SDK
+      - name: Configurar Android SDK con cmdline-tools
         shell: bash
+        env:
+          ANDROID_SDK_ROOT: /opt/hostedtoolcache/android-sdk
         run: |
           set -euo pipefail
-          echo "ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
-          if [ -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
-            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          else
-            SDKMANAGER="$(command -v sdkmanager)"
+
+          mkdir -p "$ANDROID_SDK_ROOT"
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+
+          if [ ! -x "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            wget -q "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -O /tmp/cmdline-tools.zip
+            rm -rf "$ANDROID_SDK_ROOT/cmdline-tools"
+            mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
+            unzip -q /tmp/cmdline-tools.zip -d "$ANDROID_SDK_ROOT"
+            mv "$ANDROID_SDK_ROOT/cmdline-tools" "$ANDROID_SDK_ROOT/cmdline-tools-old" 2>/dev/null || true
+            mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
+            mv "$ANDROID_SDK_ROOT/cmdline-tools-old/bin" "$ANDROID_SDK_ROOT/cmdline-tools/bin"
+            rmdir "$ANDROID_SDK_ROOT/cmdline-tools-old" 2>/dev/null || true
           fi
-          test -x "$SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --install \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+
+          echo "$ANDROID_SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
 
       - name: Crear iconos de PiraRed
         shell: bash
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y imagemagick
-          set -euo pipefail
           logo="app/src/main/assets/www/app/Img/06-logo-pirared.png"
-          test -f "$logo"
+          test -s "$logo"
           for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
             set -- $spec
             density="$1"
@@ -67,54 +76,52 @@ jobs:
           mkdir -p app/src/main/res/drawable-nodpi
           convert "$logo" -auto-orient -resize "260x260" -background none -gravity center -extent "432x432" app/src/main/res/drawable-nodpi/pirared_logo_foreground.png
 
-      - name: Preparar firma de version estable (si esta configurada)
-        shell: bash
+      - name: Preparar firma persistente si está configurada
         env:
-          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          if [ -n "${KEYSTORE_B64:-}" ] && [ -n "${KEYSTORE_PASSWORD:-}" ] && [ -n "${KEY_ALIAS:-}" ] && [ -n "${KEY_PASSWORD:-}" ]; then
-            printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/pirared-release.jks"
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pirared-release.jks"
             test -s "$RUNNER_TEMP/pirared-release.jks"
-
-            if ! keytool -list -storepass "$KEYSTORE_PASSWORD" -keystore "$RUNNER_TEMP/pirared-release.jks" -alias "$KEY_ALIAS" >/tmp/pirared-keytool.log 2>&1; then
-              echo "::warning::La firma de release configurada en GitHub Secrets es inválida o la contraseña no coincide. Se compilará en modo debug para no bloquear la pipeline."
-              echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
-              echo "ANDROID_KEYSTORE_PATH=" >> "$GITHUB_ENV"
-              echo "ANDROID_KEYSTORE_PASSWORD=" >> "$GITHUB_ENV"
-              echo "ANDROID_KEY_ALIAS=" >> "$GITHUB_ENV"
-              echo "ANDROID_KEY_PASSWORD=" >> "$GITHUB_ENV"
-              exit 0
-            fi
-
-            {
-              echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pirared-release.jks"
-              echo "ANDROID_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
-              echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
-              echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD"
-              echo "PIRARED_BUILD_TYPE=release"
-            } >> "$GITHUB_ENV"
-            echo "Firma release configurada y validada."
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pirared-release.jks" >> "$GITHUB_ENV"
+            echo "PIRARED_BUILD_TYPE=release" >> "$GITHUB_ENV"
+            echo "Se usará la firma de lanzamiento configurada en los secretos."
           else
             echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
-            echo "::warning::Se genera APK de prueba. Para actualizaciones compatibles se necesita configurar la firma privada estable en GitHub Secrets."
+            echo "No hay todos los secretos de firma; se generará APK debug para instalación de prueba."
           fi
 
       - name: Compilar APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${PIRARED_BUILD_TYPE:-debug}" = "release" ] && [ -n "${ANDROID_KEYSTORE_PATH:-}" ] && [ -n "${ANDROID_KEYSTORE_PASSWORD:-}" ] && [ -n "${ANDROID_KEY_ALIAS:-}" ] && [ -n "${ANDROID_KEY_PASSWORD:-}" ]; then
-            gradle assembleRelease
-            APK="app/build/outputs/apk/release/app-release.apk"
-            echo "Compilando APK con firma release validada."
+          chmod +x ./gradlew
+
+          if [ "$PIRARED_BUILD_TYPE" = "release" ]; then
+            ./gradlew --no-daemon clean assembleRelease
+            APK_PATH="app/build/outputs/apk/release/app-release.apk"
           else
-            echo "::warning::La configuración de firma release no es válida o no existe; compilando APK debug para asegurar que el pipeline siga funcionando."
-            gradle assembleDebug
-            APK="app/build/outputs/apk/debug/app-debug.apk"
+            ./gradlew --no-daemon clean assembleDebug
+            APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
           fi
-          test -s "$APK"
-          echo "PIRARED_APK_PATH=$APK" >> "$GITHUB_ENV"
+
+          test -s "$APK_PATH"
+          echo "PIRARED_APK_PATH=$APK_PATH" >> "$GITHUB_ENV"
+          ls -lh "$APK_PATH"
+          sha256sum "$APK_PATH"
+
+      - name: Publicar APK como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: PiraRed-APK-prueba
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 14

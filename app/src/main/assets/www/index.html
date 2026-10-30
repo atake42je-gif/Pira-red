@@ -185,6 +185,58 @@
         .welcome-hero { padding-left: 16px; padding-right: 16px; }
       }
 
+
+      /* Botones modernos y consistentes en todas las pantallas */
+      button:not(.text-button):not(.back-link):not(.navbtn) {
+        transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:not(.text-button):not(.back-link):not(.navbtn):active {
+        transform: translateY(1px) scale(.985);
+        filter: brightness(.97);
+      }
+      button:focus-visible { outline: 3px solid rgba(42,166,255,.55); outline-offset: 3px; }
+      .welcome-buttons { gap: 12px; }
+      .welcome-buttons button {
+        min-height: 56px; border-radius: 17px; letter-spacing: .01em;
+        box-shadow: 0 9px 24px rgba(2,24,48,.28), inset 0 1px 0 rgba(255,255,255,.28);
+      }
+      .welcome-buttons .welcome-primary { background: linear-gradient(135deg,#0879df,#20a9f1 55%,#51c9f5); }
+      .welcome-buttons .welcome-secondary {
+        border-color: rgba(255,255,255,.82);
+        background: linear-gradient(145deg,rgba(255,255,255,.98),rgba(225,244,255,.92));
+        box-shadow: 0 9px 24px rgba(2,24,48,.22), inset 0 1px 0 #fff;
+      }
+      .welcome-commerce {
+        min-height: 50px; border-radius: 15px; font-weight: 850;
+        box-shadow: 0 8px 20px rgba(2,24,48,.18), inset 0 1px 0 rgba(255,255,255,.2);
+      }
+      .primary, .app-form button.primary {
+        border: 1px solid rgba(255,255,255,.24); border-radius: 15px;
+        background: linear-gradient(135deg,#087fe8,#35b9f4);
+        box-shadow: 0 7px 18px rgba(13,105,190,.22), inset 0 1px 0 rgba(255,255,255,.25);
+        color: #fff;
+      }
+      .secondary, .full-button.secondary {
+        border: 1px solid rgba(30,125,200,.18); border-radius: 15px;
+        background: linear-gradient(145deg,rgba(255,255,255,.98),rgba(225,242,255,.94));
+        box-shadow: 0 6px 16px rgba(18,79,131,.10); color: #14527f;
+      }
+      .category-chip {
+        border-radius: 999px; padding: 10px 16px;
+        background: rgba(255,255,255,.84); box-shadow: 0 4px 12px rgba(18,79,131,.07);
+      }
+      .listing-actions button {
+        border-radius: 999px !important; padding: 9px 14px !important;
+        font-size: 12px; box-shadow: 0 4px 12px rgba(18,79,131,.08);
+      }
+      .navbtn .icon-wrap { transition: transform .16s ease, background .16s ease; }
+      .navbtn.active .icon-wrap { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30,143,255,.10); }
+      .listing-thumb img { object-fit: cover; object-position: center; transform: translateZ(0); }
+      .screen:not(#home) { background-size: cover; background-position: center center; background-attachment: scroll; }
+      .welcome-hero > img { object-fit: contain; object-position: center; background: linear-gradient(160deg,#102f4a,#1c5575); }
+      @media (prefers-reduced-motion: reduce) { button, .navbtn .icon-wrap { transition: none !important; } }
+
       @media (max-height: 700px) {
         .welcome-hero { padding-bottom: 18px; }
         .welcome-heading { font-size: clamp(28px, 8vw, 38px); }

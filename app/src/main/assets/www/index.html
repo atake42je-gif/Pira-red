@@ -543,6 +543,22 @@
   const getSaved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); } catch (_) { return []; } };
   const setStatus = (id, msg, bad=false) => { const el=$("#"+id); if(el){el.textContent=msg;el.style.color=bad?"#a32e35":"#174e76";} };
   const escapeText = value => String(value ?? "");
+  function layoutWelcomeActions(){
+    const hero=$(".welcome-hero"), cover=$(".welcome-hero > img"), buttons=all(".welcome-actions button");
+    if(!hero||!cover||!cover.naturalWidth||!cover.naturalHeight||!buttons.length)return;
+    const scale=Math.min(hero.clientWidth/cover.naturalWidth,hero.clientHeight/cover.naturalHeight);
+    const width=cover.naturalWidth*scale,height=cover.naturalHeight*scale;
+    const offsetX=(hero.clientWidth-width)/2,offsetY=(hero.clientHeight-height)/2;
+    const zones=[{x:.08,y:.68,w:.40,h:.12},{x:.52,y:.68,w:.40,h:.12},{x:.14,y:.82,w:.72,h:.11}];
+    buttons.forEach((button,index)=>{
+      const z=zones[index];if(!z)return;
+      button.style.left=(offsetX+width*z.x)+"px";
+      button.style.top=(offsetY+height*z.y)+"px";
+      button.style.width=(width*z.w)+"px";
+      button.style.height=(height*z.h)+"px";
+      button.style.right="auto";
+    });
+  }
   function showScreen(id, push=true) {
     const target = $("#"+id);
     if(!target || !target.classList.contains("screen")) id="home";
@@ -775,7 +791,8 @@
   };
   window.addEventListener("load",async()=>{
     const cover=$(".welcome-hero > img");
-    if(cover){cover.addEventListener("load",()=>{if(cover.naturalWidth>0&&cover.naturalHeight>0)cover.dataset.ready="true";});}
+    if(cover){cover.addEventListener("load",()=>{if(cover.naturalWidth>0&&cover.naturalHeight>0){cover.dataset.ready="true";layoutWelcomeActions();}});if(cover.complete)layoutWelcomeActions();}
+    window.addEventListener("resize",layoutWelcomeActions);
     await initAuth();
     if(state.user){renderProfile();}
     loadPosts();

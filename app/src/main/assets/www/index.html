@@ -61,21 +61,126 @@
 
       .welcome-hero {
         position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: stretch;
         width: 100%;
+        min-height: 100svh;
         height: 100dvh;
         overflow: hidden;
-        background: #eef9ff;
+        padding: max(24px, env(safe-area-inset-top)) 22px max(28px, env(safe-area-inset-bottom));
+        background: #123b5b;
       }
 
       .welcome-hero > img {
         position: absolute;
         inset: 0;
+        z-index: -2;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center center;
         image-rendering: auto;
         filter: none;
+      }
+
+      .welcome-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(180deg, rgba(5,25,48,.08) 12%, rgba(5,25,48,.12) 38%, rgba(5,25,48,.88) 100%);
+        pointer-events: none;
+      }
+
+      .welcome-copy { display: none; }
+
+      .welcome-content {
+        width: min(100%, 460px);
+        margin: 0 auto;
+        color: #fff;
+        text-align: center;
+      }
+      .welcome-eyebrow {
+        margin: 0 0 8px;
+        color: #d5f3ff;
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        text-shadow: 0 2px 12px rgba(0,0,0,.4);
+      }
+      .welcome-heading {
+        margin: 0;
+        color: #fff;
+        font-size: clamp(32px, 9vw, 46px);
+        line-height: 1.02;
+        letter-spacing: -.045em;
+        font-weight: 950;
+        text-shadow: 0 4px 22px rgba(0,0,0,.5);
+      }
+      .welcome-tagline {
+        margin: 10px 0 20px;
+        color: rgba(255,255,255,.94);
+        font-size: 15px;
+        font-weight: 650;
+        line-height: 1.4;
+        text-shadow: 0 2px 12px rgba(0,0,0,.55);
+      }
+      .welcome-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 11px;
+        width: 100%;
+      }
+      .welcome-buttons button {
+        min-height: 54px;
+        border-radius: 16px;
+        padding: 12px 10px;
+        border: 1px solid rgba(255,255,255,.7);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 8px 22px rgba(0,0,0,.18);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .welcome-buttons .welcome-primary {
+        color: #fff;
+        border-color: rgba(255,255,255,.25);
+        background: linear-gradient(135deg,#087fe8,#35b9f4);
+      }
+      .welcome-buttons .welcome-secondary {
+        color: #123b5b;
+        background: rgba(255,255,255,.94);
+      }
+      .welcome-commerce {
+        width: 100%;
+        margin-top: 10px;
+        min-height: 46px;
+        border: 1px solid rgba(255,255,255,.45) !important;
+        color: #fff !important;
+        background: rgba(255,255,255,.15) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .welcome-foot {
+        margin: 16px 0 0;
+        color: rgba(255,255,255,.88);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        text-shadow: 0 2px 10px rgba(0,0,0,.5);
+      }
+      @media (max-height: 700px) {
+        .welcome-hero { padding-bottom: 18px; }
+        .welcome-heading { font-size: clamp(28px, 8vw, 38px); }
+        .welcome-tagline { margin: 7px 0 12px; }
+        .welcome-buttons button { min-height: 48px; }
+        .welcome-foot { margin-top: 10px; }
       }
 
       .welcome-copy {
@@ -429,10 +534,16 @@
       <section id="home" class="screen active">
         <div class="welcome-hero">
           <img src="app/Img/01-inicio-pirared.png" alt="Portada original de PiraRed en Pirané" />
-          <div class="welcome-actions" aria-label="Accesos de PiraRed">
-            <button type="button" data-go="login" aria-label="Iniciar sesión"></button>
-            <button type="button" data-go="register" aria-label="Crear cuenta"></button>
-            <button type="button" data-go="commerce" aria-label="Acceso exclusivo para comercios"></button>
+          <div class="welcome-content">
+            <p class="welcome-eyebrow">Aquí Pirané, mi pueblo</p>
+            <h1 class="welcome-heading">PiraRed</h1>
+            <p class="welcome-tagline">Capital provincial del folklore.<br>Todo lo de nuestra comunidad, más cerca.</p>
+            <div class="welcome-buttons">
+              <button class="welcome-primary" type="button" data-go="login">Iniciar sesión</button>
+              <button class="welcome-secondary" type="button" data-go="register">Crear cuenta</button>
+            </div>
+            <button class="welcome-commerce" type="button" data-go="commerce">Acceso exclusivo para comercios</button>
+            <p class="welcome-foot">Hecha en Pirané por un piranense</p>
           </div>
         </div>
       </section>

@@ -198,13 +198,13 @@ jobs:
           set -euo pipefail
           images=(
             "app/src/main/assets/www/app/Img/01-inicio-pirared.png"
-            "app/src/main/assets/www/app/Img/02-monumento-plaza.jpg"
             "app/src/main/assets/www/app/Img/03-plaza-juegos.jpg"
             "app/src/main/assets/www/app/Img/04-informacion-pirared.jpg"
-            "app/src/main/assets/www/app/Img/05-yo-amo-pirane.jpg"
             "app/src/main/assets/www/app/Img/06-logo-pirared.png"
-            "app/src/main/assets/www/app/Img/07-vista-aerea-pirane.jpg"
-            "app/src/main/assets/www/app/Img/08-monumento-50-anios.jpg"
+            "app/src/main/assets/www/app/Img/11-detalles de la app -tren.jpg"
+            "app/src/main/assets/www/app/Img/file_000000005d30820e921dc8703d3997dc.png"
+            "app/src/main/assets/www/app/Img/file_00000000bf30820ea0628bc7e7035328.png"
+            "app/src/main/assets/www/app/Img/logo-pirared-original.png"
           )
           for image in "${images[@]}"; do
             test -s "$image" || { echo "Falta la imagen original: $image"; exit 1; }

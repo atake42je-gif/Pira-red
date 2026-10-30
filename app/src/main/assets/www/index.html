@@ -565,7 +565,8 @@
     document.body.classList.toggle("home-screen", id === "home");
     all(".screen").forEach(s => { const isCurrent=s.id===id; s.hidden = !isCurrent; s.classList.toggle("active",isCurrent); });
     all(".navbtn").forEach(b => b.classList.toggle("active",b.dataset.screen===id));
-    if(push && state.backStack[state.backStack.length-1]!==id) state.backStack.push(id);
+    if(id === "home") state.backStack = ["home"];
+    else if(push && state.backStack[state.backStack.length-1]!==id) state.backStack.push(id);
     window.scrollTo(0,0);
     if(id==="profile") renderProfile();
     if(id==="saved") renderSaved();
@@ -738,7 +739,7 @@
     catch(e){setStatus("admin-status",messageFor(e),true);}
   }
   document.addEventListener("click",e=>{
-    const go=e.target.closest("[data-go]");if(go){showScreen(go.dataset.go);return;}
+    const go=e.target.closest("[data-go]");if(go){if(go.classList.contains("back-link")){const previous=state.backStack.length>1?state.backStack[state.backStack.length-2]:go.dataset.go;if(state.backStack.length>1)state.backStack.pop();showScreen(previous,false);}else{showScreen(go.dataset.go);}return;}
     const nav=e.target.closest("[data-screen]");if(nav){showScreen(nav.dataset.screen);return;}
     const filter=e.target.closest("[data-filter]");if(filter){state.filter=filter.dataset.filter;showScreen("explore");renderPosts(state.posts);return;}
   });

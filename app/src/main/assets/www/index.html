@@ -423,7 +423,7 @@
       @media (min-width:600px) { .app-shell { max-width:760px; } .bottomnav { width:min(100%,760px); } .listing-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     </style>
   </head>
-  <body>
+  <body class="home-screen">
     <div class="app-shell">
       <section id="home" class="screen active">
         <div class="welcome-hero">
@@ -562,6 +562,7 @@
   function showScreen(id, push=true) {
     const target = $("#"+id);
     if(!target || !target.classList.contains("screen")) id="home";
+    document.body.classList.toggle("home-screen", id === "home");
     all(".screen").forEach(s => { const isCurrent=s.id===id; s.hidden = !isCurrent; s.classList.toggle("active",isCurrent); });
     all(".navbtn").forEach(b => b.classList.toggle("active",b.dataset.screen===id));
     if(push && state.backStack[state.backStack.length-1]!==id) state.backStack.push(id);

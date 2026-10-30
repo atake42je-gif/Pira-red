@@ -213,7 +213,13 @@ jobs:
           test -s "$APK"
           AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
           BADGING="$("$AAPT" dump badging "$APK")"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify "$APK"
+          if [ "${PIRARED_BUILD_TYPE:-debug}" = "release" ]; then
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+            echo "OK: APK compilado como release y certificado mostrado para comprobación."
+          else
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+            echo "::warning::APK firmado en modo debug; no es una publicación estable."
+          fi
           grep -F "package: name='ar.pirared.app'" <<< "$BADGING"
           grep -F "application-label:'PiraRed'" <<< "$BADGING"
           test -s app/src/main/res/mipmap-xxxhdpi/ic_launcher.png

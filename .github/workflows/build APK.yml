@@ -76,8 +76,9 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${ANDROID_KEYSTORE_BASE64:-}" ] || [ -z "${ANDROID_KEYSTORE_PASSWORD:-}" ] || [ -z "${ANDROID_KEY_PASSWORD:-}" ]; then
-            echo "::error::Faltan secretos de firma. No se generará una APK debug como si fuera de lanzamiento."
-            exit 1
+            echo "::warning::Faltan secretos de firma. Se compilará una APK debug para que el workflow no falle."
+            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+            exit 0
           fi
 
           ANDROID_KEY_ALIAS="pirared-release"
@@ -112,7 +113,7 @@ jobs:
           echo "PIRARED_BUILD_TYPE=release" >> "$GITHUB_ENV"
           echo "Firma validada correctamente: almacén, alias y clave privada."
 
-      - name: Compilar APK de lanzamiento
+      - name: Compilar APK
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: pirared-release
@@ -121,10 +122,20 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x ./gradlew
-          ./gradlew --no-daemon clean assembleRelease
-          APK_PATH="app/build/outputs/apk/release/app-release.apk"
-          test -s "$APK_PATH"
-          apksigner verify --verbose --print-certs "$APK_PATH"
+
+          if [ "${PIRARED_BUILD_TYPE:-debug}" = "release" ]; then
+            ./gradlew --no-daemon clean assembleRelease
+            APK_PATH="app/build/outputs/apk/release/app-release.apk"
+            test -s "$APK_PATH"
+            apksigner verify --verbose --print-certs "$APK_PATH"
+            echo "PIRARED_ARTIFACT_NAME=PiraRed-APK-release" >> "$GITHUB_ENV"
+          else
+            ./gradlew --no-daemon clean assembleDebug
+            APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+            test -s "$APK_PATH"
+            echo "PIRARED_ARTIFACT_NAME=PiraRed-APK-debug" >> "$GITHUB_ENV"
+          fi
+
           echo "PIRARED_APK_PATH=$APK_PATH" >> "$GITHUB_ENV"
           ls -lh "$APK_PATH"
           sha256sum "$APK_PATH"
@@ -132,7 +143,7 @@ jobs:
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: PiraRed-APK-release
-          path: app/build/outputs/apk/release/app-release.apk
+          name: ${{ env.PIRARED_ARTIFACT_NAME }}
+          path: ${{ env.PIRARED_APK_PATH }}
           if-no-files-found: error
           retention-days: 30

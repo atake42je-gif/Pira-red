@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#dff5ff" />
-    <link rel="preload" as="image" href="app/Img/file_000000005d30820e921dc8703d3997dc.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="img/file_000000005d30820e921dc8703d3997dc.png" fetchpriority="high" />
     <title>PiraRed</title>
     <style>
       :root {
@@ -25,61 +25,11 @@
 
       * { box-sizing: border-box; }
 
-      /* Ajuste visual global para móviles: ninguna foto debe desbordar su tarjeta
-         ni deformarse; las imágenes de contenido se adaptan al ancho disponible. */
       img {
-        max-width: 100%;
-      }
-      .screen img {
-        height: auto;
-      }
-
-      /* Mejora suave para las fotos interiores sin alterar la portada de inicio.
-         Conserva las fotos originales: solo ajusta nitidez percibida, contraste
-         y color, y evita que las tarjetas recorten de forma irregular. */
-      .screen:not(#home) img:not(.welcome-hero > img) {
-        filter: contrast(1.04) saturate(1.07) brightness(1.015);
-      }
-      .photo-card img,
-      .about-image {
         display: block;
-        width: 100%;
         max-width: 100%;
         height: auto;
-        object-fit: contain;
-        border-radius: 12px;
       }
-      .photo-card img,
-      .listing-thumb img,
-      .welcome-hero > img {
-        max-width: none;
-      }
-      /* La imagen de inicio queda expresamente intacta. */
-      .welcome-hero > img {
-        filter: none;
-      }
-      @media (max-width: 360px) {
-        .listing-card {
-          grid-template-columns: 84px minmax(0, 1fr);
-          gap: 10px;
-        }
-        .listing-thumb {
-          width: 84px;
-          height: 78px;
-        }
-        .listing-price {
-          grid-column: 2;
-          justify-self: start;
-          min-width: 0;
-        }
-        #account .home-body {
-          padding: 16px 12px 28px;
-        }
-        #account .panel {
-          padding: 18px 14px;
-        }
-      }
-
 
       html, body {
         margin: 0;
@@ -97,47 +47,10 @@
         justify-content: center;
       }
 
-      button, input {
-        font: inherit;
-      }
-
-      /* Formularios móviles: cada etiqueta y campo ocupa su propia fila.
-         Evita que los rótulos queden pegados al costado de los inputs. */
-      .panel form label {
-        display: block;
-        width: 100%;
-        margin: 12px 0 6px;
-        line-height: 1.35;
-      }
-      .panel form input,
-      .panel form select,
-      .panel form textarea {
-        display: block;
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        margin: 0 0 10px;
-      }
-      .panel form textarea {
-        min-height: 96px;
-        resize: vertical;
-      }
-      .panel form .cta-row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 14px;
-      }
-      .panel form .cta-row button {
-        min-width: 0;
-        white-space: normal;
-      }
-
       .app-shell {
         position: relative;
         width: 100%;
         max-width: 430px;
-        min-height: 100%;
         min-height: 100dvh;
         background: rgba(255,255,255,0.36);
         border-left: 1px solid rgba(27, 97, 172, 0.08);
@@ -146,438 +59,34 @@
         overflow: hidden;
       }
 
-      /* En Inicio la foto aprobada ocupa toda la pantalla, sin cabecera ni navegación superpuesta. */
-      body.home-screen .masthead,
-      body.home-screen .bottomnav {
-        display: none !important;
-      }
-
-      /* La barra inferior es navegación de usuario autenticado:
-         no debe aparecer en portada ni antes de iniciar sesión. */
-      body:not(.authenticated) .bottomnav {
-        display: none !important;
-      }
-      body.authenticated .bottomnav { display: flex !important; }
-      body.home-screen main {
-        padding: 0;
-      }
-      body.home-screen .app-shell {
-        width: 100%;
-        min-height: 100dvh;
-        border: 0;
-        box-shadow: none;
-      }
-      body.home-screen .screen,
-      body.home-screen .screen.active {
-        min-height: 100dvh;
-      }
-
-      .masthead {
-        display: none !important;
-        position: sticky;
-        top: 0;
-        z-index: 30;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 16px 12px;
-        background: rgba(255,255,255,0.6);
-        backdrop-filter: blur(16px) saturate(1.2);
-        -webkit-backdrop-filter: blur(16px) saturate(1.2);
-        border-bottom: 1px solid rgba(27,97,172,0.06);
-      }
-
-      /* El logo ya aparece en la portada; no repetirlo arriba en las pantallas interiores. */
-      .masthead-logo {
-        display: none;
-      }
-
-      .masthead-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .icon-btn, .masthead-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        border: 1px solid rgba(49, 122, 204, 0.14);
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        color: var(--text);
-      }
-
-      .masthead-pill {
-        min-width: unset;
-        padding: 0 12px;
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      main {
-        /* Reserva espacio real para la navegación fija y evita que el final del formulario quede debajo. */
-        padding: 0 0 calc(108px + env(safe-area-inset-bottom, 0px));
-      }
-
-      .screen {
-        display: none;
-        min-height: calc(100dvh - 90px);
-      }
-
-      .screen.active {
-        display: block;
-      }
-      /* Navegación por pantallas reales: una sola sección visible a la vez.
-         Cada pantalla ocupa el alto del dispositivo y su contenido se desplaza
-         dentro de ella, nunca se agrega debajo de la pantalla anterior. */
-      .screen[hidden] {
-        display: none !important;
-      }
-      .app-shell > main {
-        position: relative;
-        width: 100%;
-        min-width: 0;
-      }
-      .app-shell > main > .screen {
-        width: 100%;
-        min-width: 0;
-        min-height: 100dvh;
-        overflow-wrap: anywhere;
-      }
-      .app-shell > main > .screen.active {
-        display: block;
-        animation: screen-enter 160ms ease-out;
-      }
-      @keyframes screen-enter {
-        from { opacity: 0.72; }
-        to { opacity: 1; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .app-shell > main > .screen.active { animation: none; }
-      }
-
-      /* Las pantallas interiores también deben mostrar Pirané: foto nítida,
-         velo suave y tarjetas menos opacas para que el fondo tenga presencia. */
-      .screen:not(#home) {
-        background-color: #dff3ff;
-        background-image:
-          linear-gradient(180deg, rgba(225,244,255,0.28), rgba(236,248,255,0.42)),
-          url('app/Img/02-monumento-plaza.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: scroll;
-      }
-      #explore { background-image: linear-gradient(180deg,rgba(2,18,38,.28),rgba(2,18,38,.62)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
-      #publish { background-image: linear-gradient(180deg,rgba(2,18,38,.25),rgba(2,18,38,.62)),url('app/Img/08-monumento-50-anios.jpg') !important; }
-      #ads { background-image: linear-gradient(180deg,rgba(2,18,38,.24),rgba(2,18,38,.60)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
-      #photos { background-image: linear-gradient(180deg,rgba(2,18,38,.18),rgba(2,18,38,.55)),url('app/Img/03-plaza-juegos.jpg') !important; }
-      #about { background-image: linear-gradient(180deg,rgba(2,18,38,.22),rgba(2,18,38,.60)),url('app/Img/01-inicio-pirared.png') !important; }
-      #messages { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
-      #saved { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
-      #profile { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/02-monumento-plaza.jpg') !important; }
-      /* La foto anterior de juegos se ampliaba demasiado y se veía pixelada. */
-      #categories {
-        background-image: linear-gradient(180deg,rgba(2,18,38,.28),rgba(2,18,38,.64)),url('app/Img/02-monumento-plaza.jpg') !important;
-        background-size: cover !important;
-        background-position: center center !important;
-      }
-      #jobs { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/08-monumento-50-anios.jpg') !important; }
-      #services { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
-      #home .home-body { display:block; }
-      body.home-screen #home .home-body { display:none; }
-      body:not(.home-screen) #home .welcome-hero { height:42vh; min-height:300px; max-height:440px; }
-      body:not(.home-screen) #home .welcome-hero > img { object-position:center 28%; }
-      body:not(.home-screen) #home .welcome-actions { display:none; }
-      body:not(.home-screen) #home .home-body { display:block; }
-      .dashboard-greeting { color:#fff; text-shadow:0 2px 10px #00182a; padding:24px 18px 12px; }
-      .dashboard-greeting img { width:82px; height:82px; object-fit:contain; display:block; margin:0 auto 8px; }
-      .dashboard-greeting h2 { text-align:center; margin:4px 0; font-size:27px; }
-      .dashboard-greeting p { text-align:center; margin:0; }
-      .dashboard-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:12px 14px 26px; }
-      .dashboard-tile { min-height:92px; border-radius:18px; border:1px solid rgba(102,221,255,.88); background:rgba(3,31,57,.60); color:#fff; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 8px 22px rgba(0,0,0,.22); font-weight:700; }
-      .dashboard-tile span { display:block; font-size:24px; margin-bottom:6px; }
-      .screen-title-back { display:flex; align-items:center; gap:12px; color:#fff; padding:18px 16px 8px; text-shadow:0 2px 8px #00182a; }
-      .screen-title-back button { border:0; background:transparent; color:inherit; font-size:25px; }
-      .screen-title-back h2 { margin:0; font-size:23px; }
-      #messages .panel, #saved .panel, #profile .panel, #categories .panel, #jobs .panel, #services .panel { background:rgba(3,31,57,.66); color:#fff; border:1px solid rgba(102,221,255,.85); backdrop-filter:blur(12px); }
-      #messages .home-body, #saved .home-body, #profile .home-body, #categories .home-body, #jobs .home-body, #services .home-body { padding-bottom:110px; }
-      .shortcut-list { display:grid; gap:10px; padding:12px 14px; }
-      .shortcut-list button { text-align:left; padding:17px; color:#fff; border-radius:16px; border:1px solid rgba(102,221,255,.9); background:rgba(3,31,57,.66); backdrop-filter:blur(12px); }
-      .screen:not(#home) .panel {
-        background: rgba(255,255,255,0.78);
-        border-color: rgba(255,255,255,0.84);
-        box-shadow: 0 14px 34px rgba(14,64,105,0.14);
-        -webkit-backdrop-filter: blur(5px) saturate(1.08);
-        backdrop-filter: blur(5px) saturate(1.08);
-      }
-      .screen:not(#home) .section-head {
-        text-shadow: 0 1px 0 rgba(255,255,255,0.3);
-      }
-
-      /* Fondo local de Pirané también en la pantalla de registro e ingreso. */
-      #account {
-        min-height: 100dvh;
-        background-color: #071426;
-        background-image: linear-gradient(180deg, rgba(2,12,29,0.22), rgba(2,12,29,0.52)), url('app/Img/02-monumento-plaza.jpg');
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: scroll;
-      }
-      /* Todas las secciones de PiraRed reemplazan la pantalla anterior.
-         Ninguna sección se apila debajo de otra ni reserva espacio para una barra inferior. */
-      main { padding: 0 !important; }
-      .app-shell { width: 100%; max-width: 430px; min-height: 100dvh; }
-      .screen,
-      .screen.active {
-        width: 100%;
-        min-height: 100dvh;
-        box-sizing: border-box;
-      }
-      .screen { display: none; }
-      .screen.active { display: block; }
-      .bottomnav,
-      body.authenticated .bottomnav {
-        display: none !important;
-      }
-      .screen .home-body {
-        box-sizing: border-box;
-        padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
-      }
-      .screen-title-back { padding-top: max(18px, env(safe-area-inset-top, 0px)); }
-      /* Acceso y registro se abren como pantallas independientes, nunca debajo de la portada. */
-      body.account-screen #home { display: none !important; }
-      body.account-screen #account,
-      body.account-screen #account.active {
-        display: block;
-        width: 100%;
-        min-height: 100dvh;
-        margin: 0;
-      }
-      body.account-screen main {
-        padding: 0;
-        min-height: 100dvh;
-      }
-      body.account-screen .app-shell {
-        width: 100%;
-        max-width: 430px;
-        min-height: 100dvh;
-      }
-      body.account-screen #account .home-body {
-        min-height: 100dvh;
-        padding-top: max(22px, env(safe-area-inset-top, 0px));
-        padding-bottom: max(34px, env(safe-area-inset-bottom, 0px));
-      }
-      /* Registro: sin logo pequeño en la cabecera; foto local visible y formulario ordenado. */
-      body.account-screen .masthead-logo { display: none; }
-      body.account-screen .masthead {
-        min-height: 62px;
-        padding: 10px 16px;
-        color: #fff;
-        background: rgba(4,16,34,0.62);
-        border-bottom: 1px solid rgba(255,255,255,0.18);
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-      }
-      #account {
-        position: relative;
-        min-height: 100dvh;
-        background-image: linear-gradient(180deg, rgba(3,13,30,0.20), rgba(3,13,30,0.58)), url('app/Img/02-monumento-plaza.jpg');
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-      }
-      #account .home-body {
-        min-height: 100dvh;
-        box-sizing: border-box;
-        padding: 22px 16px 34px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      #account .section-head {
-        padding: 16px 4px 18px;
-        margin: 0;
-        color: #fff;
-        text-shadow: 0 2px 12px rgba(0,0,0,0.72);
-      }
-      #account .panel {
-        color: #f5faff;
-        background: linear-gradient(145deg, rgba(13,48,75,0.78), rgba(3,18,38,0.82));
-        border: 1px solid rgba(148,222,255,0.72);
-        border-radius: 26px;
-        padding: 22px 20px;
-        box-shadow: 0 18px 48px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.12);
-        backdrop-filter: blur(14px) saturate(1.2);
-        -webkit-backdrop-filter: blur(14px) saturate(1.2);
-      }
-      #account #sessionPanel h3 {
-        font-size: 22px;
-        line-height: 1.2;
-        margin: 0 0 10px;
-      }
-      #account #sessionPanel > p:first-of-type {
-        font-size: 14px;
-        line-height: 1.5;
-        margin: 0 0 18px;
-      }
-      #account #authForm {
-        display: grid;
-        gap: 8px;
-      }
-      #account #authForm label {
-        margin: 5px 0 0;
-        font-size: 13px;
-        font-weight: 800;
-        color: #e5f5ff;
-      }
-      #account #authForm input {
-        width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-        min-height: 48px;
-        padding: 12px 14px;
-        border: 1px solid #c9ddec;
-        border-radius: 13px;
-        background: rgba(247,252,255,0.96);
-        color: #102a42;
-        font-size: 16px;
-      }
-      #account .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-      #account .cta-row button { min-height: 50px; padding: 10px 8px; border-radius: 14px; font-size: 14px; }
-      #account #resetPasswordButton { width: 100%; min-height: 46px; margin-top: 10px; border-radius: 14px; }
-      #account .form-note { font-size: 12px; line-height: 1.5; margin-top: 12px; }
-
-      /* Formularios de publicación: controles apilados y adaptados al ancho del móvil. */
-      .panel form {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 8px;
-        width: 100%;
-        min-width: 0;
-        margin-top: 14px;
-      }
-      .panel form label {
-        display: block;
-        margin: 4px 0 0;
-        color: #234966;
-        font-size: 14px;
-        line-height: 1.35;
-        font-weight: 750;
-      }
-      .panel form input:not([type="hidden"]),
-      .panel form textarea,
-      .panel form select {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        min-height: 46px;
-        padding: 11px 13px;
-        border: 1px solid #c6d9e8;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.98);
-        color: #173954;
-        font: inherit;
-        font-size: 16px;
-        line-height: 1.35;
-        box-shadow: inset 0 1px 2px rgba(18,79,131,0.04);
-      }
-      .panel form textarea {
-        min-height: 104px;
-        resize: vertical;
-      }
-      .panel form input:focus,
-      .panel form textarea:focus,
-      .panel form select:focus {
-        outline: 3px solid rgba(30,143,255,0.18);
-        border-color: #3299ed;
-      }
-      .panel form button[type="submit"] {
-        width: 100%;
-        min-height: 48px;
-        margin-top: 6px;
-        padding: 12px 16px;
-        border: 0;
-        border-radius: 13px;
-        font-size: 15px;
-        font-weight: 800;
-        line-height: 1.3;
-        white-space: normal;
-      }
-      .panel form button:disabled {
-        opacity: 0.65;
-        cursor: wait;
-      }
-
       .welcome-hero {
         position: relative;
-        display: block;
         width: 100%;
-        height: 100%;
         height: 100dvh;
-        min-height: 100svh;
-        max-height: none;
         overflow: hidden;
         background: #eef9ff;
       }
-      body.home-screen,
-      body.home-screen .app-shell,
-      body.home-screen main,
-      body.home-screen #home {
-        width: 100%;
-        max-width: none;
-        min-height: 100dvh;
-        margin: 0;
-        padding: 0;
-      }
-      body.home-screen { overflow-x: hidden; }
-      body.home-screen .welcome-hero {
-        width: 100%;
-        height: 100%;
-        height: 100dvh;
-        min-height: 100svh;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-      }
-      /* El visitante solo ve la portada; no debe aparecer el tablero debajo.
-         Tras iniciar sesión se muestra el tablero y se oculta la portada. */
-      body.home-screen #home > .home-body { display: none !important; }
-      body.authenticated #home > .welcome-hero { display: none !important; }
-      body.authenticated #home > .home-body { display: block !important; }
 
       .welcome-hero > img {
         position: absolute;
-        display: block;
+        inset: 0;
         width: 100%;
         height: 100%;
-        inset: 0;
-        /* Mantiene la proporción original: llena la pantalla recortando
-           suavemente los bordes, en vez de deformar la imagen. */
         object-fit: cover;
         object-position: center center;
-        transform: none;
         filter: none;
-      }
-
-      /* La portada original ya contiene la identidad visual. No se agrega otra
-         capa oscura ni se repiten el logo y los textos sobre la foto. */
-      .welcome-hero::after {
-        content: none;
       }
 
       .welcome-copy {
         position: absolute;
-        z-index: 1;
         inset: 0;
-        display: block;
-        min-height: 100%;
-        padding: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 24px 20px;
         pointer-events: none;
       }
 
@@ -608,16 +117,13 @@
         text-shadow: 0 10px 24px rgba(0,0,0,0.48);
       }
 
-      /* Los botones están dibujados en la imagen original. Los controles
-         HTML solo son zonas táctiles transparentes, nunca se ven. */
       .welcome-actions {
         position: absolute;
-        z-index: 5;
         inset: 0;
-        display: block;
-        padding: 0;
+        z-index: 5;
         pointer-events: none;
       }
+
       .welcome-actions button {
         position: absolute;
         display: block;
@@ -634,49 +140,26 @@
         pointer-events: auto;
         -webkit-tap-highlight-color: transparent;
       }
-      /* Áreas de toque en la zona inferior de la portada; la imagen queda intacta. */
+
       .welcome-actions button:nth-child(1) {
         left: 8%;
         width: 40%;
         top: 68%;
         height: 12%;
       }
+
       .welcome-actions button:nth-child(2) {
         right: 8%;
         width: 40%;
         top: 68%;
         height: 12%;
       }
+
       .welcome-actions button:nth-child(3) {
         left: 14%;
         width: 72%;
         top: 82%;
         height: 11%;
-      }
-
-      .primary {
-        color: #fff;
-        background: linear-gradient(135deg, rgba(30,143,255,0.96), rgba(100,207,255,0.96));
-      }
-
-      .secondary {
-        color: #154d7a;
-        background: rgba(255,255,255,0.9);
-      }
-
-      .ghost {
-        grid-column: 1 / -1;
-        color: #0d4863;
-        background: linear-gradient(135deg, rgba(240,249,255,0.95), rgba(215,238,255,0.92));
-      }
-
-      .instagram-mark {
-        margin-top: 10px;
-        color: rgba(255,255,255,0.9);
-        font-size: 12px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
       }
 
       .home-body {
@@ -699,11 +182,6 @@
         color: var(--text);
       }
 
-      .section-head small {
-        color: var(--muted);
-        font-weight: 700;
-      }
-
       .category-strip {
         display: flex;
         gap: 8px;
@@ -724,14 +202,6 @@
         font-weight: 800;
         letter-spacing: 0.02em;
         color: var(--text);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-
-      .category-chip.active {
-        background: linear-gradient(135deg, rgba(30,143,255,0.13), rgba(100,207,255,0.18));
-        border-color: rgba(30,143,255,0.18);
-        color: #0d4d87;
       }
 
       .listing-grid {
@@ -750,8 +220,6 @@
         border-radius: 20px;
         padding: 12px;
         box-shadow: 0 10px 22px rgba(18, 79, 131, 0.08);
-        backdrop-filter: blur(18px) saturate(1.15);
-        -webkit-backdrop-filter: blur(18px) saturate(1.15);
       }
 
       .listing-thumb {
@@ -767,25 +235,6 @@
         height: 100%;
         object-fit: cover;
         display: block;
-      }
-
-      .listing-main {
-        min-width: 0;
-      }
-
-      .listing-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 8px;
-        border-radius: 999px;
-        background: rgba(100,207,255,0.12);
-        border: 1px solid rgba(30,143,255,0.12);
-        color: #1168bc;
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
       }
 
       .listing-card h3 {
@@ -819,76 +268,6 @@
         font-weight: 900;
       }
 
-      .search-box {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 14px;
-        border-radius: 14px;
-        background: rgba(255,255,255,0.7);
-        border: 1px solid rgba(49, 122, 204, 0.12);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        margin-bottom: 16px;
-      }
-
-      .search-box input {
-        flex: 1;
-        border: 0;
-        background: transparent;
-        color: var(--text);
-        font-size: 14px;
-        outline: none;
-      }
-
-      .search-box input::placeholder { color: var(--muted-2); }
-
-      .list-compact {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .compact-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 14px;
-        border-radius: 16px;
-        background: rgba(255,255,255,0.72);
-        border: 1px solid rgba(17,49,76,0.06);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-
-      .compact-item .left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .compact-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(180deg, rgba(44,162,255,0.16), rgba(100,207,255,0.08));
-        font-size: 20px;
-      }
-
-      .compact-item strong {
-        display: block;
-        font-size: 14px;
-        margin-bottom: 2px;
-        color: var(--text);
-      }
-
-      .compact-item small {
-        color: var(--muted);
-      }
-
       .panel {
         padding: 18px 16px;
         margin: 16px;
@@ -896,8 +275,6 @@
         background: rgba(255,255,255,0.76);
         border: 1px solid rgba(17,49,76,0.06);
         box-shadow: 0 12px 22px rgba(18, 79, 131, 0.06);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
       }
 
       .panel h3 {
@@ -926,6 +303,16 @@
         font-weight: 800;
       }
 
+      .primary {
+        color: #fff;
+        background: linear-gradient(135deg, rgba(30,143,255,0.96), rgba(100,207,255,0.96));
+      }
+
+      .secondary {
+        color: #154d7a;
+        background: rgba(255,255,255,0.9);
+      }
+
       .bottomnav {
         position: fixed;
         left: 50%;
@@ -936,8 +323,6 @@
         width: min(100%, 430px);
         padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
         background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(18px) saturate(1.2);
-        -webkit-backdrop-filter: blur(18px) saturate(1.2);
         border-top: 1px solid rgba(20, 82, 140, 0.06);
         z-index: 25;
       }
@@ -964,1292 +349,149 @@
         border-radius: 12px;
       }
 
-      .navbtn .icon {
-        font-size: 20px;
-        line-height: 1;
-      }
-
-      .navbtn.active {
-        color: #0d5ca8;
-      }
-
+      .navbtn .icon { font-size: 20px; line-height: 1; }
+      .navbtn.active { color: #0d5ca8; }
       .navbtn.active .icon-wrap {
         background: linear-gradient(180deg, rgba(30,143,255,0.15), rgba(100,207,255,0.09));
         border: 1px solid rgba(30,143,255,0.16);
       }
 
-      #toast {
-        position: fixed;
-        left: 50%;
-        bottom: 96px;
-        transform: translateX(-50%) translateY(10px);
-        opacity: 0;
-        pointer-events: none;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(16, 42, 60, 0.9);
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 10px 20px rgba(20,75,126,0.18);
-        color: white;
-        font-size: 12px;
-        font-weight: 700;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-      }
-
-      #toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-
-      /* Fondos distintos por sector: el vidrio deja ver las fotos originales. */
-      #explore { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/02-monumento-plaza.jpg') !important; }
-      #publish { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/08-monumento-50-anios.jpg') !important; }
-      #ads { background-image: linear-gradient(180deg,rgba(3,19,38,.10),rgba(3,19,38,.28)),url('app/Img/05-yo-amo-pirane.jpg') !important; }
-      #account { background-image: linear-gradient(180deg,rgba(3,19,38,.18),rgba(3,19,38,.38)),url('app/Img/11-detalles de la app -tren.jpg') !important; }
-      #photos { background-image: linear-gradient(180deg,rgba(3,19,38,.10),rgba(3,19,38,.24)),url('app/Img/03-plaza-juegos.jpg') !important; }
-      #about { background-image: linear-gradient(180deg,rgba(3,19,38,.12),rgba(3,19,38,.30)),url('app/Img/07-vista-aerea-pirane.jpg') !important; }
-
-      /* Vidrio liviano: botones y tarjetas no deben tapar las fotografías. */
-      .screen:not(#home) .panel,
-      .screen:not(#home) .compact-item,
-      .screen:not(#home) .listing-card,
-      .screen:not(#home) .search-box,
-      .screen:not(#home) .photo-card {
-        color: #f5fbff;
-        background: rgba(5, 30, 54, .43);
-        border: 1px solid rgba(157, 226, 255, .58);
-        box-shadow: 0 8px 24px rgba(0, 10, 25, .18), inset 0 1px 0 rgba(255,255,255,.12);
-        -webkit-backdrop-filter: blur(5px) saturate(1.18);
-        backdrop-filter: blur(5px) saturate(1.18);
-      }
-      .screen:not(#home) .panel h3,
-      .screen:not(#home) .panel p,
-      .screen:not(#home) .compact-item strong,
-      .screen:not(#home) .compact-item small,
-      .screen:not(#home) .listing-card h3,
-      .screen:not(#home) .listing-meta,
-      .screen:not(#home) .section-head,
-      .screen:not(#home) .photo-card figcaption,
-      .screen:not(#home) .gallery-note { color: #f5fbff; }
-      .screen:not(#home) .panel form label { color: #e6f7ff; }
-      .screen:not(#home) .primary,
-      .screen:not(#home) .secondary,
-      .screen:not(#home) .category-chip {
-        border: 1px solid rgba(164, 231, 255, .72);
-        border-radius: 13px;
-        background: rgba(7, 91, 145, .46);
-        color: #fff;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
-        -webkit-backdrop-filter: blur(6px);
-        backdrop-filter: blur(6px);
-      }
-      .screen:not(#home) .primary { background: rgba(0, 139, 255, .64); }
-      .screen:not(#home) .category-chip.active { background: rgba(0, 139, 255, .72); color: #fff; }
-      .feed-list { display:grid; gap:16px; padding:0 12px 18px; }
-      .feed-post { overflow:hidden; border:1px solid rgba(151,225,255,.68); border-radius:18px; background:rgba(4,27,49,.44); color:#f7fbff; box-shadow:0 10px 26px rgba(0,10,25,.22); backdrop-filter:blur(5px) saturate(1.16); -webkit-backdrop-filter:blur(5px) saturate(1.16); }
-      .feed-post-head { display:flex; align-items:center; gap:10px; padding:12px; }
-      .feed-avatar { width:38px; height:38px; flex:0 0 38px; object-fit:cover; border-radius:50%; border:1px solid rgba(150,225,255,.8); }
-      .feed-author { min-width:0; flex:1; font-size:13px; font-weight:800; }
-      .feed-author small { display:block; margin-top:3px; font-size:11px; font-weight:500; color:#d6efff; }
-      .feed-expiry { font-size:10px; white-space:nowrap; padding:5px 7px; border:1px solid rgba(167,230,255,.58); border-radius:9px; background:rgba(2,75,124,.45); }
-      .feed-photo { display:block; width:100%; height:240px; object-fit:cover; background:rgba(0,0,0,.15); }
-      .feed-content { padding:12px 14px 14px; }
-      .feed-content h3 { margin:0 0 7px; font-size:16px; color:#fff; }
-      .feed-content p { color:#eaf7ff; font-size:13px; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; }
-      .feed-meta { display:flex; justify-content:space-between; gap:8px; margin-top:10px; font-size:11px; color:#d5edff; }
-      .feed-actions { display:flex; gap:8px; padding:0 12px 12px; }
-      .feed-actions button { flex:1; min-height:40px; border:1px solid rgba(155,226,255,.62); border-radius:12px; color:#fff; background:rgba(5,94,150,.46); }
-      .feed-empty { margin:12px; padding:18px; color:#fff; background:rgba(4,27,49,.45); border:1px solid rgba(151,225,255,.6); border-radius:18px; backdrop-filter:blur(5px); }
-
-      @media (min-width: 480px) {
-        body {
-          padding: 26px 0;
-        }
-        .app-shell {
-          border-radius: 32px;
-          min-height: calc(100dvh - 52px);
-        }
-      }
-    
-      .photo-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px; align-items:start; }
-      .photo-card { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.84); box-shadow:0 8px 20px rgba(18,79,131,.08); margin:0; }
-      .photo-card img { display:block; width:100%; height:auto; max-height:360px; aspect-ratio:4/3; object-fit:contain; background:rgba(226,242,255,.7); }
-      .photo-card figcaption { padding:9px 10px 11px; font-size:12px; line-height:1.35; font-weight:800; color:var(--text); }
-      .gallery-note { margin:12px; padding:12px; border-radius:14px; background:rgba(255,255,255,.72); font-size:12px; line-height:1.5; color:var(--muted); }
-
-
-      /* Bienvenida breve: misma portada, sin los tres accesos visibles.
-         Luego se revela Inicio con los botones táctiles sobre la misma imagen. */
-      /* La portada se muestra una sola vez dentro de Inicio; se desactiva la copia de carga superpuesta. */
-      #pirared-splash {
-        display: none !important;
-      }
-
-      #pirared-splash img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        /* La portada trae los botones dibujados; mantener la imagen completa
-           dentro de la pantalla hace que las zonas táctiles coincidan. */
-        object-fit: fill;
-        object-position: center;
-      }
-      /* La bienvenida usa la misma portada que Inicio, sin una capa oscura
-         que tape la foto ni cambie bruscamente la imagen al terminar el splash. */
-      #pirared-splash.is-hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-      @media (prefers-reduced-motion: reduce) {
-        #pirared-splash { transition: none; }
-      }
-
-
-      /* Identidad visual unificada: vidrio translúcido, bordes celestes y fondos sin deformar. */
       .screen:not(#home) {
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: scroll !important;
-      }
-      .screen:not(#home)::before { background: linear-gradient(180deg,rgba(3,14,31,.24),rgba(3,14,31,.48)); }
-      .screen:not(#home) .home-body { position:relative; z-index:1; }
-      .screen:not(#home) .panel,
-      .screen:not(#home) .listing-card,
-      .screen:not(#home) .photo-card,
-      .screen:not(#home) .search-box,
-      .screen:not(#home) .feed-post,
-      .screen:not(#home) .compact-item {
-        background:rgba(4,28,53,.54) !important;
-        color:#f7fbff !important;
-        border:1px solid rgba(71,215,255,.78) !important;
-        border-radius:20px !important;
-        box-shadow:0 12px 30px rgba(0,8,25,.28), inset 0 1px 0 rgba(255,255,255,.16) !important;
-        -webkit-backdrop-filter:blur(12px) saturate(1.25);
-        backdrop-filter:blur(12px) saturate(1.25);
-      }
-      .screen:not(#home) .section-head h2,
-      .screen:not(#home) .section-head small,
-      .screen:not(#home) .panel h3,
-      .screen:not(#home) .panel p,
-      .screen:not(#home) .listing-card h3,
-      .screen:not(#home) .listing-card p,
-      .screen:not(#home) .listing-meta,
-      .screen:not(#home) .photo-card figcaption { color:#f7fbff !important; }
-      .screen:not(#home) input,
-      .screen:not(#home) textarea,
-      .screen:not(#home) select {
-        color:#fff !important;
-        background:rgba(1,17,36,.62) !important;
-        border:1px solid rgba(109,222,255,.72) !important;
-        border-radius:13px !important;
-      }
-      .screen:not(#home) input::placeholder,
-      .screen:not(#home) textarea::placeholder { color:rgba(230,246,255,.72); }
-      .screen:not(#home) .primary,
-      .screen:not(#home) .secondary,
-      .screen:not(#home) .category-chip,
-      .screen:not(#home) .dashboard-tile {
-        border:1px solid rgba(71,215,255,.9) !important;
-        border-radius:16px !important;
-        color:#fff !important;
-        background:linear-gradient(135deg,rgba(0,116,225,.78),rgba(0,55,112,.66)) !important;
-        box-shadow:0 7px 20px rgba(0,10,28,.22),inset 0 1px 0 rgba(255,255,255,.18) !important;
-      }
-      .screen:not(#home) .primary:active,
-      .screen:not(#home) .secondary:active,
-      .screen:not(#home) .dashboard-tile:active { transform:scale(.985); }
-
-      /* Formularios de acceso y registro: acciones únicas, legibles y adaptables. */
-      #account .home-body { min-height:100dvh; justify-content:flex-start; padding-top:clamp(20px,5vh,48px); padding-bottom:calc(28px + env(safe-area-inset-bottom,0px)); }
-      #account .section-head { padding:8px 4px 16px; }
-      #account .panel { width:100%; margin:0; padding:clamp(18px,5vw,26px); border-radius:24px; }
-      #account #authForm { gap:7px; }
-      #account #authForm input { min-height:52px; background:rgba(3,20,38,.72); color:#fff; border:1px solid rgba(89,211,255,.78); border-radius:14px; }
-      #account #authForm input::placeholder { color:rgba(226,242,255,.68); }
-      #account #authForm input:focus { outline:3px solid rgba(58,190,255,.22); border-color:#5bd7ff; }
-      #account #authForm .cta-row { display:grid; grid-template-columns:minmax(0,1fr); gap:0; margin-top:14px; }
-      #account #authForm .cta-row button { width:100%; min-height:52px; border:1px solid #5bd7ff; border-radius:15px; font-size:16px; font-weight:800; }
-      #account #registerButton { display:none !important; }
-      #account #resetPasswordButton { margin-top:12px; min-height:48px; }
-      #account .auth-switch { display:block; width:100%; margin-top:10px; padding:12px 8px; background:transparent; border:0; color:#9ce7ff; font-size:14px; font-weight:750; text-decoration:underline; text-underline-offset:3px; }
-      #account .form-note { color:rgba(239,248,255,.86); }
-      #account #sessionPanel > p:first-of-type { font-size:15px; }
-      #account #sessionPanel [hidden] { display:none !important; }
-      @media (max-height:700px) { #account .home-body { padding-top:14px; } #account .section-head { padding-bottom:10px; } #account #sessionPanel > p:first-of-type { margin-bottom:12px; } }
-
-      /* Sistema visual unificado: todas las pantallas comparten el mismo
-         vidrio translúcido, contornos, radios, sombras y respuesta de botones.
-         Se mantienen las fotos locales distintas de cada sección. */
-      :root {
-        --glass-bg: rgba(5, 32, 57, 0.62);
-        --glass-border: rgba(143, 224, 255, 0.76);
-        --glass-shadow: 0 12px 30px rgba(0, 15, 35, 0.22);
-        --button-radius: 15px;
-      }
-      .screen:not(#home) {
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: scroll !important;
-      }
-      .screen:not(#home) .panel,
-      #account .panel,
-      #messages .panel, #saved .panel, #profile .panel,
-      #categories .panel, #jobs .panel, #services .panel {
-        color: #f5fbff !important;
-        background: var(--glass-bg) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 22px !important;
-        box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.12) !important;
-        -webkit-backdrop-filter: blur(14px) saturate(1.18) !important;
-        backdrop-filter: blur(14px) saturate(1.18) !important;
-      }
-      .screen:not(#home) .section-head {
-        color: #fff;
-        text-shadow: 0 2px 10px rgba(0, 15, 35, .72) !important;
-      }
-      .screen button:not(.welcome-actions button),
-      .screen input[type="button"],
-      .screen input[type="submit"] {
-        border-radius: var(--button-radius);
-        transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .screen button:not(.welcome-actions button):not(.navbtn) {
-        border: 1px solid rgba(143, 224, 255, .58);
-        box-shadow: 0 5px 14px rgba(0, 15, 35, .15);
-      }
-      .screen button:not(.welcome-actions button):active {
-        transform: scale(.98);
-        filter: brightness(1.08);
-      }
-      .screen .primary,
-      .screen button.primary,
-      .screen button[type="submit"] {
-        color: #fff !important;
-        background: linear-gradient(135deg, rgba(18, 111, 201, .98), rgba(40, 190, 242, .96)) !important;
-        border-color: rgba(178, 238, 255, .8) !important;
-      }
-      .screen .secondary,
-      .screen button.secondary {
-        color: #effaff !important;
-        background: rgba(9, 52, 82, .82) !important;
-        border-color: rgba(143, 224, 255, .65) !important;
-      }
-      .screen input:not([type="hidden"]),
-      .screen textarea,
-      .screen select {
-        border-radius: 13px;
-        border: 1px solid rgba(143, 224, 255, .72);
-        box-shadow: inset 0 1px 3px rgba(0, 15, 35, .08);
-      }
-      .screen .dashboard-tile,
-      .screen .shortcut-list button {
-        color: #fff !important;
-        background: var(--glass-bg) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 18px !important;
-        box-shadow: var(--glass-shadow) !important;
-        -webkit-backdrop-filter: blur(14px) saturate(1.18) !important;
-        backdrop-filter: blur(14px) saturate(1.18) !important;
-      }
-      .bottomnav {
-        background: rgba(3, 24, 43, .88) !important;
-        border-top: 1px solid rgba(143, 224, 255, .55) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(1.2) !important;
-        backdrop-filter: blur(16px) saturate(1.2) !important;
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .screen button { transition: none !important; }
+        background-color: #dff3ff;
+        background-image:
+          linear-gradient(180deg, rgba(225,244,255,0.28), rgba(236,248,255,0.42)),
+          url('img/02-monumento-plaza.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
       }
 
-      /* Acabado global unificado y áreas seguras para todas las pantallas. */
-      :root {
-        --pirared-glass: rgba(3, 28, 51, .70);
-        --pirared-glass-border: rgba(83, 213, 255, .82);
-        --pirared-text: #f5fbff;
-        --pirared-shadow: 0 12px 28px rgba(0, 10, 28, .25);
-      }
-      html, body { width:100%; min-height:100%; min-height:100dvh; overflow-x:hidden; }
-      body { background:#071426; }
-      .app-shell { width:100%; max-width:430px; min-height:100dvh; }
-      .app-shell > main { width:100%; min-width:0; padding:0; }
-      .app-shell > main > .screen {
-        box-sizing:border-box; width:100%; min-width:0; min-height:100dvh;
-        padding-bottom:env(safe-area-inset-bottom, 0px);
-        background-color:#071426 !important; background-size:cover !important;
-        background-position:center center !important; background-repeat:no-repeat !important;
-      }
-      .app-shell > main > .screen[hidden] { display:none !important; }
-      .app-shell > main > .screen.active { display:block; }
-      #home .home-body {
-        color:var(--pirared-text);
-        background:linear-gradient(180deg,rgba(4,24,43,.84),rgba(3,20,37,.92));
-        padding:22px 16px calc(34px + env(safe-area-inset-bottom, 0px));
-      }
-      #home .dashboard-greeting h2, #home .dashboard-greeting p {
-        color:#f5fbff !important; text-shadow:0 2px 12px rgba(0,0,0,.45);
-      }
-      .screen:not(#home) .home-body {
-        box-sizing:border-box;
-        padding:20px 16px calc(100px + env(safe-area-inset-bottom, 0px));
-        color:var(--pirared-text);
-      }
-      .screen:not(#home) .panel, .screen:not(#home) .dashboard-tile,
-      .screen:not(#home) .shortcut-list button, #home .dashboard-tile {
-        box-sizing:border-box; color:var(--pirared-text) !important;
-        background:var(--pirared-glass) !important;
-        border:1px solid var(--pirared-glass-border) !important;
-        border-radius:20px !important;
-        box-shadow:var(--pirared-shadow),inset 0 1px 0 rgba(255,255,255,.12) !important;
-        -webkit-backdrop-filter:blur(14px) saturate(1.2) !important;
-        backdrop-filter:blur(14px) saturate(1.2) !important;
-      }
-      .screen:not(#home) h1, .screen:not(#home) h2, .screen:not(#home) h3,
-      .screen:not(#home) label, .screen:not(#home) p, .screen:not(#home) small,
-      .screen:not(#home) .form-note, .screen:not(#home) .gallery-note { color:#f5fbff; }
-      .screen:not(#home) input:not([type="hidden"]), .screen:not(#home) textarea,
-      .screen:not(#home) select {
-        box-sizing:border-box; width:100%; max-width:100%; color:#102d45;
-        background:rgba(245,251,255,.96); border:1px solid rgba(83,213,255,.8);
-        border-radius:13px;
-      }
-      .screen button, .screen input[type="submit"] {
-        max-width:100%; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
-        transition:transform .14s ease,filter .14s ease,box-shadow .14s ease;
-      }
-      .screen button:not(.welcome-actions button) { overflow-wrap:anywhere; }
-      .screen button:not(:disabled):active { transform:scale(.98); filter:brightness(1.08); }
-      .screen button:focus-visible, .screen input:focus-visible,
-      .screen textarea:focus-visible, .screen select:focus-visible {
-        outline:2px solid #69ddff; outline-offset:2px;
-      }
-      .screen .primary, .screen button.primary, .screen button[type="submit"] {
-        color:#fff !important; background:linear-gradient(135deg,#147bd0,#20b9ec) !important;
-        border:1px solid rgba(171,239,255,.9) !important; border-radius:15px !important;
-        box-shadow:0 7px 18px rgba(0,12,32,.25) !important;
-      }
-      .screen .secondary, .screen button.secondary {
-        color:#f5fbff !important; background:rgba(4,49,78,.92) !important;
-        border:1px solid var(--pirared-glass-border) !important; border-radius:15px !important;
-      }
-      body.authenticated .bottomnav {
-        box-sizing:border-box; padding-bottom:env(safe-area-inset-bottom, 0px);
-        min-height:calc(62px + env(safe-area-inset-bottom, 0px));
-        background:rgba(3,23,42,.96) !important;
-        border-top:1px solid var(--pirared-glass-border) !important;
-        box-shadow:0 -8px 24px rgba(0,10,28,.18);
-        -webkit-backdrop-filter:blur(16px) saturate(1.2) !important;
-        backdrop-filter:blur(16px) saturate(1.2) !important;
-      }
-      @media (prefers-reduced-motion:reduce) { .screen button { transition:none !important; } }
+      #explore { background-image: linear-gradient(180deg,rgba(2,18,38,.28),rgba(2,18,38,.62)),url('img/05-yo-amo-pirane.jpg') !important; }
+      #publish { background-image: linear-gradient(180deg,rgba(2,18,38,.25),rgba(2,18,38,.62)),url('img/08-monumento-50-anios.jpg') !important; }
+      #ads { background-image: linear-gradient(180deg,rgba(2,18,38,.24),rgba(2,18,38,.60)),url('img/05-yo-amo-pirane.jpg') !important; }
+      #photos { background-image: linear-gradient(180deg,rgba(2,18,38,.18),rgba(2,18,38,.55)),url('img/03-plaza-juegos.jpg') !important; }
+      #about { background-image: linear-gradient(180deg,rgba(2,18,38,.22),rgba(2,18,38,.60)),url('img/01-inicio-pirared.png') !important; }
+      #messages { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('img/07-vista-aerea-pirane.jpg') !important; }
+      #saved { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('img/05-yo-amo-pirane.jpg') !important; }
+      #profile { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('img/02-monumento-plaza.jpg') !important; }
+      #categories { background-image: linear-gradient(180deg,rgba(2,18,38,.28),rgba(2,18,38,.64)),url('img/02-monumento-plaza.jpg') !important; }
+      #jobs { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('img/08-monumento-50-anios.jpg') !important; }
+      #services { background-image: linear-gradient(180deg,rgba(2,18,38,.20),rgba(2,18,38,.60)),url('img/07-vista-aerea-pirane.jpg') !important; }
 
-      /* Portada adaptable: ocupa la pantalla completa sin deformar la foto.
-         object-fit:cover conserva la proporción original y recorta solo lo
-         imprescindible en móviles con una relación de aspecto diferente. */
-      body.home-screen,
-      body.home-screen .app-shell,
-      body.home-screen main,
-      body.home-screen #home {
-        width:100% !important;
-        max-width:none !important;
-        min-height:100dvh !important;
-        height:100dvh !important;
-        margin:0 !important;
-        padding:0 !important;
-      }
-      body.home-screen .welcome-hero {
-        position:relative !important;
-        display:block !important;
-        width:100% !important;
-        height:100dvh !important;
-        min-height:100dvh !important;
-        max-height:none !important;
-        aspect-ratio:auto !important;
-        overflow:hidden !important;
-        padding:0 !important;
-        /* En pantallas muy anchas, los laterales usan la misma portada como
-           fondo; la imagen original centrada y sus botones siguen intactos. */
-        background:#071426 !important;
-      }
-      @media (min-width:600px) {
-        .app-shell { max-width:620px; }
-        .screen:not(#home) .home-body { padding-left:24px; padding-right:24px; }
-      }
-      /* La portada y las zonas táctiles usan la proporción REAL del archivo
-         original, calculada desde naturalWidth/naturalHeight en JavaScript.
-         Así no se deforma ni se desalinean los botones en distintos Android. */
-      body.home-screen .welcome-hero > img {
-        position:absolute !important;
-        left:50% !important;
-        top:50% !important;
-        right:auto !important;
-        bottom:auto !important;
-        display:block !important;
-        width:auto;
-        height:auto;
-        max-width:none !important;
-        object-fit:contain !important;
-        object-position:center center !important;
-        transform:translate(-50%,-50%) !important;
-      }
-      body.home-screen .welcome-copy {
-        position:absolute !important;
-        left:50% !important;
-        top:50% !important;
-        right:auto !important;
-        bottom:auto !important;
-        width:auto;
-        height:auto;
-        min-height:0 !important;
-        transform:translate(-50%,-50%) !important;
-      }
-      body.home-screen .welcome-actions {
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        min-height:0 !important;
-      }
-      body.home-screen .welcome-actions { display:block !important; pointer-events:none; }
-      body.home-screen .welcome-actions button {
-        position:absolute !important;
-        display:block !important;
-        pointer-events:auto !important;
-        opacity:0 !important;
-        margin:0 !important;
-        padding:0 !important;
-        border:0 !important;
-        box-shadow:none !important;
-        background:transparent !important;
-        transform:none !important;
-      }
-      body.home-screen .welcome-actions button:nth-child(1) {
-        left:6% !important; top:69% !important; width:88% !important; height:9% !important;
-      }
-      body.home-screen .welcome-actions button:nth-child(2) {
-        left:6% !important; top:80.5% !important; width:88% !important; height:9% !important;
-      }
-      body.home-screen .welcome-actions button:nth-child(3) {
-        left:14% !important; top:93% !important; width:72% !important; height:6% !important;
-      }
-      /* En el resto de la aplicación, dejar espacio real para las barras
-         del sistema Android y evitar que controles queden debajo de ellas. */
-      .app-shell > main > .screen:not(#home) {
-        min-height:calc(100dvh - env(safe-area-inset-top, 0px)) !important;
-        padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)) !important;
-      }
-      .screen:not(#home) .home-body {
-        padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px)) !important;
-      }
-      @media (max-width:360px) {
-        .welcome-actions button { border-radius:8px !important; }
-      }
-
-      /* Última defensa: mostrar exclusivamente la pantalla activa. */
-      .app-shell > main > section.screen:not(.active),
-      .app-shell > main > section.screen[hidden] {
-        display: none !important;
-      }
-      .app-shell > main > section.screen.active:not([hidden]) {
-        display: block !important;
-        position: relative;
-        width: 100%;
-        min-height: 100dvh;
-        box-sizing: border-box;
-      }
-      body.account-screen #home,
-      body.account-screen #home[hidden],
-      body.account-screen #home.active {
-        display: none !important;
-      }
-      body.account-screen #account {
-        display: block !important;
-        width: 100%;
-        min-height: 100dvh;
+      @media (max-width: 360px) {
+        .listing-card {
+          grid-template-columns: 84px minmax(0, 1fr);
+          gap: 10px;
+        }
+        .listing-thumb {
+          width: 84px;
+          height: 78px;
+        }
+        .listing-price {
+          grid-column: 2;
+          justify-self: start;
+          min-width: 0;
+        }
       }
     </style>
   </head>
-  <body class="home-screen">
+  <body>
     <div class="app-shell">
-      <header class="masthead">
-        <img class="masthead-logo" src="app/Img/06-logo-pirared.png" alt="PiraRed" />
-        <div class="masthead-actions">
-          <button class="icon-btn" aria-label="notificaciones">🔔</button>
-          <button class="masthead-pill" type="button" onclick="go('about')">Info</button>
+      <section id="home" class="screen active">
+        <div class="welcome-hero">
+          <img src="img/file_000000005d30820e921dc8703d3997dc.png" alt="PiraRed" />
+          <div class="welcome-copy">
+            <img class="welcome-logo" src="img/01-inicio-pirared.png" alt="PiraRed logo" />
+            <div class="welcome-kicker">Pirané</div>
+            <h1 class="welcome-title">PiraRed</h1>
+          </div>
+          <div class="welcome-actions" aria-label="Acciones de portada">
+            <button type="button" aria-label="Explorar"></button>
+            <button type="button" aria-label="Publicar"></button>
+            <button type="button" aria-label="Ingresar"></button>
+          </div>
         </div>
-      </header>
+      </section>
 
       <main>
-        <section class="screen active" id="home">
-          <div class="welcome-hero">
-            <img src="app/Img/file_000000005d30820e921dc8703d3997dc.png" alt="Portada de PiraRed con botones de acceso" fetchpriority="high" decoding="async" />
-            <div class="welcome-copy" aria-label="Accesos de la portada">
-              <!-- Controles accesibles e invisibles: los botones visibles son parte de la imagen original. -->
-              <div class="welcome-actions" aria-label="Accesos de la portada">
-                <button type="button" aria-label="Iniciar sesión" onclick="go('account')"></button>
-                <button type="button" aria-label="Crear cuenta" onclick="go('account'); setAuthMode('register')"></button>
-                <button type="button" aria-label="Acceso para comercios" onclick="go('publish')"></button>
-              </div>
-            </div>
-          </div>
-
+        <section id="explore" class="screen">
           <div class="home-body">
-            <div class="dashboard-greeting">
-              <img src="app/Img/06-logo-pirared.png" alt="PiraRed">
-              <h2>¡Hola, Pirané!</h2><p>Aquí todo está más cerca</p>
+            <div class="section-head"><h2>Explorar</h2></div>
+            <div class="category-strip">
+              <span class="category-chip active">Todo</span>
+              <span class="category-chip">Cocina</span>
+              <span class="category-chip">Servicios</span>
+              <span class="category-chip">Home</span>
             </div>
-            <div class="dashboard-grid">
-              <button class="dashboard-tile" onclick="go('categories')"><span>▦</span>Categorías</button>
-              <button class="dashboard-tile" onclick="go('explore')"><span>⚑</span>Publicaciones</button>
-              <button class="dashboard-tile" onclick="go('messages')"><span>☏</span>Mensajes</button>
-              <button class="dashboard-tile" onclick="go('saved')"><span>♡</span>Guardados</button>
-              <button class="dashboard-tile" onclick="go('profile')"><span>♙</span>Mi perfil</button>
-              <button class="dashboard-tile" onclick="go('about')"><span>⚙</span>Información</button>
-            </div>
-            <div class="section-head">
-              <h2>¿Qué necesitás hoy?</h2>
-              <small>Comunidad local</small>
-            </div>
-
-            <div class="category-strip" id="categoryBar">
-              <button class="category-chip active" type="button" data-category="Todas">Todos</button>
-              <button class="category-chip" type="button" data-category="Compra / Venta">Compra / Venta</button>
-              <button class="category-chip" type="button" data-category="Trabajos">Trabajos</button>
-              <button class="category-chip" type="button" data-category="Servicios">Servicios</button>
-              <button class="category-chip" type="button" data-category="Comercios">Comercios</button>
-            </div>
-
-            <div class="listing-grid" id="homeListings"></div>
-          </div>
-        </section>
-
-        <section class="screen" id="explore">
-          <div class="home-body">
-            <div class="section-head">
-              <h2>Publicaciones</h2>
-              <small id="countLabel">Feed de la comunidad</small>
-            </div>
-            <p class="gallery-note">Como en Instagram: publicaciones aprobadas con fotos de Pirané. Cada publicación deja de mostrarse después de 7 días.</p>
-            <div class="search-box">
-              <span>🔎</span>
-              <input id="searchInput" type="text" placeholder="Buscar publicaciones..." />
-            </div>
-            <div class="feed-list" id="exploreList"></div>
-          </div>
-        </section>
-
-        <section class="screen" id="publish">
-          <div class="home-body">
-            <div class="section-head"><h2>Publicar</h2><small>Tu comunidad</small></div>
-            <div class="panel">
-              <h3>Solicitar alta de comercio</h3>
-              <p>Registrá tu comercio. Quedará pendiente de revisión antes de aparecer públicamente.</p>
-              <form id="businessForm">
-                <label for="businessName">Nombre del comercio</label>
-                <input id="businessName" required minlength="2" maxlength="100" placeholder="Ej. Almacén del barrio" />
-                <label for="businessCategory">Categoría</label>
-                <input id="businessCategory" required maxlength="80" placeholder="Ej. Alimentos, servicios" />
-                <label for="businessDescription">Descripción</label>
-                <textarea id="businessDescription" maxlength="700" rows="3" placeholder="Qué ofrecés"></textarea>
-                <label for="businessContact">Contacto público (opcional)</label>
-                <input id="businessContact" maxlength="120" placeholder="Solo un contacto que quieras publicar" />
-                <button class="primary" type="submit">Enviar comercio para revisión</button>
-              </form>
-              <p class="form-note">Necesitás iniciar sesión. No publiques tu número personal si no querés hacerlo público.</p>
-            </div>
-            <div class="panel">
-              <h3>Publicar en la comunidad</h3>
-              <p>Compra y venta, trabajos y servicios de Pirané. Tu publicación será revisada antes de aparecer públicamente.</p>
-              <form id="communityForm">
-                <label for="communityCategory">Tipo de publicación</label>
-                <select id="communityCategory" required>
-                  <option value="Compra / Venta">Compra / Venta</option>
-                  <option value="Trabajos">Trabajos</option>
-                  <option value="Servicios">Servicios</option>
-                </select>
-                <label for="communityTitle">Título</label>
-                <input id="communityTitle" required minlength="3" maxlength="100" placeholder="Ej. Busco trabajo de albañilería" />
-                <label for="communityDescription">Descripción</label>
-                <textarea id="communityDescription" required minlength="5" maxlength="1000" rows="4" placeholder="Contá los detalles importantes"></textarea>
-                <label for="communityPrice">Precio o remuneración (opcional)</label>
-                <input id="communityPrice" maxlength="80" placeholder="Ej. $15.000 / A convenir" />
-                <label for="communityLocation">Zona (opcional)</label>
-                <input id="communityLocation" maxlength="100" placeholder="Ej. Centro de Pirané" />
-                <label for="communityContact">Contacto público (opcional)</label>
-                <input id="communityContact" maxlength="120" placeholder="Solo si aceptás que lo vea cualquiera" />
-                <button class="primary" type="submit">Enviar para revisión</button>
-              </form>
-              <p class="form-note">Necesitás iniciar sesión. No incluyas datos privados que no quieras publicar.</p>
-            </div>
-            <div class="panel">
-              <h3>Publicar una promoción</h3>
-              <p>Disponible para comercios registrados. Las promociones se revisan antes de mostrarse.</p>
-              <form id="adForm">
-                <label for="adBusiness">ID del comercio aprobado</label>
-                <input id="adBusiness" required placeholder="ID de tu comercio aprobado" />
-                <label for="adTitle">Título</label>
-                <input id="adTitle" required minlength="3" maxlength="90" placeholder="Título de la promoción" />
-                <label for="adCategory">Categoría</label>
-                <input id="adCategory" required maxlength="80" placeholder="Categoría" />
-                <label for="adDescription">Descripción</label>
-                <textarea id="adDescription" required minlength="5" maxlength="600" rows="3" placeholder="Detalles de la promoción"></textarea>
-                <label for="adOffer">Oferta (opcional)</label>
-                <input id="adOffer" maxlength="100" placeholder="Ej. 10% de descuento" />
-                <button class="primary" type="submit">Enviar promoción para revisión</button>
-              </form>
-            </div>
-          </div>
-        </section>
-
-        <section class="screen" id="ads">
-          <div class="home-body">
-            <div class="section-head"><h2>Comercios</h2><small>Promociones aprobadas</small></div>
-            <div id="adsStatus" class="panel"><p>Cargando promociones públicas…</p></div>
-            <div class="listing-grid" id="adsList"></div>
-          </div>
-        </section>
-
-        <section class="screen" id="account">
-          <div class="home-body">
-            <div class="section-head"><h2>Mi cuenta</h2><small>Acceso seguro</small></div>
-            <div class="panel" id="sessionPanel">
-              <h3 id="authTitle">Iniciar sesión</h3>
-              <p id="authDescription">Ingresá con el correo y la contraseña de tu cuenta PiraRed.</p>
-              <form id="authForm" data-mode="login">
-                <div id="registerNameField" hidden>
-                  <label for="authName">Nombre y apellido</label>
-                  <input id="authName" maxlength="80" autocomplete="name" placeholder="Tu nombre y apellido" />
-                  <p class="form-note">Por ahora la cuenta se crea con correo y contraseña. No pedimos DNI ni selfie hasta tener un proceso de verificación seguro y privado.</p>
+            <div class="listing-grid">
+              <article class="listing-card">
+                <div class="listing-thumb"><img src="img/03-plaza-juegos.jpg" alt="Casa" /></div>
+                <div class="listing-main">
+                  <span class="listing-badge">Destacado</span>
+                  <h3>Departamento céntrico</h3>
+                  <div class="listing-meta"><span>2 dorm.</span><span>1 baño</span><span>65 m²</span></div>
                 </div>
-                <label for="authEmail">Correo electrónico</label>
-                <input id="authEmail" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="vos@ejemplo.com" />
-                <label for="authPassword">Contraseña</label>
-                <input id="authPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres" />
-                <div class="cta-row">
-                  <button class="primary" type="submit" id="loginButton">Iniciar sesión</button>
+                <div class="listing-price">U$S 180</div>
+              </article>
+
+              <article class="listing-card">
+                <div class="listing-thumb"><img src="img/02-monumento-plaza.jpg" alt="Terreno" /></div>
+                <div class="listing-main">
+                  <span class="listing-badge">Popular</span>
+                  <h3>Terreno en zona tranquila</h3>
+                  <div class="listing-meta"><span>500 m²</span><span>Urbanizado</span></div>
                 </div>
-              </form>
-              <button class="secondary full-button" type="button" id="resetPasswordButton">Recuperar contraseña</button>
-              <button class="auth-switch" type="button" id="switchAuthMode">¿No tenés cuenta? Crear cuenta</button>
-              <p class="form-note">Usá una contraseña única de al menos 8 caracteres. Nunca la compartas. No necesitamos tu número de teléfono.</p>
-            </div>
-            <div class="panel" id="safetyPanel" hidden>
-              <h3>Seguridad de la comunidad</h3>
-              <p>Podés denunciar contenido o bloquear a un usuario. Las denuncias quedan privadas y las revisa la administración.</p>
-              <form id="reportForm">
-                <input id="reportUserId" type="hidden" />
-                <input id="reportPostId" type="hidden" />
-                <label for="reportReason">Motivo de la denuncia</label>
-                <select id="reportReason" required>
-                  <option value="spam">Spam</option>
-                  <option value="harassment">Acoso</option>
-                  <option value="fraud">Posible estafa</option>
-                  <option value="unsafe">Contenido peligroso</option>
-                  <option value="other">Otro motivo</option>
-                </select>
-                <label for="reportDetails">Detalles (opcional)</label>
-                <textarea id="reportDetails" maxlength="1000" rows="3" placeholder="Describí brevemente qué ocurrió"></textarea>
-                <button class="primary" type="submit">Enviar denuncia privada</button>
-              </form>
-              <div id="safetyStatus" class="form-note"></div>
-            </div>
-            <div class="panel" id="messagesPanel" hidden>
-              <h3>Mensajes privados</h3>
-              <p>Los mensajes solo los pueden leer quien los envía y quien los recibe.</p>
-              <form id="messageForm">
-                <input id="messageRecipient" type="hidden" />
-                <label for="messageBody">Mensaje</label>
-                <textarea id="messageBody" required minlength="1" maxlength="2000" rows="3" placeholder="Escribí tu mensaje privado"></textarea>
-                <button class="primary" type="submit">Enviar mensaje privado</button>
-              </form>
-              <div id="messageStatus" class="form-note"></div>
-              <div id="messageInbox"><p>Tus mensajes aparecerán acá.</p></div>
-              <button class="secondary full-button" type="button" id="refreshMessages">Actualizar mensajes</button>
-            </div>
-            <div class="panel" id="adminPanel" hidden>
-              <h3>Moderación de PiraRed</h3>
-              <p>Solo visible para cuentas con rol administrador.</p>
-              <div id="adminQueue"><p>Sin solicitudes cargadas.</p></div>
-              <button class="secondary full-button" type="button" id="reloadAdminQueue">Actualizar solicitudes</button>
-            </div>
-            <div class="panel" id="loggedPanel" hidden>
-              <h3 id="loggedTitle">Tu cuenta</h3>
-              <p id="loggedEmail"></p>
-              <div class="cta-row">
-                <button class="secondary" type="button" id="refreshDataButton">Actualizar datos</button>
-                <button class="primary" type="button" id="logoutButton">Cerrar sesión</button>
-              </div>
+                <div class="listing-price">U$S 95</div>
+              </article>
             </div>
           </div>
         </section>
 
-
-        <section class="screen" id="photos">
-          <div class="home-body">
-            <div class="section-head"><h2>Fotos de Pirané y PiraRed</h2><small>Galería completa</small></div>
-            <p class="gallery-note">Las seis imágenes originales de la secuencia PiraRed, respetando el orden elegido.</p>
-            <div class="photo-gallery">
-              <figure class="photo-card"><img src="app/Img/06-logo-pirared.png" alt="Logo original de PiraRed" loading="lazy"><figcaption>Logo de PiraRed</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/01-inicio-pirared.png" alt="Portada original de inicio PiraRed" loading="lazy"><figcaption>1. Inicio: portada original</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/02-monumento-plaza.jpg" alt="Monumento de la plaza; falta confirmar si corresponde a la estatua solicitada" loading="lazy"><figcaption>2. Monumento de la plaza — confirmar si es la estatua solicitada</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/03-plaza-juegos.jpg" alt="Placita y juegos de Pirané" loading="lazy"><figcaption>3. Placita / parque</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/08-monumento-50-anios.jpg" alt="Monumento de los 50 años" loading="lazy"><figcaption>4. Monumento de los 50 años</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/05-yo-amo-pirane.jpg" alt="Cartel Yo amo Pirané" loading="lazy"><figcaption>5. Cartel “YO ❤️ PIRANÉ”</figcaption></figure>
-              <figure class="photo-card"><img src="app/Img/11-detalles de la app -tren.jpg" alt="Información de PiraRed" loading="lazy"><figcaption>6. Información de la app — cierre de la secuencia principal</figcaption></figure>
+        <section id="publish" class="screen">
+          <div class="panel">
+            <h3>Publicar anuncio</h3>
+            <p>Subí tu publicación con fotos y descripción para llegar a más personas en Pirané.</p>
+            <div class="cta-row">
+              <button type="button" class="primary">Crear</button>
+              <button type="button" class="secondary">Ver guía</button>
             </div>
           </div>
         </section>
-        <section class="screen" id="about">
-          <div class="home-body">
-            <div class="section-head"><h2>Información</h2><small>Sobre PiraRed</small></div>
-            <div class="panel">
-              <img class="about-image" src="app/Img/11-detalles de la app -tren.jpg" alt="Información de PiraRed" />
-              <h3>Aquí Pirané, mi pueblo</h3>
-              <p><strong>Capital provincial del folklore.</strong> PiraRed es una aplicación hecha en Pirané por un piranense, para conectar a vecinos, trabajadores y comercios de nuestra comunidad, con humildad y sin partidos políticos.</p>
-              <h3>¿Qué podés hacer en PiraRed?</h3>
-              <ul>
-                <li>Comprar y vender productos de la zona.</li>
-                <li>Encontrar trabajos, changas y servicios locales.</li>
-                <li>Conocer comercios y promociones aprobadas.</li>
-                <li>Crear una cuenta, administrar tu perfil y conversar mediante mensajes privados.</li>
-                <li>Guardar publicaciones para encontrarlas después.</li>
-              </ul>
-              <h3>Información de la aplicación</h3>
-              <p><strong>Nombre:</strong> PiraRed — Comunidad de Pirané, Formosa.</p>
-              <p><strong>Versión:</strong> 1.0 (versión en pruebas).</p>
-              <p><strong>Instagram:</strong> <a href="https://www.instagram.com/escalantepepe22/" target="_blank" rel="noopener noreferrer">@escalantepepe22</a></p>
-              <p class="form-note">Las funciones de publicación requieren conexión. Los anuncios se revisan antes de aparecer públicamente. No se deben ofrecer pagos destacados hasta que la integración de pago esté activada y verificada.</p>
-              <p class="form-note">Cuidamos tus datos: los contactos privados no se muestran automáticamente y las publicaciones comerciales quedan sujetas a revisión.</p>
-              <h3>Privacidad y normas de la comunidad</h3>
-              <ul>
-                <li>Los datos de tu cuenta no se publican automáticamente.</li>
-                <li>Los mensajes privados están restringidos a sus participantes.</li>
-                <li>Las publicaciones y promociones requieren revisión antes de mostrarse públicamente.</li>
-                <li>Podés denunciar contenido o bloquear usuarios. No publiques datos personales de terceros sin permiso.</li>
-                <li>No se permite usar PiraRed para estafas, amenazas, acoso ni actividades ilegales.</li>
-              </ul>
-              <p class="form-note">PiraRed sigue en fase de pruebas. Antes de un lanzamiento público faltan pruebas funcionales y de seguridad en dispositivos reales.</p>
-            </div>
+
+        <section id="about" class="screen">
+          <div class="panel">
+            <h3>Sobre PiraRed</h3>
+            <p>Conectamos vendedores y compradores de Pirané con una experiencia simple, rápida y visual.</p>
           </div>
         </section>
       </main>
 
-            <section class="screen" id="categories">
-        <div class="screen-title-back"><button onclick="go('home')" aria-label="Volver">‹</button><h2>Categorías</h2></div>
-        <div class="shortcut-list">
-          <button onclick="go('explore')">🛒　Compra / Venta　›</button>
-          <button onclick="go('jobs')">🧰　Trabajos y Changas　›</button>
-          <button onclick="go('services')">🔧　Servicios　›</button>
-          <button onclick="go('ads')">📣　Publicidad y Comercios　›</button>
-        </div>
-      </section>
-      <section class="screen" id="messages">
-        <div class="screen-title-back"><button onclick="go('home')" aria-label="Volver">‹</button><h2>Mensajes</h2></div>
-        <div class="home-body"><div class="panel"><p>Conversaciones privadas de PiraRed.</p><div id="messagesScreenList">Iniciá sesión para consultar tus mensajes.</div><button class="primary full-button" onclick="go('account')">Iniciar sesión</button></div></div>
-      </section>
-      <section class="screen" id="saved">
-        <div class="screen-title-back"><button onclick="go('home')" aria-label="Volver">‹</button><h2>Guardados</h2></div>
-        <div class="home-body"><div class="panel"><p>Tus publicaciones y comercios guardados aparecerán aquí.</p><p>Iniciá sesión para guardar tus favoritos.</p><button class="primary full-button" onclick="go('account')">Iniciar sesión</button></div></div>
-      </section>
-      <section class="screen" id="profile">
-        <div class="screen-title-back"><button onclick="go('home')" aria-label="Volver">‹</button><h2>Mi perfil</h2></div>
-        <div class="home-body"><div class="panel"><h3 id="profileDisplayName">Tu perfil PiraRed</h3><p id="profileDisplayStatus">Iniciá sesión para ver y administrar tu perfil.</p><div class="shortcut-list"><button onclick="go('account')">✎　Editar perfil　›</button><button onclick="go('explore')">⚑　Mis publicaciones　›</button><button onclick="go('account')">⚙　Mis datos y configuración　›</button></div></div></div>
-      </section>
-      <section class="screen" id="jobs">
-        <div class="screen-title-back"><button onclick="go('categories')" aria-label="Volver">‹</button><h2>Trabajos y Changas</h2></div>
-        <div class="shortcut-list"><button onclick="go('publish')">Busco trabajo — Publicá tu búsqueda</button><button onclick="go('publish')">Ofrezco servicio — Publicá tu oferta</button><button onclick="go('publish')">Necesito ayudante</button><button onclick="go('publish')">Clases y oficios</button></div>
-      </section>
-      <section class="screen" id="services">
-        <div class="screen-title-back"><button onclick="go('categories')" aria-label="Volver">‹</button><h2>Servicios</h2></div>
-        <div class="shortcut-list"><button onclick="go('explore')">🔌　Electricista</button><button onclick="go('explore')">🚿　Plomería</button><button onclick="go('explore')">🧱　Albañilería</button><button onclick="go('explore')">✂　Peluquería</button><button onclick="go('explore')">📱　Técnico en celulares</button><button onclick="go('publish')">＋ Publicar un servicio</button></div>
-      </section>
-
-
-      <div id="toast">Mensaje</div>
+      <nav class="bottomnav" aria-label="Navegación principal">
+        <button class="navbtn active" type="button">
+          <span class="icon-wrap"><span class="icon">🏠</span></span>
+          <span>Inicio</span>
+        </button>
+        <button class="navbtn" type="button">
+          <span class="icon-wrap"><span class="icon">🔍</span></span>
+          <span>Explorar</span>
+        </button>
+        <button class="navbtn" type="button">
+          <span class="icon-wrap"><span class="icon">➕</span></span>
+          <span>Publicar</span>
+        </button>
+        <button class="navbtn" type="button">
+          <span class="icon-wrap"><span class="icon">💬</span></span>
+          <span>Mensajes</span>
+        </button>
+        <button class="navbtn" type="button">
+          <span class="icon-wrap"><span class="icon">💾</span></span>
+          <span>Guardados</span>
+        </button>
+        <button class="navbtn" type="button">
+          <span class="icon-wrap"><span class="icon">👤</span></span>
+          <span>Perfil</span>
+        </button>
+      </nav>
     </div>
-
-    <script>
-      // Public Supabase publishable key only; never place a service-role key in an APK.
-      const PIRARED_SUPABASE_URL = 'https://slgqcrcktczuvmivwdst.supabase.co';
-      const PIRARED_SUPABASE_KEY = 'sb_publishable_QNdAcWGllSEpRrUqoHKoig_YBNWfxDA';
-      const SESSION_KEY = 'pirared.auth.session.v1';
-      let session = null;
-      try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { session = null; }
-      const listings = [];
-      const communityListings = [];
-      const commerceListings = [];
-      const $ = (id) => document.getElementById(id);
-      const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      const apiHeaders = (token) => ({ 'apikey': PIRARED_SUPABASE_KEY, 'Authorization': 'Bearer ' + (token || PIRARED_SUPABASE_KEY), 'Content-Type':'application/json' });
-      let refreshPromise = null;
-      async function refreshSession() {
-        if (!session?.refresh_token) {
-          setSession(null);
-          return false;
-        }
-        if (!refreshPromise) {
-          refreshPromise = (async () => {
-            try {
-              const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
-                method: 'POST',
-                headers: apiHeaders(),
-                body: JSON.stringify({refresh_token: session.refresh_token})
-              });
-              const body = await response.text();
-              let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) {}
-              if (!response.ok || !data?.access_token || !data?.refresh_token) {
-                setSession(null);
-                return false;
-              }
-              setSession(data);
-              return true;
-            } catch (_) {
-              return false;
-            } finally {
-              refreshPromise = null;
-            }
-          })();
-        }
-        return refreshPromise;
-      }
-      async function api(path, options = {}, retryAfterRefresh = true) {
-        const response = await fetch(PIRARED_SUPABASE_URL + '/rest/v1/' + path, {
-          ...options, headers: {...apiHeaders(session?.access_token), ...(options.headers || {})}
-        });
-        if (response.status === 401 && retryAfterRefresh && await refreshSession()) {
-          return api(path, options, false);
-        }
-        const body = await response.text();
-        let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) { data = body; }
-        if (!response.ok) throw new Error(data?.message || data?.msg || ('Error del servidor (' + response.status + ')'));
-        return data;
-      }
-      async function authRequest(path, payload) {
-        const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/' + path, {
-          method:'POST', headers:apiHeaders(), body:JSON.stringify(payload)
-        });
-        const body = await response.text(); let data = null; try { data = body ? JSON.parse(body) : null; } catch (_) {}
-        if (!response.ok) throw new Error(data?.msg || data?.message || data?.error_description || data?.error || data?.details || ('No se pudo completar la operación de cuenta (HTTP ' + response.status + ').'));
-        return data;
-      }
-      function setSession(value) {
-        session = value;
-        if (value) localStorage.setItem(SESSION_KEY, JSON.stringify(value)); else localStorage.removeItem(SESSION_KEY);
-        renderSession();
-      }
-      function renderSession() {
-        const logged = !!session?.access_token;
-        document.body.classList.toggle('authenticated', logged);
-        if ($('adminPanel')) $('adminPanel').hidden = true;
-        $('sessionPanel').hidden = logged;
-        $('loggedPanel').hidden = !logged;
-        if (logged) {
-          $('loggedTitle').textContent = 'Sesión iniciada';
-          $('loggedEmail').textContent = session.user?.email || 'Cuenta conectada';
-        }
-      }
-      function showToast(message) {
-        const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
-        clearTimeout(showToast._timer); showToast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
-      }
-      /* La portada ocupa toda la pantalla, pero la foto conserva su proporción
-         intrínseca. La capa de botones mide exactamente lo mismo que la imagen,
-         por lo que los accesos invisibles coinciden con los botones dibujados. */
-      function fitWelcomeImage() {
-        const hero = document.querySelector('.welcome-hero');
-        const img = hero?.querySelector(':scope > img');
-        const copy = hero?.querySelector('.welcome-copy');
-        if (!hero || !img || !copy) return;
-        hero.style.height = '100dvh';
-        hero.style.minHeight = '100svh';
-        /* Portada a pantalla completa: mantiene proporción y recorta laterales,
-           en lugar de dejar franjas vacías arriba y abajo. */
-        img.style.position = 'absolute';
-        img.style.inset = '0';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.maxWidth = 'none';
-        img.style.objectFit = 'cover';
-        img.style.objectPosition = 'center center';
-        img.style.transform = 'none';
-        copy.style.position = 'absolute';
-        copy.style.inset = '0';
-        copy.style.width = '100%';
-        copy.style.height = '100%';
-        copy.style.left = '0';
-        copy.style.top = '0';
-        copy.style.transform = 'none';
-      }
-      fitWelcomeImage();
-      window.addEventListener('resize', fitWelcomeImage);
-      window.addEventListener('orientationchange', fitWelcomeImage);
-
-      const screenHistory = [];
-      let currentScreen = 'home';
-      function go(screen, fromBack = false) {
-        if (!screen || !$(screen)) return;
-        if (!fromBack && screen !== currentScreen) {
-          screenHistory.push(currentScreen);
-          currentScreen = screen;
-        } else if (fromBack) {
-          currentScreen = screen;
-        }
-        document.body.classList.toggle('account-screen', screen === 'account');
-        document.body.classList.toggle('home-screen', screen === 'home' && !session?.access_token);
-        document.querySelectorAll('.screen').forEach(s => {
-          const isCurrent = s.id === screen;
-          s.classList.toggle('active', isCurrent);
-          s.hidden = !isCurrent;
-          s.style.setProperty('display', isCurrent ? 'block' : 'none', 'important');
-          s.setAttribute('aria-hidden', String(!isCurrent));
-        });
-        window.scrollTo(0, 0);
-        document.querySelectorAll('.navbtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === screen));
-        if (screen === 'ads') loadAds();
-        if (screen === 'messages') { if (session?.access_token) loadMessages(); else if ($('messagesScreenList')) $('messagesScreenList').textContent = 'Iniciá sesión para consultar tus mensajes.'; }
-        if (screen === 'profile') { if ($('profileDisplayName')) $('profileDisplayName').textContent = session?.user?.user_metadata?.display_name || session?.user?.email || 'Tu perfil PiraRed'; if ($('profileDisplayStatus')) $('profileDisplayStatus').textContent = session?.access_token ? 'Cuenta conectada' : 'Iniciá sesión para ver y administrar tu perfil.'; }
-        if (screen === 'account') { renderSession(); if (session?.access_token) { loadAdminQueue(); loadMessages(); } else if ($('messagesPanel')) $('messagesPanel').hidden = true; }
-      }
-      // Android usa esta función para volver a la pantalla anterior sin cerrar la app.
-      window.piraredHandleBack = function () {
-        if (screenHistory.length) {
-          const previous = screenHistory.pop();
-          go(previous, true);
-          return 'handled';
-        }
-        return 'exit';
-      };
-
-      function renderHomeListings() {
-        const container = $('homeListings'); if (!container) return;
-        if (!listings.length) {
-          container.innerHTML = '<div class="panel"><h3>Tu comunidad empieza acá</h3><p>Por ahora no hay publicaciones verificadas disponibles. Evitamos mostrar avisos inventados.</p></div>';
-          return;
-        }
-        const category = document.querySelector('.category-chip.active')?.dataset.category || 'Todas';
-        const filtered = category === 'Todas' ? listings : listings.filter(item => item.category === category);
-        container.innerHTML = filtered.map(item => '<article class="listing-card"><div class="listing-thumb"><img src="' + escapeHtml(item.image || 'app/Img/03-plaza-juegos.jpg') + '" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(item.category) + '</span><h3>' + escapeHtml(item.title) + '</h3><div class="listing-meta">' + escapeHtml(item.place || 'Pirané') + '</div>' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<div class="cta-row"><button class="secondary" type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button class="secondary" type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button class="secondary" type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button></div>' : '') + '</div><div class="listing-price">' + escapeHtml(item.price || 'Consultar') + '</div></article>').join('');
-      }
-      function renderExploreList() {
-        const container = $('exploreList'); if (!container) return;
-        const query = ($('searchInput')?.value || '').trim().toLowerCase();
-        const now = Date.now();
-        const photoSet = [
-          'app/Img/07-vista-aerea-pirane.jpg',
-          'app/Img/03-plaza-juegos.jpg',
-          'app/Img/08-monumento-50-anios.jpg',
-          'app/Img/05-yo-amo-pirane.jpg',
-          'app/Img/02-monumento-plaza.jpg',
-          'app/Img/11-detalles de la app -tren.jpg'
-        ];
-        const filtered = communityListings.filter(item => {
-          const created = Date.parse(item.createdAt || '');
-          const recent = Number.isFinite(created) && now - created < 7 * 24 * 60 * 60 * 1000 && created <= now + 5 * 60 * 1000;
-          return recent && (!query || [item.title,item.description,item.category,item.place].some(v => String(v || '').toLowerCase().includes(query)));
-        });
-        $('countLabel').textContent = filtered.length + ' publicaciones · últimos 7 días';
-        container.innerHTML = filtered.length ? filtered.map((item, index) => {
-          const created = Date.parse(item.createdAt);
-          const ageHours = Math.max(0, Math.floor((now - created) / 3600000));
-          const daysLeft = Math.max(0, 7 - Math.floor((now - created) / 86400000));
-          const when = ageHours < 1 ? 'Hace unos minutos' : ageHours < 24 ? 'Hace ' + ageHours + ' h' : 'Hace ' + Math.floor(ageHours / 24) + ' días';
-          const ownerLabel = item.ownerName || 'Vecino de Pirané';
-          return '<article class="feed-post"><div class="feed-post-head"><img class="feed-avatar" src="app/Img/06-logo-pirared.png" alt="PiraRed"><div class="feed-author">' + escapeHtml(ownerLabel) + '<small>' + escapeHtml(item.category) + ' · ' + escapeHtml(when) + '</small></div><span class="feed-expiry">Vence en ' + daysLeft + ' d</span></div><img class="feed-photo" src="' + photoSet[index % photoSet.length] + '" alt="Fotografía local de Pirané" loading="lazy"><div class="feed-content"><h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.description || '') + '</p><div class="feed-meta"><span>' + escapeHtml(item.place || 'Pirané') + '</span><strong>' + escapeHtml(item.price || 'Consultar') + '</strong></div></div><div class="feed-actions">' + (session?.access_token && item.ownerId && item.ownerId !== session.user?.id ? '<button type="button" data-message-to="' + escapeHtml(item.ownerId) + '">Mensaje privado</button><button type="button" data-report-user="' + escapeHtml(item.ownerId) + '" data-report-post="' + escapeHtml(item.id || '') + '">Denunciar</button><button type="button" data-block-user="' + escapeHtml(item.ownerId) + '">Bloquear</button>' : '<button type="button" onclick="go(\'account\')">Iniciá sesión para contactar</button>') + '</div></article>';
-        }).join('') : '<div class="feed-empty"><h3>No hay publicaciones recientes</h3><p>Las publicaciones aprobadas aparecen acá durante 7 días. ¡Podés ser el primero en compartir algo con Pirané!</p></div>';
-      }
-      async function loadCommunityPosts() {
-        try {
-          const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-          const rows = await api('community_posts?select=id,owner_id,category,title,description,price_text,location_text,public_contact,created_at&status=eq.approved&created_at=gte.' + encodeURIComponent(cutoff) + '&order=created_at.desc');
-          communityListings.splice(0, communityListings.length, ...(rows || []).filter(r => {
-            const created = Date.parse(r.created_at || '');
-            return Number.isFinite(created) && Date.now() - created < 7 * 24 * 60 * 60 * 1000;
-          }).map(r => ({
-            id:r.id, ownerId:r.owner_id, category:r.category, title:r.title, description:r.description,
-            price:r.price_text || 'Consultar', place:r.location_text || 'Pirané',
-            contact:r.public_contact || '', createdAt:r.created_at, icon:'📌'
-          })));
-          listings.splice(0, listings.length, ...communityListings, ...commerceListings);
-          renderHomeListings(); renderExploreList();
-        } catch (_) {
-          // No se muestran publicaciones inventadas si el backend no está disponible.
-        }
-      }
-      async function loadAds() {
-        $('adsStatus').innerHTML = '<p>Buscando promociones aprobadas…</p>';
-        try {
-          const rows = await api('ads?select=id,title,description,category,offer_text,business_id,created_at&status=eq.approved&order=created_at.desc');
-          const businessIds = [...new Set((rows || []).map(r => r.business_id).filter(Boolean))];
-          let businesses = [];
-          if (businessIds.length) businesses = await api('businesses?select=id,name,category,status&id=in.(' + businessIds.join(',') + ')&status=eq.approved');
-          const byId = Object.fromEntries(businesses.map(b => [b.id,b]));
-          const approved = (rows || []).filter(r => byId[r.business_id]).map(r => ({title:r.title,category:'Comercios',detailCategory:r.category || byId[r.business_id].category,description:r.description,price:r.offer_text || 'Consultar',place:byId[r.business_id].name,icon:'🏪'}));
-          $('adsList').innerHTML = approved.map(r => '<article class="listing-card"><div class="listing-thumb"><img src="app/Img/03-plaza-juegos.jpg" alt=""></div><div class="listing-main"><span class="listing-badge">' + escapeHtml(r.category) + '</span><h3>' + escapeHtml(r.title) + '</h3><div class="listing-meta">' + escapeHtml(r.place) + '</div><p>' + escapeHtml(r.description) + '</p></div><div class="listing-price">' + escapeHtml(r.price) + '</div></article>').join('');
-          $('adsStatus').innerHTML = approved.length ? '<p>' + approved.length + ' promociones aprobadas.</p>' : '<p>Todavía no hay promociones aprobadas para mostrar.</p>';
-          commerceListings.splice(0, commerceListings.length, ...approved);
-          listings.splice(0, listings.length, ...communityListings, ...commerceListings);
-          renderHomeListings(); renderExploreList();
-        } catch (error) {
-          $('adsStatus').innerHTML = '<p>No se pudieron cargar las promociones. Revisá la conexión y la configuración de Supabase.</p>';
-          $('adsList').innerHTML = '';
-          showToast(error.message || 'No se pudo conectar con el servidor.');
-        }
-      }
-      document.addEventListener('click', event => {
-        const chip = event.target.closest('.category-chip');
-        if (chip) { document.querySelectorAll('.category-chip').forEach(btn => btn.classList.toggle('active', btn === chip)); renderHomeListings(); }
-      });
-      $('searchInput')?.addEventListener('input', renderExploreList);
-      function setAuthMode(mode) {
-        const registering = mode === 'register';
-        $('authForm').dataset.mode = registering ? 'register' : 'login';
-        $('authTitle').textContent = registering ? 'Crear cuenta' : 'Iniciar sesión';
-        $('authDescription').textContent = registering ? 'Completá tus datos para crear tu cuenta de PiraRed.' : 'Ingresá con el correo y la contraseña de tu cuenta PiraRed.';
-        $('registerNameField').hidden = !registering;
-        $('authName').required = registering;
-        $('loginButton').textContent = registering ? 'Crear mi cuenta' : 'Iniciar sesión';
-        $('registerButton').hidden = true;
-        $('resetPasswordButton').hidden = registering;
-        $('switchAuthMode').textContent = registering ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
-        $('authPassword').autocomplete = registering ? 'new-password' : 'current-password';
-      }
-// Nota: no se solicitan datos biométricos porque esa función no está implementada.      $('switchAuthMode')?.addEventListener('click', () => setAuthMode($('authForm').dataset.mode === 'register' ? 'login' : 'register'));
-      $('authForm')?.addEventListener('submit', async event => {
-        if ($('authForm').dataset.mode === 'register') { event.preventDefault(); await createAccount(); return; }
-        event.preventDefault();
-        const email = $('authEmail').value.trim(); const password = $('authPassword').value;
-        if (password.length < 8) return showToast('La contraseña debe tener al menos 8 caracteres.');
-        $('loginButton').disabled = true;
-        try {
-          const data = await authRequest('token?grant_type=password', {email,password});
-          if (!data?.access_token) throw new Error('No se recibió una sesión. Si te registraste recién, confirmá el correo y volvé a ingresar.');
-          setSession(data); go('home'); renderSession(); loadCommunityPosts(); loadAds(); loadMessages(); loadAdminQueue(); showToast('Sesión iniciada correctamente.');
-        } catch (error) { showToast(error.message || 'No se pudo iniciar sesión.'); }
-        finally { $('loginButton').disabled = false; }
-      });
-      async function createAccount() {
-        const email = $('authEmail').value.trim(); const password = $('authPassword').value; const name = $('authName').value.trim();
-        if (!email || password.length < 8) return showToast('Ingresá un correo válido y una contraseña de al menos 8 caracteres.');
-        if (!name) return showToast('Ingresá tu nombre y apellido.');
-        $('loginButton').disabled = true;
-        try {
-          const data = await authRequest('signup', {email,password,data:{display_name:name}});
-          if (data?.access_token) { setSession(data); go('home'); renderSession(); loadCommunityPosts(); loadAds(); loadMessages(); loadAdminQueue(); }
-          showToast(data?.access_token ? 'Cuenta creada correctamente.' : 'Cuenta solicitada. Confirmá el correo para continuar.');
-        } catch (error) {
-          const message = error.message || 'No se pudo crear la cuenta.';
-          showToast(/already registered|already been registered|user exists/i.test(message) ? 'Ese correo ya tiene una cuenta. Probá Iniciar sesión o Recuperar contraseña.' : message);
-        }
-        finally { $('loginButton').disabled = false; }
-      }
-      $('registerButton')?.addEventListener('click', () => setAuthMode('register'));
-      $('resetPasswordButton')?.addEventListener('click', async () => {
-        const email = $('authEmail').value.trim();
-        if (!email) return showToast('Escribí tu correo y volvé a tocar recuperar contraseña.');
-        try {
-          const response = await fetch(PIRARED_SUPABASE_URL + '/auth/v1/recover', {method:'POST',headers:apiHeaders(),body:JSON.stringify({email})});
-          if (!response.ok) throw new Error('No se pudo enviar el correo de recuperación.');
-          showToast('Si el correo está registrado, recibirás instrucciones para recuperar el acceso.');
-        } catch (error) { showToast(error.message || 'No se pudo enviar la recuperación.'); }
-      });
-      $('logoutButton')?.addEventListener('click', async () => {
-        try { if (session?.access_token) await fetch(PIRARED_SUPABASE_URL + '/auth/v1/logout', {method:'POST',headers:apiHeaders(session.access_token)}); } catch (_) {}
-        setSession(null); showToast('Sesión cerrada en este dispositivo.');
-      });
-      $('refreshDataButton')?.addEventListener('click', () => { loadAds(); showToast('Actualizando datos…'); });
-      $('reportForm')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (!session?.access_token) return showToast('Iniciá sesión para enviar una denuncia.');
-        const reportedUser = $('reportUserId').value.trim();
-        const postId = $('reportPostId').value.trim();
-        if (!reportedUser && !postId) return showToast('No se encontró el contenido denunciado.');
-        try {
-          await api('user_reports', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({
-            reporter_id:session.user.id,
-            reported_user_id:reportedUser || null,
-            community_post_id:postId || null,
-            reason:$('reportReason').value,
-            details:$('reportDetails').value.trim(),
-            status:'pending'
-          })});
-          $('reportForm').reset();
-          $('safetyStatus').textContent = 'Denuncia recibida de forma privada. Gracias por ayudar a cuidar la comunidad.';
-          showToast('Denuncia enviada.');
-        } catch (error) { showToast('No se pudo enviar la denuncia: '+error.message); }
-      });
-      document.addEventListener('click', async event => {
-        const report = event.target.closest('[data-report-user]');
-        if (report) {
-          if (!session?.access_token) { showToast('Iniciá sesión para denunciar contenido.'); go('account'); return; }
-          $('reportUserId').value = report.dataset.reportUser || '';
-          $('reportPostId').value = report.dataset.reportPost || '';
-          $('safetyPanel').hidden = false;
-          go('account');
-          $('safetyPanel').hidden = false;
-          return;
-        }
-        const block = event.target.closest('[data-block-user]');
-        if (block) {
-          if (!session?.access_token) { showToast('Iniciá sesión para bloquear usuarios.'); go('account'); return; }
-          const target = block.dataset.blockUser;
-          if (!target || target === session.user.id) return;
-          try {
-            await api('user_blocks', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({blocker_id:session.user.id,blocked_id:target})});
-            showToast('Usuario bloqueado.');
-            block.disabled = true;
-            block.textContent = 'Bloqueado';
-          } catch (error) { showToast('No se pudo bloquear: '+error.message); }
-        }
-      });
-      async function loadMessages() {
-        if (!session?.access_token || !$('messagesPanel')) return;
-        $('messagesPanel').hidden = false;
-        try {
-          const uid = encodeURIComponent(session.user.id);
-          const rows = await api('private_messages?select=id,sender_id,recipient_id,body,read_at,created_at&or=(sender_id.eq.'+uid+',recipient_id.eq.'+uid+')&order=created_at.desc&limit=50');
-          const inboxHtml = rows?.length ? rows.map(m => {
-            const sent = m.sender_id === session.user.id;
-            return '<article class="panel"><small>'+(sent?'Enviado':'Recibido')+' · '+escapeHtml(new Date(m.created_at).toLocaleString('es-AR'))+'</small><p>'+escapeHtml(m.body)+'</p>' + (!sent ? '<button class="secondary" type="button" data-reply-to="'+escapeHtml(m.sender_id)+'">Responder en privado</button>' : '') + '</article>';
-          }).join('') : '<p>Todavía no tenés mensajes privados.</p>';
-          $('messageInbox').innerHTML = inboxHtml;
-          if ($('messagesScreenList')) $('messagesScreenList').innerHTML = inboxHtml;
-        } catch (_) {
-          $('messageInbox').innerHTML = '<p>No se pudieron cargar los mensajes. Iniciá sesión nuevamente si tu sesión venció.</p>';
-          if ($('messagesScreenList')) $('messagesScreenList').innerHTML = $('messageInbox').innerHTML;
-        }
-      }
-      $('refreshMessages')?.addEventListener('click', loadMessages);
-      $('messageForm')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (!session?.access_token) return showToast('Iniciá sesión para enviar mensajes privados.');
-        const recipient = $('messageRecipient').value.trim();
-        const body = $('messageBody').value.trim();
-        if (!recipient || recipient === session.user.id) return showToast('Elegí una persona válida para el mensaje.');
-        if (!body) return showToast('Escribí el mensaje antes de enviarlo.');
-        const button = $('messageForm').querySelector('button[type="submit"]');
-        if (button) button.disabled = true;
-        try {
-          await api('private_messages', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sender_id:session.user.id,recipient_id:recipient,body})});
-          $('messageBody').value = '';
-          showToast('Mensaje privado enviado.');
-          await loadMessages();
-        } catch (error) {
-          showToast('No se pudo enviar el mensaje: '+error.message);
-        } finally { if (button) button.disabled = false; }
-      });
-      document.addEventListener('click', event => {
-        const contact = event.target.closest('[data-message-to]');
-        const reply = event.target.closest('[data-reply-to]');
-        const target = contact?.dataset.messageTo || reply?.dataset.replyTo;
-        if (!target) return;
-        if (!session?.access_token) { showToast('Iniciá sesión para usar los mensajes privados.'); go('account'); return; }
-        $('messageRecipient').value = target;
-        $('messageStatus').textContent = 'Destinatario privado seleccionado.';
-        $('messageBody').focus();
-        go('account');
-        $('messagesPanel').hidden = false;
-      });
-      async function loadAdminQueue() {
-        if (!session?.access_token) return;
-        try {
-          const profiles = await api('profiles?select=role&id=eq.' + encodeURIComponent(session.user.id));
-          if (profiles?.[0]?.role !== 'admin') {
-            $('adminPanel').hidden = true;
-            return;
-          }
-          $('adminPanel').hidden = false;
-          const [posts,businesses,ads,reports] = await Promise.all([
-            api('community_posts?select=id,title,category,description,created_at&status=eq.pending&order=created_at.asc'),
-            api('businesses?select=id,name,category,description,created_at&status=eq.pending&order=created_at.asc'),
-            api('ads?select=id,title,category,description,business_id,created_at&status=eq.pending&order=created_at.asc'),
-            api('user_reports?select=id,reason,details,reported_user_id,community_post_id,created_at&status=eq.pending&order=created_at.asc')
-          ]);
-          const items = [
-            ...(posts||[]).map(x=>({...x,_table:'community_posts',_label:'Publicación comunitaria',_title:x.title})),
-            ...(businesses||[]).map(x=>({...x,_table:'businesses',_label:'Comercio',_title:x.name})),
-            ...(ads||[]).map(x=>({...x,_table:'ads',_label:'Promoción',_title:x.title})),
-            ...(reports||[]).map(x=>({...x,_table:'user_reports',_label:'Denuncia · '+x.reason,_title:'Denuncia recibida',description:x.details||'Sin detalles adicionales'}))
-          ];
-          $('adminQueue').innerHTML = items.length ? items.map(x =>
-            '<article class="panel"><small>'+escapeHtml(x._label)+' · '+escapeHtml(x.category||'')+'</small><h3>'+escapeHtml(x._title)+'</h3><p>'+escapeHtml(x.description||'')+'</p><div class="cta-row"><button class="primary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="approved">Aprobar</button><button class="secondary" type="button" data-review-table="'+x._table+'" data-review-id="'+x.id+'" data-review-status="rejected">Rechazar</button></div></article>'
-          ).join('') : '<p>No hay solicitudes pendientes.</p>';
-        } catch (error) {
-          $('adminQueue').innerHTML = '<p>No se pudo cargar la cola de moderación. Revisá permisos de administrador y políticas de seguridad.</p>';
-        }
-      }
-      $('reloadAdminQueue')?.addEventListener('click', loadAdminQueue);
-      $('adminQueue')?.addEventListener('click', async event => {
-        const button = event.target.closest('[data-review-table]');
-        if (!button || !session?.access_token) return;
-        const table = button.dataset.reviewTable;
-        const id = button.dataset.reviewId;
-        const status = button.dataset.reviewStatus;
-        if (!['community_posts','businesses','ads','user_reports'].includes(table) || !['approved','rejected'].includes(status)) return;
-        button.disabled = true;
-        try {
-          await api(table+'?id=eq.'+encodeURIComponent(id), {
-            method:'PATCH',
-            headers:{'Prefer':'return=minimal'},
-            body:JSON.stringify(table === 'user_reports' ? {status: status === 'approved' ? 'resolved' : 'dismissed'} : {status,updated_at:new Date().toISOString()})
-          });
-          showToast(table === 'user_reports' ? (status === 'approved' ? 'Denuncia marcada como resuelta.' : 'Denuncia descartada.') : (status === 'approved' ? 'Solicitud aprobada.' : 'Solicitud rechazada.'));
-          await loadAdminQueue();
-          await loadCommunityPosts();
-          await loadAds();
-        } catch (error) {
-          button.disabled = false;
-          showToast('No se pudo moderar: '+error.message);
-        }
-      });
-      $('communityForm')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
-        const body = {
-          owner_id:session.user.id,
-          category:$('communityCategory').value,
-          title:$('communityTitle').value.trim(),
-          description:$('communityDescription').value.trim(),
-          price_text:$('communityPrice').value.trim(),
-          location_text:$('communityLocation').value.trim() || 'Pirané',
-          public_contact:$('communityContact').value.trim(),
-          status:'pending'
-        };
-        const button = $('communityForm').querySelector('button[type="submit"]');
-        if (button) button.disabled = true;
-        try {
-          await api('community_posts', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
-          $('communityForm').reset();
-          showToast('Publicación enviada. Se mostrará cuando sea aprobada.');
-        } catch (error) {
-          showToast('No se pudo enviar: ' + error.message + '. Revisá la conexión e iniciá sesión nuevamente si venció tu sesión.');
-        } finally { if (button) button.disabled = false; }
-      });
-      $('businessForm')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
-        const body = {owner_id:session.user.id,name:$('businessName').value.trim(),category:$('businessCategory').value.trim(),description:$('businessDescription').value.trim(),public_contact:$('businessContact').value.trim(),status:'pending'};
-        try {
-          await api('businesses', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
-          $('businessForm').reset(); showToast('Solicitud enviada. El comercio queda pendiente de revisión.');
-        } catch (error) { showToast('No se pudo enviar: ' + error.message + '. Verificá que la migración de Supabase esté aplicada.'); }
-      });
-      $('adForm')?.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (!session?.access_token) return showToast('Primero iniciá sesión desde Mi cuenta.');
-        const body = {business_id:$('adBusiness').value.trim(),owner_id:session.user.id,title:$('adTitle').value.trim(),category:$('adCategory').value.trim(),description:$('adDescription').value.trim(),offer_text:$('adOffer').value.trim(),status:'pending',ad_type:'basic'};
-        try {
-          await api('ads', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
-          $('adForm').reset(); showToast('Promoción enviada para revisión. No se publicará hasta ser aprobada.');
-        } catch (error) { showToast('No se pudo enviar: ' + error.message + '. Necesitás un comercio aprobado y la base configurada.'); }
-      });
-      renderSession();
-      // La portada es local y aparece inmediatamente. La red se consulta
-      // cuando el usuario navega o inicia sesión, no durante el arranque.
-      go('home', true);
-      renderHomeListings();
-      renderExploreList();
-    </script>
   </body>
 </html>

@@ -1,83 +1,52 @@
 # PiraRed
 
-PiraRed es una app Android con una interfaz web embebida en WebView, enfocada en la comunidad de Pirané y zonas cercanas. La app está pensada para presentar contenido local, explorar anuncios, publicar, acceder a perfiles y mantener una identidad visual clara y moderna basada en imágenes reales del pueblo.
+Aplicación Android comunitaria para Pirané, Formosa. El proyecto usa una interfaz web local dentro de Android WebView y Supabase para autenticación y datos.
 
-## Estado final de la preparación
+## Funciones incluidas en el código actual
 
-Se corrigieron las rutas de assets y la shell web en:
+- Portada original con tres accesos independientes: iniciar sesión, crear cuenta y acceso exclusivo para comercios.
+- Navegación entre pantallas sin apilar contenido.
+- Registro por correo, inicio/cierre de sesión y recuperación de contraseña mediante Supabase Auth.
+- Perfil básico del usuario.
+- Publicaciones comunitarias para Compra / Venta, Trabajos y Servicios.
+- Envío de publicaciones a moderación; solo las aprobadas se consultan en el feed público.
+- Solicitud de alta de comercios y anuncios básicos gratuitos sujetos a aprobación.
+- Mensajes privados entre participantes, sin publicar teléfonos.
+- Guardados locales en el dispositivo.
+- Panel de revisión para cuentas con rol administrador.
+- Diseño adaptable, fotos locales de Pirané y controles táctiles.
 
-- `app/src/main/assets/www/index.html`
+## Backend Supabase
 
-Se ajustó la referencia de imágenes para que coincida con la estructura real del proyecto y no apunte a rutas rotas o inexistentes.
+Proyecto configurado: `slgqcrcktczuvmivwdst` (región `us-east-1`).
 
-También quedaron agregados los scripts de release y la guía de entrega:
+Tablas existentes verificadas: `profiles`, `businesses`, `ads`, `community_posts`, `private_messages`, `user_reports`, `user_blocks` y `payment_orders`. Las tablas públicas verificadas tienen RLS activado. El cliente incluye únicamente una clave publicable; nunca agregar una clave service-role o secret a la APK.
 
-- `README-release.md`
-- `build-debug.sh`
-- `build-release.sh`
+La base de datos contiene las migraciones de comercios, anuncios, publicaciones, mensajes privados, denuncias y bloqueos. Las funciones Edge de pagos no están desplegadas actualmente. Por eso los anuncios destacados pagos permanecen deshabilitados; el flujo disponible es el anuncio básico gratuito.
 
-## Cambios aplicados
+## Pendientes obligatorios antes del lanzamiento público
 
-- Corrección de referencias a assets en la portada y shell de la app.
-- Ajuste de rutas para que apunten a la carpeta real `app/src/main/assets/www/img`.
-- Revisión del HTML/CSS para evitar imágenes rotas y problemas visuales en la portada.
-- Preparación del proyecto para compilar en entorno local y generar APK/AAB de release.
+1. Probar en un teléfono real el registro, confirmación de correo, inicio/cierre de sesión y recuperación.
+2. Probar crear publicaciones, solicitudes de comercios, aprobación administrativa, anuncios y mensajes con dos cuentas de prueba distintas.
+3. Probar permisos RLS con cuentas anónimas, usuarios normales y administrador.
+4. Verificar visualmente la portada y sus zonas táctiles en el Moto G51 y al menos otro tamaño de pantalla.
+5. Configurar una firma Android privada y estable en GitHub Secrets para que las actualizaciones se instalen sobre versiones previas. Sin esos secretos, Actions genera una APK debug que puede requerir desinstalar la versión anterior.
+6. Completar los datos del responsable y el correo de privacidad, revisar legalmente y aprobar los borradores de [Política de privacidad](docs/POLITICA-PRIVACIDAD-BORRADOR.md) y [Términos de uso](docs/TERMINOS-BORRADOR.md).
+7. Habilitar protección de contraseñas filtradas en Supabase Auth. El asesor de seguridad del proyecto la reporta desactivada.
+8. Definir un procedimiento real de eliminación de cuentas y datos.
+9. Si se quieren publicaciones con fotos, configurar un bucket de Storage con políticas de acceso antes de habilitar cargas de imágenes.
+10. Si se quieren anuncios destacados pagos, desplegar y probar el flujo de cobro y webhook; no aceptar pagos desde un botón que no verifique el pago en servidor.
 
-## Compilar localmente
+## Compilar
 
-### Debug
-```bash
-cd app
-./gradlew assembleDebug
-```
+GitHub Actions ejecuta el workflow `.github/workflows/build APK.yml` al recibir cambios en `main`. También se puede iniciar manualmente desde la pestaña Actions.
 
-### Release
-```bash
-cd app
-./gradlew assembleRelease
-```
+La compilación genera `dist/PiraRed.apk` y la publica como artefacto. En builds sin los secretos de firma, se trata de una APK de prueba.
 
-## Firma de release
+## Enlaces
 
-Si se quiere generar una APK firmada, configurar antes:
+- [Repositorio](https://github.com/atake42je-gif/Pira-red)
+- [Acciones y compilaciones](https://github.com/atake42je-gif/Pira-red/actions)
+- [Versiones descargables](https://github.com/atake42je-gif/Pira-red/releases)
 
-```bash
-export ANDROID_KEYSTORE_PATH="/ruta/tu-keystore.jks"
-export ANDROID_KEYSTORE_PASSWORD="tu_password"
-export ANDROID_KEY_ALIAS="tu_alias"
-export ANDROID_KEY_PASSWORD="tu_password_alias"
-```
-
-Luego ejecutar:
-
-```bash
-cd app
-./gradlew assembleRelease
-```
-
-## Artefactos esperados
-
-- APK debug: `app/build/outputs/apk/debug/`
-- APK release: `app/build/outputs/apk/release/`
-- AAB release: `app/build/outputs/bundle/release/`
-
-## Validación final requerida antes del lanzamiento
-
-La preparación ya quedó lista, pero la validación real en Android sigue siendo necesaria antes de declarar la app completamente terminada:
-
-- compilar sin errores
-- instalar en emulador o dispositivo real
-- verificar portada
-- verificar navegación
-- verificar imágenes
-- verificar pantallas internas
-- confirmar que no faltan recursos ni hay rutas rotas
-
-## Recomendación de entrega
-
-- APK: para pruebas rápidas o entrega directa.
-- AAB: para Google Play.
-
-## Nota de estado
-
-El proyecto quedó preparado para release y la corrección principal de recursos ya fue aplicada en el repositorio. La validación final en un dispositivo Android sigue siendo el último paso obligatorio antes de darlo por 100% probado.
+**Estado honesto:** las pantallas y conexiones principales ya están incorporadas al código, pero no se debe anunciar PiraRed como lanzamiento público hasta completar las pruebas de dispositivo, la firma estable y los pendientes de privacidad/seguridad enumerados arriba.

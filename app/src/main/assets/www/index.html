@@ -546,8 +546,8 @@
   function showScreen(id, push=true) {
     const target = $("#"+id);
     if(!target || !target.classList.contains("screen")) id="home";
-    $(".screen").forEach(s => { const isCurrent=s.id===id; s.hidden = !isCurrent; s.classList.toggle("active",isCurrent); });
-    $(".navbtn").forEach(b => b.classList.toggle("active",b.dataset.screen===id));
+    all(".screen").forEach(s => { const isCurrent=s.id===id; s.hidden = !isCurrent; s.classList.toggle("active",isCurrent); });
+    all(".navbtn").forEach(b => b.classList.toggle("active",b.dataset.screen===id));
     if(push && state.backStack[state.backStack.length-1]!==id) state.backStack.push(id);
     window.scrollTo(0,0);
     if(id==="profile") renderProfile();

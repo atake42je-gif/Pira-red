@@ -82,26 +82,31 @@ jobs:
           fi
 
           KEYSTORE="$RUNNER_TEMP/pirared-release.jks"
-          echo "Validación 1/3: archivo Base64."
-          if ! printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE" || [ ! -s "$KEYSTORE" ]; then
-            echo "::error::ANDROID_KEYSTORE_BASE64 no es válido o está vacío."
+          echo "Validación 1/3: decodificando el almacén."
+          if ! printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 no contiene Base64 válido."
+            exit 1
+          fi
+          if [ ! -s "$KEYSTORE" ]; then
+            echo "::error::El archivo de firma decodificado está vacío."
             exit 1
           fi
 
-          echo "Validación 2/3: almacén, contraseña y alias."
+          echo "Validación 2/3: comprobando almacén, contraseña y alias."
           if ! keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
-            echo "::error::Falló la apertura del JKS. Revisá el Base64, ANDROID_KEYSTORE_PASSWORD y ANDROID_KEY_ALIAS."
+            echo "::error::No se pudo abrir el almacén: revisá ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS y que el Base64 sea del JKS original."
             exit 1
           fi
 
-          echo "Validación 3/3: contraseña de clave privada."
+          echo "Validación 3/3: comprobando la contraseña de la clave privada."
           mkdir -p "$RUNNER_TEMP/signing-check"
           printf 'PiraRed signing check\n' > "$RUNNER_TEMP/signing-check/check.txt"
           jar --create --file "$RUNNER_TEMP/signing-check.jar" -C "$RUNNER_TEMP/signing-check" .
           if ! jarsigner -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD" -signedjar "$RUNNER_TEMP/signing-check-signed.jar" "$RUNNER_TEMP/signing-check.jar" "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
-            echo "::error::ANDROID_KEY_PASSWORD no coincide con la clave privada."
+            echo "::error::El almacén y alias son válidos, pero ANDROID_KEY_PASSWORD no abre la clave privada."
             exit 1
           fi
+          echo "Firma privada validada correctamente."
 
           echo "ANDROID_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
           echo "PIRARED_BUILD_TYPE=release" >> "$GITHUB_ENV"

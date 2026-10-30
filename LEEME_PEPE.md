@@ -180,3 +180,8 @@ Se incorporó una nueva revisión de la interfaz y se conectaron las pantallas p
 - [ ] Configurar firma privada estable y resolver los pendientes de privacidad y seguridad indicados arriba.
 
 **Nota:** los cambios de código están guardados en GitHub. No se consideran verificados en dispositivo hasta completar las pruebas indicadas.
+
+
+### Corrección de autenticación — 30 de octubre de 2026
+
+- [x] Se corrigió el cierre de sesión para enviar a Supabase el token de acceso de la sesión antes de limpiar la sesión local.

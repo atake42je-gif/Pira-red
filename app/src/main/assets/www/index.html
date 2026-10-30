@@ -593,7 +593,9 @@
     return data;
   }
   async function authRequest(path, body, method="POST") {
-    const response=await fetch(API+path,{method,headers:{"apikey":PIRARED_SUPABASE_KEY,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+    const headers={"apikey":PIRARED_SUPABASE_KEY,"Content-Type":"application/json"};
+    if(path==="/auth/v1/logout" && state.session?.access_token) headers.Authorization="Bearer "+state.session.access_token;
+    const response=await fetch(API+path,{method,headers,body:body?JSON.stringify(body):undefined});
     const data=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(data.msg||data.message||data.error_description||"No se pudo autenticar.");
     return data;

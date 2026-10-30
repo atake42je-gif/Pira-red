@@ -70,9 +70,9 @@ Que la compilación haya terminado bien **no demuestra por sí solo que todas la
 - Confirmar que la migración SQL esté aplicada en el proyecto Supabase correcto y que las tablas/columnas coincidan con lo que consulta la app.
 - Probar registro, inicio/cierre de sesión y recuperación de contraseña con una cuenta de prueba.
 - Probar el alta de comercios y promociones con permisos reales y RLS.
-- Implementar publicaciones comunitarias de productos, changas y servicios.
-- Implementar mensajería privada sin mostrar números de teléfono.
-- Incorporar exploración como invitado, denuncias, bloqueo y panel administrativo seguro.
+- [x] Se conectaron publicaciones comunitarias para Compra / Venta, Trabajos y Servicios a Supabase; queda pendiente habilitar fotos mediante Storage.
+- [x] Se conectaron mensajes privados entre participantes sin exponer números; falta probar con dos cuentas reales.
+- [x] Se habilitó exploración pública como invitado y una cola de revisión para administradores. [ ] Falta completar la interfaz de denuncias y bloqueo de usuarios.
 - Preparar política de privacidad y términos de uso.
 - Confirmar una firma estable para futuras actualizaciones sin subir keystore ni contraseñas al repositorio.
 

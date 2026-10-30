@@ -653,6 +653,7 @@
       const rows=await api("/rest/v1/community_posts?select=id,owner_id,category,title,description,price_text,location_text,created_at&status=eq.approved&order=created_at.desc&limit=100");
       state.posts=rows||[];renderPosts(state.posts);
     }catch(e){addEmpty(box,"No pudimos cargar publicaciones. "+messageFor(e));}
+    loadPublicAds();
   }
   async function loadPublicAds(){
     const box=$("#public-ads");if(!box)return;box.replaceChildren();

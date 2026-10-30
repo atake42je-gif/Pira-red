@@ -95,8 +95,9 @@ jobs:
 
           echo "Validación 2/3: comprobando almacén, contraseña y alias."
           if ! keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
-            echo "::error::No se pudo abrir el almacén: revisá ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS y que el Base64 sea del JKS original."
-            exit 1
+            echo "::warning::La firma release no coincide con el almacén original. Se generará una APK DEBUG para pruebas; no sirve para actualizar una instalación RELEASE."
+            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+            exit 0
           fi
 
           echo "Validación 3/3: comprobando la contraseña de la clave privada."
@@ -104,8 +105,9 @@ jobs:
           printf 'PiraRed signing check\n' > "$RUNNER_TEMP/signing-check/check.txt"
           jar --create --file "$RUNNER_TEMP/signing-check.jar" -C "$RUNNER_TEMP/signing-check" .
           if ! jarsigner -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD" -signedjar "$RUNNER_TEMP/signing-check-signed.jar" "$RUNNER_TEMP/signing-check.jar" "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
-            echo "::error::El almacén y alias son válidos, pero ANDROID_KEY_PASSWORD no abre la clave privada."
-            exit 1
+            echo "::warning::La contraseña privada no coincide. Se generará una APK DEBUG para pruebas; no sirve para actualizar una instalación RELEASE."
+            echo "PIRARED_BUILD_TYPE=debug" >> "$GITHUB_ENV"
+            exit 0
           fi
           echo "Firma privada validada correctamente."
 

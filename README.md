@@ -50,3 +50,16 @@ La compilación genera `dist/PiraRed.apk` y la publica como artefacto. En builds
 - [Versiones descargables](https://github.com/atake42je-gif/Pira-red/releases)
 
 **Estado honesto:** las pantallas y conexiones principales ya están incorporadas al código, pero no se debe anunciar PiraRed como lanzamiento público hasta completar las pruebas de dispositivo, la firma estable y los pendientes de privacidad/seguridad enumerados arriba.
+
+
+## Revisión técnica aplicada — 30 de octubre de 2026
+
+- [x] Se corrigió la referencia de portada: la interfaz ahora usa `app/Img/01-inicio-pirared.png`, que es el archivo oficial documentado y validado por el workflow.
+- [x] Se eliminó la segunda imagen de fondo tipo `cover` detrás de la portada `contain`, para evitar una copia ampliada/cortada y conservar la proporción de la foto original.
+- [x] Se activó la clase de inicio a pantalla completa desde la carga inicial y se actualiza al navegar, para que el inicio use todo el ancho disponible y las demás pantallas mantengan su contenedor.
+- [x] Se corrigió el historial: volver desde una pantalla secundaria recupera la pantalla anterior y volver a Inicio limpia el historial para que el botón Atrás de Android no reabra una pantalla vieja.
+- [ ] Confirmar compilación del commit y probar visualmente la portada y los botones en el Moto G51 y otro tamaño de pantalla.
+- [ ] Completar las pruebas reales de autenticación, publicaciones, comercios, moderación y mensajes con dos cuentas.
+- [ ] Configurar firma privada estable y resolver los pendientes de privacidad y seguridad indicados arriba.
+
+**Nota:** los cambios de código están guardados en GitHub. No se consideran verificados en dispositivo hasta completar las pruebas indicadas.

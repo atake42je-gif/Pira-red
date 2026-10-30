@@ -396,7 +396,7 @@
         }
       }
 
-      .glass-panel { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.68); margin: 18px 14px 100px; }
+      .feed-subtitle { margin:22px 0 10px; color:var(--text); font-size:18px; font-weight:900; }\n      .glass-panel { background: rgba(255,255,255,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.68); margin: 18px 14px 100px; }
       .glass-panel h2 { margin: 8px 0 10px; font-size: 24px; color: var(--text); }
       .app-form { display: grid; gap: 13px; margin-top: 18px; }
       .app-form label { display: grid; gap: 6px; color: var(--text); font-size: 13px; font-weight: 800; }
@@ -448,7 +448,7 @@
               <button class="category-chip" type="button" data-filter="Servicios">Servicios</button>
               <button class="category-chip" type="button" data-filter="Publicidad">Publicidad</button>
             </div>
-            <div id="public-posts" class="listing-grid" aria-live="polite"><p class="empty-state">Cargando publicaciones aprobadas…</p></div>
+            <div id="public-posts" class="listing-grid" aria-live="polite"><p class="empty-state">Cargando publicaciones aprobadas…</p></div><h2 class="feed-subtitle">Comercios y promociones</h2><div id="public-ads" class="listing-grid" aria-live="polite"><p class="empty-state">Cargando anuncios aprobados…</p></div>
           </div>
         </section>
 
@@ -473,7 +473,7 @@
         <section id="about" class="screen">
           <div class="panel">
             <h3>Sobre PiraRed</h3>
-            <p>Conectamos vendedores y compradores de Pirané con una experiencia simple, rápida y visual.</p>
+            <p>PiraRed es una aplicación comunitaria, hecha en Pirané por un piranense, para conectar vecinos, comercios, trabajos y servicios con respeto y humildad.</p><p><strong>Aquí Pirané, mi pueblo.</strong><br>Capital provincial del folklore.</p><p>Redes: Instagram <strong>@escalantepepe22</strong></p><p>Los anuncios y publicaciones pasan por revisión. Los mensajes son privados y no muestran números de teléfono.</p>
           </div>
         </section>
         <section id="login" class="screen"><div class="panel glass-panel">
@@ -653,6 +653,22 @@
       state.posts=rows||[];renderPosts(state.posts);
     }catch(e){addEmpty(box,"No pudimos cargar publicaciones. "+messageFor(e));}
   }
+  async function loadPublicAds(){
+    const box=$("#public-ads");if(!box)return;box.replaceChildren();
+    try{
+      const rows=await api("/rest/v1/ads?select=id,owner_id,title,description,category,offer_text,business_id,created_at,businesses(name)&status=eq.approved&order=created_at.desc&limit=50");
+      if(!rows?.length){addEmpty(box,"Todavía no hay promociones aprobadas.");return;}
+      rows.forEach(ad=>{
+        const card=document.createElement("article");card.className="listing-card";
+        const title=document.createElement("h3");title.textContent=ad.title;card.append(title);
+        const brand=document.createElement("p");brand.textContent=(ad.businesses?.name||"Comercio de Pirané")+" · "+ad.category;card.append(brand);
+        const desc=document.createElement("p");desc.textContent=ad.description;card.append(desc);
+        if(ad.offer_text){const offer=document.createElement("strong");offer.textContent=ad.offer_text;card.append(offer);}
+        if(state.user && ad.owner_id!==state.user.id){const action=document.createElement("div");action.className="listing-actions";const contact=document.createElement("button");contact.textContent="Consultar por mensaje";contact.addEventListener("click",()=>startMessage(ad.owner_id));action.append(contact);card.append(action);}
+        box.append(card);
+      });
+    }catch(e){addEmpty(box,"No pudimos cargar promociones. "+messageFor(e));}
+  }
   function toggleSaved(post){
     let saved=getSaved();if(saved.some(x=>x.id===post.id))saved=saved.filter(x=>x.id!==post.id);else saved.unshift(post);
     localStorage.setItem(SAVED_KEY,JSON.stringify(saved.slice(0,100)));renderPosts(state.posts);if($("#saved").classList.contains("active"))renderSaved();
@@ -710,14 +726,14 @@
     try{
       const specs=[["community_posts","Publicaciones"],["businesses","Comercios"],["ads","Anuncios"]];
       for(const [table,label] of specs){
-        const rows=await api("/rest/v1/"+table+"?select=id,title,name,status,category&status=eq.pending&order=created_at.asc&limit=50");
+        const columns=table==="businesses"?"id,name,status,category":"id,title,status,category";\n        const rows=await api("/rest/v1/"+table+"?select="+columns+"&status=eq.pending&order=created_at.asc&limit=50");
         const heading=document.createElement("h3");heading.textContent=label;box.append(heading);
         (rows||[]).forEach(row=>{const card=document.createElement("article");card.className="listing-card";const title=document.createElement("p");title.textContent=row.title||row.name||row.category;card.append(title);const approve=document.createElement("button");approve.textContent="Aprobar";approve.addEventListener("click",()=>moderate(table,row.id,"approved"));const reject=document.createElement("button");reject.textContent="Rechazar";reject.addEventListener("click",()=>moderate(table,row.id,"rejected"));card.append(approve,reject);box.append(card);});
       }
     }catch(e){addEmpty(box,"No se pudo cargar la cola de revisión. "+messageFor(e));}
   }
   async function moderate(table,id,status){
-    try{await api("/rest/v1/"+table+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify({status,...(table==="ads"||table==="businesses"?{reviewed_by:state.user.id,reviewed_at:new Date().toISOString() }:{})})});setStatus("admin-status","Estado actualizado.");loadAdminQueue();}
+    try{await api("/rest/v1/"+table+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify({status,...(table==="ads"?{reviewed_by:state.user.id,reviewed_at:new Date().toISOString() }:{})})});setStatus("admin-status","Estado actualizado.");loadAdminQueue();}
     catch(e){setStatus("admin-status",messageFor(e),true);}
   }
   document.addEventListener("click",e=>{

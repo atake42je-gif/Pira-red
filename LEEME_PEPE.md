@@ -132,3 +132,38 @@ Solo registrar como realizado lo que tenga un cambio concreto en el repositorio 
 **Commits de esta revisión:** `82785294b16e2c1ab10f14e9848658052fd4b041`, `b17812b51a60a8ce1aedf0a734a59cdbd4286e24`, `41281d9d06952b6d62276a4dbafadb58552fb3ad`. El cambio de fondo del icono quedó en `0e83a7d1b09a3c70a70adb442785105b4ca379e4`.
 
 Estos cambios están guardados en GitHub. La compilación y la prueba visual en dispositivos todavía deben confirmarse antes de declarar la APK lista.
+
+
+### Revisión funcional y de backend — 30 de octubre de 2026
+
+Se incorporó una nueva revisión de la interfaz y se conectaron las pantallas principales con el proyecto Supabase activo:
+
+- [x] Se quitaron los textos y el logo HTML superpuestos sobre la portada; se conserva la imagen original que ya contiene la identidad visual.
+- [x] Los tres accesos de portada llevan a pantallas separadas: iniciar sesión, crear cuenta y acceso de comercios.
+- [x] Se agregó navegación entre pantallas independientes y se quitó el menú inferior de la portada.
+- [x] Se conectaron registro, inicio/cierre de sesión y recuperación de contraseña a Supabase Auth usando una clave publicable.
+- [x] Se conectaron publicaciones comunitarias, solicitudes de comercios, anuncios básicos gratuitos y mensajes privados a las tablas existentes.
+- [x] Se conectó el feed para mostrar únicamente publicaciones y anuncios aprobados por las políticas RLS.
+- [x] Se agregó una cola de revisión para usuarios con rol admin. El rol no puede ser elegido desde el registro público.
+- [x] Los guardados se conservan localmente en el dispositivo; no se sincronizan entre teléfonos.
+- [x] Se retiró el campo de contacto público en el alta de comercios para respetar la decisión de no exponer teléfonos.
+- [x] Se actualizaron README.md y se agregaron borradores de privacidad y términos.
+
+#### Verificación del backend
+
+- Proyecto Supabase `slgqcrcktczuvmivwdst`: activo y saludable.
+- Tablas comprobadas: perfiles, comercios, anuncios, publicaciones, mensajes privados, denuncias, bloqueos y órdenes de pago.
+- RLS está activado en las tablas públicas comprobadas y las políticas limitan mensajes a sus participantes.
+- El asesor de seguridad detectó que la protección contra contraseñas filtradas está desactivada. Debe activarse antes del lanzamiento.
+- No hay funciones Edge desplegadas para pagos; por eso los anuncios destacados pagos no están habilitados.
+
+#### Pendientes que siguen siendo reales
+
+- [ ] Ejecutar pruebas de registro/confirmación, recuperación, publicación, moderación y mensajes con cuentas de prueba reales.
+- [ ] Verificar todas las zonas táctiles y el ajuste de la portada en el Moto G51 y otros tamaños.
+- [ ] Configurar una clave de firma Android estable en GitHub Secrets. Sin ella, la APK es debug y puede no actualizar una instalación previa.
+- [ ] Completar responsable y correo de privacidad en los borradores y obtener revisión legal antes de publicar.
+- [ ] Implementar eliminación de cuenta y, si se requieren fotos de publicaciones, configurar Storage y sus políticas.
+- [ ] Si se desea publicidad destacada paga, desplegar y probar el webhook de pago antes de cobrar.
+
+**Importante:** la incorporación del código y una compilación correcta no sustituyen las pruebas en teléfonos reales. No marcar como terminada la publicación pública hasta resolver los pendientes anteriores.

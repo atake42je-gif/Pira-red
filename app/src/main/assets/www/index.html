@@ -1026,13 +1026,13 @@
   });
   $("#login-form").addEventListener("submit",async e=>{
     e.preventDefault();const f=formObject(e.currentTarget);setStatus("login-status","Ingresando…");
-    try{const data=await authRequest("/auth/v1/token?grant_type=password",{email:f.email.trim(),password:f.password});saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();setStatus("login-status","Sesión iniciada.");showScreen("profile");}
+    try{const data=await authRequest("/auth/v1/token?grant_type=password",{email:f.email.trim(),password:f.password});saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();setStatus("login-status","Sesión iniciada.");showScreen("explore");}
     catch(err){setStatus("login-status",messageFor(err),true);}
   });
   $("#register-form").addEventListener("submit",async e=>{
     e.preventDefault();const f=formObject(e.currentTarget);setStatus("register-status","Creando cuenta…");
     try{const data=await authRequest("/auth/v1/signup",{email:f.email.trim(),password:f.password,data:{display_name:f.display_name.trim()}});
-      if(data.access_token){saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();showScreen("profile");setStatus("register-status","Cuenta creada.");}
+      if(data.access_token){saveSession(data);state.user=await api("/auth/v1/user");await loadProfile();showScreen("explore");setStatus("register-status","Cuenta creada.");}
       else setStatus("register-status","Te enviamos un correo para confirmar tu cuenta. Confirmalo y después iniciá sesión.");
     }catch(err){setStatus("register-status",messageFor(err),true);}
   });

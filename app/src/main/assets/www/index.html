@@ -778,6 +778,8 @@
       .welcome-commerce { margin-top: 9px; min-height: 46px; }
       .listing-card { grid-template-columns: 104px minmax(0,1fr); align-items: start; }
       .listing-card:has(.listing-thumb) { grid-template-columns: 104px minmax(0,1fr); }
+      .listing-card:has(.listing-thumb) > .listing-thumb { grid-column:1; grid-row:1 / span 3; }
+      .listing-card:has(.listing-thumb) > h3, .listing-card:has(.listing-thumb) > .listing-meta, .listing-card:has(.listing-thumb) > p { grid-column:2; }
       .listing-card:not(:has(.listing-thumb)) { grid-template-columns: minmax(0,1fr); }
       .listing-thumb { width: 104px; height: 104px; aspect-ratio: 1 / 1; }
       .listing-thumb img { width:100%; height:100%; object-fit:cover; object-position:center; }

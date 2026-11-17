@@ -53,6 +53,26 @@ jobs:
           print(f'HTML válido; {len(audit.ids)} IDs únicos; {len(audit.refs)} recursos locales; {len(scripts)} scripts.')
           PY
           node --check /tmp/pirared-check.js
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path('app/src/main/assets/www/index.html').read_text(encoding='utf-8')
+          migration = Path('supabase/migrations/202611170001_pirared_community_images.sql').read_text(encoding='utf-8')
+          required = ['id="login-form"', 'id="register-form"', 'id="recover-form"', 'id="post-form"', 'id="business-form"', 'id="ad-form"', 'id="message-form"']
+          for form_id in required:
+              if form_id not in html or f'$("#{form_id[4:-1]}").addEventListener("submit"' not in html:
+                  raise SystemExit(f'Formulario sin manejador de envío: {form_id}')
+          for feature in ('uploadPostImage', 'reportPost', 'blockUser', 'delete-account', 'user_reports'):
+              if feature not in html:
+                  raise SystemExit(f'Función crítica no encontrada: {feature}')
+          if 'image_url text' not in migration or "'community-images'" not in migration:
+              raise SystemExit('La migración de fotos no configura image_url y el bucket esperado.')
+          if 'object-fit: cover' not in html or 'object-fit: fill' in html:
+              raise SystemExit('La interfaz debe mantener proporciones de imagen sin estirarlas.')
+          hero = 'app/Img/file_00000000bf30820ea0628bc7e7035328.png'
+          if hero not in html or not (Path('app/src/main/assets/www') / hero).is_file():
+              raise SystemExit('Falta la portada vertical de bienvenida.')
+          print('Pruebas estáticas: formularios, fotos, moderación, eliminación y proporciones de imágenes OK.')
+          PY
           test -s app/src/main/assets/www/app/Img/01-inicio-pirared.png
           test -s app/src/main/assets/www/app/Img/06-logo-pirared.png
 

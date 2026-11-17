@@ -757,23 +757,63 @@
         .panel, .glass-panel, .listing-card, .bottomnav { backdrop-filter: none; -webkit-backdrop-filter: none; }
       }
 
+
+      /* Ajuste final de fotografía y composición: nunca deformar imágenes. */
+      .welcome-hero > img {
+        width: 100%; height: 100%; max-width: none;
+        object-fit: cover; object-position: center center;
+        background: #102f4a;
+      }
+      .welcome-hero::after {
+        background: linear-gradient(180deg, rgba(3,18,38,.02) 0%, rgba(3,18,38,.04) 58%, rgba(3,18,38,.42) 100%);
+      }
+      .welcome-content {
+        position: absolute; left: 16px; right: 16px;
+        bottom: max(13%, calc(env(safe-area-inset-bottom) + 42px));
+        width: auto; max-width: 460px; margin: 0 auto;
+        padding: 0; z-index: 2;
+      }
+      .welcome-buttons { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+      .welcome-buttons button { min-width: 0; min-height: 52px; padding: 10px 8px; font-size: 13px; }
+      .welcome-commerce { margin-top: 9px; min-height: 46px; }
+      .listing-card { grid-template-columns: 104px minmax(0,1fr); align-items: start; }
+      .listing-card:has(.listing-thumb) { grid-template-columns: 104px minmax(0,1fr); }
+      .listing-card:not(:has(.listing-thumb)) { grid-template-columns: minmax(0,1fr); }
+      .listing-thumb { width: 104px; height: 104px; aspect-ratio: 1 / 1; }
+      .listing-thumb img { width:100%; height:100%; object-fit:cover; object-position:center; }
+      .listing-card h3 { overflow-wrap:anywhere; }
+      .listing-card p { overflow-wrap:anywhere; }
+      .listing-actions { display:flex; flex-wrap:wrap; gap:7px; grid-column:1 / -1; }
+      .screen:not(#home) {
+        background-color: #eaf5ff;
+        background-image: linear-gradient(180deg,rgba(234,245,255,.96),rgba(224,241,255,.98));
+        background-size: cover; background-position:center; background-repeat:no-repeat;
+      }
+      @media (max-width: 360px) {
+        .welcome-content { left: 12px; right: 12px; bottom: max(12%, calc(env(safe-area-inset-bottom) + 34px)); }
+        .welcome-buttons button { font-size: 12px; }
+        .listing-card, .listing-card:has(.listing-thumb) { grid-template-columns: 82px minmax(0,1fr); }
+        .listing-thumb { width:82px; height:82px; }
+      }
+      @media (max-height: 650px) {
+        .welcome-content { bottom: max(8%, calc(env(safe-area-inset-bottom) + 22px)); }
+        .welcome-buttons button { min-height: 44px; }
+        .welcome-commerce { min-height: 40px; }
+      }
+
     </style>
   </head>
   <body class="home-screen">
     <div class="app-shell">
       <section id="home" class="screen active">
         <div class="welcome-hero">
-          <img src="app/Img/01-inicio-pirared.png" alt="Portada original de PiraRed en Pirané" />
+          <img src="app/Img/file_00000000bf30820ea0628bc7e7035328.png" alt="Pirané al atardecer, identidad visual de PiraRed" fetchpriority="high" />
           <div class="welcome-content">
-            <p class="welcome-eyebrow">Aquí Pirané, mi pueblo</p>
-            <h1 class="welcome-heading">PiraRed</h1>
-            <p class="welcome-tagline">Capital provincial del folklore.</p>
-            <div class="welcome-buttons">
+            <div class="welcome-buttons" aria-label="Acceso a PiraRed">
               <button class="welcome-primary" type="button" data-go="login">Iniciar sesión</button>
               <button class="welcome-secondary" type="button" data-go="register">Crear cuenta</button>
             </div>
-            <button class="welcome-commerce" type="button" data-go="commerce">Acceso exclusivo para comercios</button>
-            <p class="welcome-foot">Hecha en Pirané, por un piranense.</p>
+            <button class="welcome-commerce" type="button" data-go="commerce">Acceso para comercios</button>
           </div>
         </div>
       </section>
@@ -1096,12 +1136,19 @@
     if(state.profile?.role!=="admin"){addEmpty(box,"Esta sección es exclusiva del administrador.");return;}
     box.replaceChildren();
     try{
-      const specs=[["community_posts","Publicaciones"],["businesses","Comercios"],["ads","Anuncios"]];
+      const specs=[["community_posts","Publicaciones"],["businesses","Comercios"],["ads","Anuncios"],["user_reports","Denuncias"]];
       for(const [table,label] of specs){
-        const columns=table==="businesses"?"id,name,status,category":"id,title,status,category";
+        const columns=table==="businesses"?"id,name,status,category":table==="user_reports"?"id,reported_user_id,community_post_id,reason,details,status,created_at":"id,title,status,category";
         const rows=await api("/rest/v1/"+table+"?select="+columns+"&status=eq.pending&order=created_at.asc&limit=50");
         const heading=document.createElement("h3");heading.textContent=label;box.append(heading);
-        (rows||[]).forEach(row=>{const card=document.createElement("article");card.className="listing-card";const title=document.createElement("p");title.textContent=row.title||row.name||row.category;card.append(title);const approve=document.createElement("button");approve.textContent="Aprobar";approve.addEventListener("click",()=>moderate(table,row.id,"approved"));const reject=document.createElement("button");reject.textContent="Rechazar";reject.addEventListener("click",()=>moderate(table,row.id,"rejected"));card.append(approve,reject);box.append(card);});
+        if(!rows?.length){const empty=document.createElement("p");empty.className="small-note";empty.textContent="No hay elementos pendientes.";box.append(empty);continue;}
+        (rows||[]).forEach(row=>{
+          const card=document.createElement("article");card.className="listing-card";
+          const title=document.createElement("p");title.textContent=table==="user_reports"?"Denuncia: "+row.reason+" · "+(row.details||"Sin detalles"):row.title||row.name||row.category;card.append(title);
+          if(table==="user_reports"){const target=document.createElement("p");target.textContent="Publicación: "+(row.community_post_id||"No indicada")+" · Usuario: "+(row.reported_user_id||"No indicado");card.append(target);}
+          const approve=document.createElement("button");approve.textContent=table==="user_reports"?"Marcar revisada":"Aprobar";approve.addEventListener("click",()=>moderate(table,row.id,table==="user_reports"?"reviewing":"approved"));
+          const reject=document.createElement("button");reject.textContent=table==="user_reports"?"Cerrar denuncia":"Rechazar";reject.addEventListener("click",()=>moderate(table,row.id,table==="user_reports"?"resolved":"rejected"));card.append(approve,reject);box.append(card);
+        });
       }
     }catch(e){addEmpty(box,"No se pudo cargar la cola de revisión. "+messageFor(e));}
   }

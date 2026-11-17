@@ -20,7 +20,7 @@ Las tablas públicas comprobadas tienen RLS activado. Las políticas consultadas
 ## Funciones conectadas en la interfaz Android
 - Registro, inicio/cierre de sesión y solicitud de recuperación mediante Supabase Auth.
 - Perfil básico.
-- Envío de publicaciones comunitarias en estado pendiente.
+- Envío de publicaciones comunitarias en estado pendiente, con carga opcional de foto si la migración de Storage fue aplicada.
 - Consulta pública de publicaciones aprobadas.
 - Solicitud de alta de comercios en estado pendiente.
 - Envío y consulta pública de anuncios aprobados.
@@ -32,8 +32,8 @@ Los guardados se conservan localmente en el dispositivo, no en Supabase.
 ## Pendientes del backend y de lanzamiento
 1. Probar registro, confirmación de correo, inicio de sesión y recuperación desde el APK real.
 2. Probar RLS con dos cuentas normales y una cuenta admin.
-3. Completar UI de denuncias y bloqueos; las tablas ya existen.
-4. Configurar Storage y sus políticas si se habilitan fotos de publicaciones.
+3. Probar denuncias y bloqueos desde dos cuentas normales y confirmar que el bloqueo impide mensajes en ambos sentidos.
+4. Aplicar `supabase/migrations/202611170001_pirared_community_images.sql` en SQL Editor para crear el bucket público `community-images`, limitar cargas al directorio del usuario autenticado y agregar `image_url` a `community_posts`. La app limita fotos a JPG/PNG/WebP de hasta 5 MB. Verificar que el bucket y las políticas existan en el proyecto antes de habilitar fotos en producción.
 5. Habilitar la protección contra contraseñas filtradas en Auth. El asesor de seguridad la reportó desactivada.
 6. Definir el procedimiento de eliminación de cuenta y datos.
 7. Completar y revisar legalmente la política de privacidad y los términos de uso.

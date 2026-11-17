@@ -69,4 +69,4 @@ La compilación genera `dist/PiraRed.apk` y la publica como artefacto. En builds
 
 ## Auditoría técnica más reciente
 
-Consultar [revisión de pruebas del 17 de noviembre de 2026](docs/REVISION-PRUEBAS-2026-11-17.md). La compilación DEBUG fue exitosa, pero la app todavía no está aprobada para lanzamiento público: faltan pruebas reales en dispositivo/backend, carga de fotos, denuncias/bloqueos en la interfaz, eliminación de cuenta y firma release estable.
+Consultar [revisión de pruebas del 17 de noviembre de 2026](docs/REVISION-PRUEBAS-2026-11-17.md). Se mejoraron la portada adaptable, las tarjetas con fotos y la cola de denuncias. La interfaz contempla carga de imágenes, bloqueo y eliminación de cuenta; falta confirmar que la migración Storage y la función Edge estén desplegadas en Supabase y probar todo con cuentas reales y un teléfono Android. La app sigue pendiente de aprobación pública hasta completar la auditoría.

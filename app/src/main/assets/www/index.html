@@ -828,7 +828,7 @@
         </div></section>
         <section id="publish" class="screen"><div class="panel glass-panel">
           <h2>Publicar en PiraRed</h2><p>Compra y venta, trabajos y changas, o servicios. Las publicaciones se revisan antes de hacerse públicas.</p>
-          <form id="post-form" class="app-form"><label>Categoría<select name="category" required><option>Compra / Venta</option><option>Trabajos</option><option>Servicios</option></select></label><label>Título<input name="title" required minlength="3" maxlength="100"></label><label>Descripción<textarea name="description" required minlength="5" maxlength="1000" rows="4"></textarea></label><label>Precio (opcional)<input name="price_text" maxlength="80"></label><label>Ubicación<input name="location_text" value="Pirané" maxlength="100"></label><button class="primary" type="submit">Enviar a revisión</button></form><p class="small-note">No publicamos tu número de teléfono. El contacto entre usuarios se realiza por mensajes internos.</p><div id="post-status" class="form-status"></div>
+          <form id="post-form" class="app-form"><label>Categoría<select name="category" required><option>Compra / Venta</option><option>Trabajos</option><option>Servicios</option></select></label><label>Título<input name="title" required minlength="3" maxlength="100"></label><label>Descripción<textarea name="description" required minlength="5" maxlength="1000" rows="4"></textarea></label><label>Precio (opcional)<input name="price_text" maxlength="80"></label><label>Ubicación<input name="location_text" value="Pirané" maxlength="100"></label><label>Foto (opcional, JPG/PNG/WebP, máximo 5 MB)<input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><button class="primary" type="submit">Enviar a revisión</button></form><p class="small-note">No publicamos tu número de teléfono. El contacto entre usuarios se realiza por mensajes internos.</p><div id="post-status" class="form-status"></div>
         </div></section>
         <section id="ads" class="screen"><div class="panel glass-panel"><h2>Publicidad de comercios</h2><p>Los anuncios básicos son gratuitos. Cada anuncio se revisa antes de publicarse. Los destacados pagos se habilitarán cuando quede verificado el cobro.</p>
           <form id="ad-form" class="app-form"><label>Comercio<select name="business_id" id="business-select" required><option value="">Cargando tus comercios…</option></select></label><label>Título<input name="title" required minlength="3" maxlength="90"></label><label>Descripción<textarea name="description" required minlength="5" maxlength="600" rows="3"></textarea></label><label>Rubro<input name="category" required minlength="2" maxlength="80"></label><label>Oferta (opcional)<input name="offer_text" maxlength="100"></label><button class="primary" type="submit">Enviar anuncio gratuito</button></form><div id="ad-status" class="form-status"></div>
@@ -839,7 +839,7 @@
         <section id="saved" class="screen"><div class="panel glass-panel"><h2>Guardados</h2><p>Tus publicaciones favoritas quedan guardadas en este dispositivo.</p><div id="saved-list" class="listing-grid"><p class="empty-state">Todavía no guardaste publicaciones.</p></div></div></section>
         <section id="profile" class="screen"><div class="panel glass-panel"><h2>Mi perfil</h2><div id="profile-content"><p>Ingresá para ver tu perfil y tus publicaciones.</p></div>
           <div class="cta-row"><button class="primary" type="button" data-go="login">Iniciar sesión</button><button class="secondary" type="button" data-go="register">Crear cuenta</button></div>
-          <button class="secondary full-button" type="button" data-go="ads">Publicidad de mi comercio</button><button class="secondary full-button hidden" id="admin-open" type="button" data-go="admin">Administración</button><button class="text-button hidden" id="logout-button" type="button">Cerrar sesión</button>
+          <button class="secondary full-button" type="button" data-go="ads">Publicidad de mi comercio</button><button class="secondary full-button hidden" id="admin-open" type="button" data-go="admin">Administración</button><button class="text-button hidden" id="logout-button" type="button">Cerrar sesión</button><button class="secondary full-button hidden" id="delete-account-button" type="button">Eliminar mi cuenta definitivamente</button><div id="delete-account-status" class="form-status"></div>
         </div></section>
         <section id="admin" class="screen"><div class="panel glass-panel"><h2>Administración PiraRed</h2><p>Revisá solicitudes y aprobá únicamente contenido legítimo.</p><div id="admin-queue" class="listing-grid">Cargando…</div><div id="admin-status" class="form-status"></div></div></section>
       </main>
@@ -879,7 +879,7 @@
   const API = PIRARED_SUPABASE_URL;
   const $ = (s, root=document) => root.querySelector(s);
   const all = (s, root=document) => Array.from(root.querySelectorAll(s));
-  const state = { session:null, user:null, profile:null, posts:[], businesses:[], filter:"", recipient:null, backStack:["home"] };
+  const state = { session:null, user:null, profile:null, posts:[], businesses:[], blocked:[], filter:"", recipient:null, backStack:["home"] };
   const SESSION_KEY = "pirared.auth.session.v1";
   const SAVED_KEY = "pirared.saved.posts.v1";
   const getSaved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); } catch (_) { return []; } };
@@ -962,6 +962,30 @@
       await loadProfile();
     }catch(_){saveSession(null);state.user=null;state.profile=null;}
   }
+  async function uploadPostImage(file){
+    if(!file)return null;
+    const allowed=["image/jpeg","image/png","image/webp"];
+    if(!allowed.includes(file.type))throw new Error("La foto debe ser JPG, PNG o WebP.");
+    if(file.size>5*1024*1024)throw new Error("La foto supera el máximo de 5 MB.");
+    const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp";
+    const path=state.user.id+"/"+crypto.randomUUID()+"."+ext;
+    const response=await fetch(API+"/storage/v1/object/community-images/"+path,{method:"POST",headers:{"apikey":PIRARED_SUPABASE_KEY,"Authorization":"Bearer "+state.session.access_token,"Content-Type":file.type,"x-upsert":"false"},body:file});
+    const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||data.error||"No se pudo subir la foto.");
+    return API+"/storage/v1/object/public/community-images/"+path;
+  }
+  async function reportPost(post){
+    if(!requireLogin("post-status"))return;
+    const reason=prompt("Motivo: spam, acoso, fraude, inseguro u otro.","other");
+    const map={"spam":"spam","acoso":"harassment","fraude":"fraud","inseguro":"unsafe","otro":"other","other":"other"};
+    const normalized=map[String(reason||"").trim().toLowerCase()];if(!normalized)return;
+    const details=prompt("Contanos brevemente qué pasó (opcional).","")||"";
+    try{await api("/rest/v1/user_reports",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({reporter_id:state.user.id,reported_user_id:post.owner_id,community_post_id:post.id,reason:normalized,details:details.slice(0,1000)})});alert("Denuncia enviada. Gracias por ayudar a cuidar PiraRed.");}catch(err){alert(messageFor(err));}
+  }
+  async function blockUser(userId){
+    if(!requireLogin("post-status")||!userId||userId===state.user.id)return;
+    if(!confirm("¿Bloquear a este usuario? No verás sus publicaciones y no podrá enviarte mensajes."))return;
+    try{await api("/rest/v1/user_blocks",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({blocker_id:state.user.id,blocked_id:userId})});state.blocked.push(userId);state.posts=state.posts.filter(p=>p.owner_id!==userId);renderPosts(state.posts);}catch(err){alert(messageFor(err));}
+  }
   async function loadProfile(){
     if(!state.user?.id) return;
     const rows=await api("/rest/v1/profiles?id=eq."+encodeURIComponent(state.user.id)+"&select=id,display_name,role");
@@ -976,12 +1000,13 @@
   function addEmpty(container,msg){container.replaceChildren();const p=document.createElement("p");p.className="empty-state";p.textContent=msg;container.append(p);}
   function makePostCard(post){
     const card=document.createElement("article");card.className="listing-card";
+    if(post.image_url){const media=document.createElement("div");media.className="listing-thumb";const img=document.createElement("img");img.src=post.image_url;img.alt="Foto de "+post.title;img.loading="lazy";img.referrerPolicy="no-referrer";img.onerror=()=>media.remove();media.append(img);card.append(media);}
     const title=document.createElement("h3");title.textContent=post.title;card.append(title);
     const meta=document.createElement("div");meta.className="listing-meta";meta.textContent=[post.category,post.location_text,post.price_text].filter(Boolean).join(" · ");card.append(meta);
     const desc=document.createElement("p");desc.textContent=post.description;card.append(desc);
     const actions=document.createElement("div");actions.className="listing-actions";
     const save=document.createElement("button");const saved=getSaved().some(x=>x.id===post.id);save.textContent=saved?"Quitar guardado":"Guardar";save.addEventListener("click",()=>toggleSaved(post));actions.append(save);
-    if(state.user && post.owner_id!==state.user.id){const contact=document.createElement("button");contact.textContent="Enviar mensaje";contact.addEventListener("click",()=>startMessage(post.owner_id));actions.append(contact);}
+    if(state.user && post.owner_id!==state.user.id){const contact=document.createElement("button");contact.textContent="Enviar mensaje";contact.addEventListener("click",()=>startMessage(post.owner_id));actions.append(contact);const report=document.createElement("button");report.textContent="Denunciar";report.addEventListener("click",()=>reportPost(post));actions.append(report);const block=document.createElement("button");block.textContent=state.blocked.includes(post.owner_id)?"Usuario bloqueado":"Bloquear";block.disabled=state.blocked.includes(post.owner_id);block.addEventListener("click",()=>blockUser(post.owner_id));actions.append(block); }
     card.append(actions);return card;
   }
   function renderPosts(rows){
@@ -993,8 +1018,9 @@
   async function loadPosts(){
     const box=$("#public-posts");if(!box)return;
     try{
-      const rows=await api("/rest/v1/community_posts?select=id,owner_id,category,title,description,price_text,location_text,created_at&status=eq.approved&order=created_at.desc&limit=100");
-      state.posts=rows||[];renderPosts(state.posts);
+      if(state.user){const blockedRows=await api("/rest/v1/user_blocks?select=blocked_id&blocker_id=eq."+encodeURIComponent(state.user.id));state.blocked=(blockedRows||[]).map(x=>x.blocked_id);}
+      const rows=await api("/rest/v1/community_posts?select=id,owner_id,category,title,description,price_text,location_text,image_url,created_at&status=eq.approved&order=created_at.desc&limit=100");
+      state.posts=(rows||[]).filter(p=>!state.blocked.includes(p.owner_id));renderPosts(state.posts);
     }catch(e){addEmpty(box,"No pudimos cargar publicaciones. "+messageFor(e));}
     loadPublicAds();
   }
@@ -1027,6 +1053,7 @@
     const box=$("#profile-content");if(!box)return;
     if(!state.user){box.textContent="Ingresá o creá una cuenta para ver tu perfil.";$("#logout-button").classList.add("hidden");$("#admin-open").classList.add("hidden");return;}
     const name=state.profile?.display_name||state.user.email||"Usuario PiraRed";
+    $("#delete-account-button").classList.remove("hidden");
     box.replaceChildren();const h=document.createElement("h3");h.textContent=name;box.append(h);
     const p=document.createElement("p");p.textContent=state.user.email||"";box.append(p);
     const role=document.createElement("p");role.textContent=state.profile?.role==="admin"?"Administrador":"Cuenta de vecino";box.append(role);
@@ -1104,13 +1131,14 @@
     try{await authRequest("/auth/v1/recover",{email});setStatus("recover-status","Si el correo está registrado, recibirás un enlace para recuperar tu contraseña.");}
     catch(err){setStatus("recover-status",messageFor(err),true);}
   });
+  $("#delete-account-button").addEventListener("click",async()=>{if(!requireLogin("delete-account-status"))return;const confirmation=prompt("Para eliminar tu cuenta y tus datos asociados, escribí ELIMINAR.");if(confirmation!=="ELIMINAR")return;setStatus("delete-account-status","Eliminando cuenta…");try{const response=await fetch(API+"/functions/v1/delete-account",{method:"POST",headers:{"apikey":PIRARED_SUPABASE_KEY,"Authorization":"Bearer "+state.session.access_token,"Content-Type":"application/json"},body:"{}"});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"No se pudo eliminar la cuenta.");saveSession(null);state.user=null;state.profile=null;state.posts=[];localStorage.removeItem(SAVED_KEY);setStatus("delete-account-status","Cuenta eliminada.");showScreen("home");}catch(err){setStatus("delete-account-status",messageFor(err),true);}});
   $("#logout-button").addEventListener("click",async()=>{
     try{if(state.session)await authRequest("/auth/v1/logout",null);}catch(_){}
     saveSession(null);state.user=null;state.profile=null;showScreen("home");
   });
   $("#post-form").addEventListener("submit",async e=>{
-    e.preventDefault();if(!requireLogin("post-status"))return;const f=formObject(e.currentTarget);setStatus("post-status","Enviando a revisión…");
-    try{await api("/rest/v1/community_posts",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,category:f.category,title:f.title.trim(),description:f.description.trim(),price_text:f.price_text.trim(),location_text:f.location_text.trim()||"Pirané",public_contact:"",status:"pending"})});e.currentTarget.reset();e.currentTarget.elements.location_text.value="Pirané";setStatus("post-status","¡Listo! Tu publicación quedó pendiente de revisión. No se mostrará hasta ser aprobada.");}
+    e.preventDefault();if(!requireLogin("post-status"))return;const f=formObject(e.currentTarget);setStatus("post-status","Subiendo foto y enviando a revisión…");
+    try{const imageUrl=await uploadPostImage(e.currentTarget.elements.image.files[0]);await api("/rest/v1/community_posts",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({owner_id:state.user.id,category:f.category,title:f.title.trim(),description:f.description.trim(),price_text:f.price_text.trim(),location_text:f.location_text.trim()||"Pirané",public_contact:"",image_url:imageUrl,status:"pending"})});e.currentTarget.reset();e.currentTarget.elements.location_text.value="Pirané";setStatus("post-status","¡Listo! Tu publicación quedó pendiente de revisión. No se mostrará hasta ser aprobada.");}
     catch(err){setStatus("post-status",messageFor(err),true);}
   });
   $("#business-form").addEventListener("submit",async e=>{

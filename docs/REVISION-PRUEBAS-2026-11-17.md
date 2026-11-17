@@ -1,51 +1,54 @@
-# PiraRed — auditoría técnica y pruebas
+# PiraRed — auditoría técnica y estado de pruebas
 
-Fecha: 17 de noviembre de 2026  
-Rama revisada: `main`  
-Commit de la interfaz auditada: `0c2d71191d8a345ee4518074b1cc2aca4297f1e4`  
-Compilación: [GitHub Actions #44042024779](https://github.com/atake42je-gif/Pira-red/actions/runs/44042024779)
+Fecha de actualización: 17 de noviembre de 2026  
+Rama: `main`  
+Cambios visuales: `422a2773e1bb364841bd7f7784e1b5ce5458f584` y `363e06e1e66393b58c0adb568843d8b1af398912`  
+Validaciones CI ampliadas: `2fd0084849e1c7fb56b1c165bd9d85e631c436ce`
 
-## Resultado comprobable
+## Mejoras aplicadas en el código
 
-- [x] El workflow de validación HTML/JavaScript y recursos locales terminó correctamente.
-- [x] Java 17, Gradle y Android SDK quedaron configurados.
-- [x] `assembleDebug` terminó con `BUILD SUCCESSFUL`.
-- [x] Se generó una APK Android de depuración de aproximadamente 9,5 MB.
-- [x] La APK contiene `assets/www/index.html`, el código DEX y los iconos de launcher.
-- [x] Las 8 imágenes web empaquetadas se pudieron abrir y verificar; no se detectaron archivos de imagen corruptos.
-- [x] Las referencias locales CSS de imágenes se resolvieron contra los recursos empaquetados.
-- [x] El manifiesto declara INTERNET y una Activity de inicio exportada.
-- [x] El código JavaScript contiene manejadores para los siete formularios presentes.
-- [x] El registro usa Supabase Auth; la recuperación solicita el enlace de restablecimiento; el cierre intenta revocar la sesión.
-- [x] Las publicaciones y solicitudes de comercio se envían como pendientes; el feed solicita solo contenido aprobado.
-- [x] Los guardados se persisten localmente.
-- [x] La moderación está condicionada al rol admin y los mensajes usan participantes autenticados.
+- Portada de bienvenida cambiada a la imagen vertical original de PiraRed con el paisaje al atardecer y la identidad visual completa.
+- Portada adaptada con `object-fit: cover`, conservando proporciones; puede recortar bordes proporcionalmente según el formato de pantalla, nunca estira la fotografía.
+- Botones de acceso ubicados como controles reales sobre la portada, sin duplicar el logo y el lema que ya forman parte de la imagen.
+- Pantallas interiores simplificadas a un fondo claro para mejorar contraste y lectura.
+- Tarjetas con fotografía ordenadas para que la miniatura conserve proporción y el texto no se superponga.
+- Panel de administración ampliado para mostrar denuncias pendientes y marcarlas en revisión o resueltas.
+- La interfaz ya incluye selector de imagen JPG/PNG/WebP (máximo 5 MB), carga al bucket `community-images`, denuncia, bloqueo y solicitud de eliminación de cuenta.
 
-## Hallazgos que impiden declarar el lanzamiento listo
+## Backend y migraciones
 
-### Bloqueantes funcionales
+- Existe la migración `supabase/migrations/202611170001_pirared_community_images.sql`, que agrega `image_url`, crea el bucket público y define políticas de lectura/carga/borrado.
+- La carga se restringe al directorio cuyo primer segmento es el UUID del usuario autenticado.
+- La función Edge `supabase/functions/delete-account/index.ts` elimina objetos del bucket y luego elimina la cuenta autenticada con credenciales de servidor.
+- Las migraciones y funciones guardadas en GitHub no significan que estén aplicadas/desplegadas en el proyecto Supabase. Hay que confirmar su estado real en el panel de Supabase.
 
-1. **Fotos de publicaciones y anuncios:** no existe ningún campo `type=file` ni flujo de subida a Supabase Storage en la interfaz. Las tarjetas se generan como texto; no muestran imágenes del usuario. La actividad Android tiene selector de archivos, pero no hay un control web que lo invoque. Debe implementarse el bucket, políticas Storage, validación de tipo/tamaño, subida, URL y visualización; después probarlo con cuentas reales.
-2. **Denuncias y bloqueos:** existen tablas/migraciones, pero la interfaz no ofrece botones ni formularios para denunciar o bloquear.
-3. **Eliminación de cuenta:** no hay acción de borrado de cuenta ni procedimiento operativo implementado.
-4. **Verificación de identidad:** el registro es por correo; no verifica DNI, teléfono ni identidad. No debe anunciarse como cuenta verificada.
-5. **Pagos:** el build actual es DEBUG y las funciones de pago no están desplegadas/verificadas. No habilitar publicaciones destacadas ni cobros reales hasta probar preferencia, webhook firmado, conciliación y reembolsos en servidor.
-6. **Firma de lanzamiento:** faltan secretos válidos de firma release en GitHub; esta compilación se firmó como DEBUG y no es una actualización de producción garantizada.
+## Pruebas estáticas incorporadas a CI
 
-### Pruebas externas todavía necesarias
+El workflow ahora verifica:
+- HTML sin IDs duplicados y recursos locales existentes.
+- Sintaxis de JavaScript con `node --check`.
+- Presencia de los siete formularios principales y sus manejadores.
+- Presencia de los flujos de carga de fotos, denuncia, bloqueo y eliminación de cuenta.
+- Existencia de la portada vertical y de la migración del bucket de imágenes.
+- Uso de reglas de imagen que evitan deformaciones.
 
-- Registro y confirmación de correo en Supabase con una cuenta de prueba nueva.
-- Inicio, cierre, expiración y renovación de sesión.
-- Recuperación real de contraseña y enlace de retorno.
-- Dos usuarios distintos: publicar, aprobar, consultar, contactar, responder y verificar que no puedan leer conversaciones ajenas.
-- Pruebas RLS como anónimo, usuario normal y administrador, incluyendo intentos de elevar el rol.
-- Alta y aprobación de comercio; anuncio básico y visibilidad pública.
-- Pruebas de red lenta/sin conexión, respuestas 401/403/429/500 y reintentos.
-- Instalación, navegación, teclado, botones, zonas táctiles, rotación/tamaños y accesibilidad en teléfonos reales.
-- Confirmar configuración actual de Supabase, protección contra contraseñas filtradas y despliegue de migraciones/funciones.
+## Resultado de compilación anterior comprobado
 
-## Alcance y límites de esta auditoría
+La ejecución [#44042024779](https://github.com/atake42je-gif/Pira-red/actions/runs/44042024779) terminó correctamente y generó una APK DEBUG. Esa ejecución es anterior a las últimas mejoras visuales y al conjunto ampliado de validaciones; no debe usarse como certificación de los cambios nuevos.
 
-La compilación y la inspección del paquete se realizaron en CI/entorno de análisis. No se ejecutó la APK en un teléfono físico ni en un emulador Android; tampoco se crearon cuentas ni se hicieron escrituras sobre el proyecto Supabase real. Por lo tanto, los flujos conectados al backend se inspeccionaron estáticamente, no se certifican como pruebas end-to-end.
+## Pendientes para aprobar el lanzamiento
 
-**Veredicto:** compilación DEBUG correcta; aplicación todavía NO APROBADA para lanzamiento público. No distribuir esta APK como versión final.
+1. Ejecutar y aprobar el nuevo workflow que se dispara con los últimos commits.
+2. Aplicar y verificar la migración de fotos en el proyecto Supabase activo; comprobar carga real, lectura pública y borrado de imágenes con cuentas de prueba.
+3. Desplegar la función Edge `delete-account` con `SUPABASE_SERVICE_ROLE_KEY` configurada únicamente como secreto del servidor y probar eliminación completa.
+4. Probar registro, confirmación de correo, inicio, cierre, renovación y recuperación de contraseña desde un dispositivo Android real.
+5. Probar dos usuarios normales y un administrador: publicación, aprobación, mensajes privados, denuncia, bloqueo y permisos RLS. Verificar que el bloqueo funcione en ambos sentidos.
+6. Verificar que el panel de denuncias admin reciba y cierre reportes sin exponer datos a otros usuarios.
+7. Habilitar la protección contra contraseñas filtradas en Supabase Auth.
+8. Completar datos reales del responsable y correo de privacidad; revisar legalmente política y términos antes de publicarlos.
+9. Configurar los secretos de firma release y validar que la APK release conserva la misma firma de futuras actualizaciones.
+10. No habilitar pagos ni destacados hasta desplegar y probar íntegramente el endpoint de creación de preferencias y el webhook de Mercado Pago.
+
+## Veredicto
+
+Hay mejoras reales implementadas y validaciones estáticas más completas, pero aún no se certificaron los flujos de extremo a extremo en Supabase ni la instalación en un teléfono físico. La app sigue **pendiente de aprobación para lanzamiento público** hasta completar los puntos anteriores.

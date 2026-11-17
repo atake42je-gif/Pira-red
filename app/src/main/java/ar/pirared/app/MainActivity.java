@@ -40,25 +40,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // Mantener visibles la barra superior de estado y la barra inferior
-        // de navegación del teléfono; el contenido se adapta al área disponible.
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.parseColor("#DFF5FF"));
+        getWindow().setStatusBarColor(Color.parseColor("#071b31"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().setNavigationBarColor(Color.parseColor("#DFF5FF"));
+            getWindow().setNavigationBarColor(Color.parseColor("#071b31"));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0)
-            );
+            getWindow().getDecorView().setSystemUiVisibility(0);
         }
 
-        // The app currently runs fully from bundled assets. Keep WebView locked
-        // to those assets until a reviewed, HTTPS backend is added.
         WebView.setWebContentsDebuggingEnabled(false);
         webView = new WebView(this);
-
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -67,9 +59,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccessFromFileURLs(false);
         settings.setAllowUniversalAccessFromFileURLs(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            settings.setSafeBrowsingEnabled(true);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) settings.setSafeBrowsingEnabled(true);
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -79,7 +69,6 @@ public class MainActivity extends Activity {
                 openExternalUrl(uri);
                 return true;
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Uri uri = Uri.parse(url);
@@ -90,21 +79,11 @@ public class MainActivity extends Activity {
         });
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onShowFileChooser(
-                WebView view,
-                ValueCallback<Uri[]> callback,
-                FileChooserParams params
-            ) {
-                if (fileCallback != null) {
-                    fileCallback.onReceiveValue(null);
-                }
-
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (fileCallback != null) fileCallback.onReceiveValue(null);
                 fileCallback = callback;
-
-                Intent intent = params.createIntent();
-
                 try {
-                    startActivityForResult(intent, FILE_REQUEST);
+                    startActivityForResult(params.createIntent(), FILE_REQUEST);
                     return true;
                 } catch (Exception e) {
                     fileCallback = null;
@@ -115,12 +94,10 @@ public class MainActivity extends Activity {
         });
 
         setContentView(webView);
-        webView.loadUrl(LOCAL_ASSETS + "www/index.html");
+        webView.loadUrl(LOCAL_ASSETS + "www/pirared-mobile.html");
         checkForUpdate();
     }
 
-
-    // Comprueba actualizaciones estables publicadas; ignora APKs prerelease de prueba.
     private void checkForUpdate() {
         new Thread(() -> {
             HttpURLConnection connection = null;
@@ -138,63 +115,43 @@ public class MainActivity extends Activity {
                 while ((line = reader.readLine()) != null) body.append(line);
                 reader.close();
                 JSONArray releases = new JSONArray(body.toString());
-                JSONObject release = null;
                 int latestBuild = 0;
                 String releaseUrl = RELEASE_PAGE;
                 for (int i = 0; i < releases.length(); i++) {
                     JSONObject candidate = releases.optJSONObject(i);
-                    // Las versiones de prueba son prerelease y nunca deben ofrecerse como actualización estable.
                     if (candidate == null || candidate.optBoolean("draft", false) || candidate.optBoolean("prerelease", false)) continue;
-                    String candidateTag = candidate.optString("tag_name", "");
-                    int candidateBuild = parseBuildNumber(candidateTag);
+                    int candidateBuild = parseBuildNumber(candidate.optString("tag_name", ""));
                     JSONArray assets = candidate.optJSONArray("assets");
-                    String candidateApkUrl = null;
-                    if (assets != null) {
-                        for (int j = 0; j < assets.length(); j++) {
-                            JSONObject asset = assets.optJSONObject(j);
-                            if (asset == null) continue;
-                            String assetName = asset.optString("name", "");
-                            if (assetName.toLowerCase().endsWith(".apk")) {
-                                String url = asset.optString("browser_download_url", "");
-                                if (!url.isEmpty()) {
-                                    candidateApkUrl = url;
-                                    break;
-                                }
-                            }
+                    if (assets == null) continue;
+                    for (int j = 0; j < assets.length(); j++) {
+                        JSONObject asset = assets.optJSONObject(j);
+                        if (asset == null || !asset.optString("name", "").toLowerCase().endsWith(".apk")) continue;
+                        String url = asset.optString("browser_download_url", "");
+                        if (candidateBuild > latestBuild && !url.isEmpty()) {
+                            latestBuild = candidateBuild;
+                            releaseUrl = url;
                         }
                     }
-                    if (candidateBuild > latestBuild && candidateApkUrl != null) {
-                        latestBuild = candidateBuild;
-                        release = candidate;
-                        releaseUrl = candidateApkUrl;
-                    }
                 }
-                if (release == null) return;
-                int installedBuild;
-                try {
-                    PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    installedBuild = (int) (Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode);
-                } catch (Exception ignored) { installedBuild = 0; }
-                final String updatePageUrl = releaseUrl;
+                PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+                int installedBuild = (int) (Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode);
                 if (latestBuild > installedBuild) {
+                    final String updateUrl = releaseUrl;
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (isFinishing() || isDestroyed()) return;
-                        // La actualización nunca debe bloquear el inicio ni cerrar la app.
-                        // El usuario decide si quiere abrir la página de descarga.
                         new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Hay una versión nueva de PiraRed")
-                            .setMessage("Podés seguir usando la aplicación. Si querés, abrí la página para consultar la actualización.")
+                            .setMessage("Podés seguir usando la aplicación. Si querés, consultá la actualización.")
                             .setCancelable(true)
                             .setNegativeButton("Ahora no", (dialog, which) -> dialog.dismiss())
                             .setPositiveButton("Ver actualización", (dialog, which) -> {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updatePageUrl));
-                                try { startActivity(intent); } catch (Exception ignored) { }
-                            })
-                            .show();
+                                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl))); }
+                                catch (Exception ignored) { }
+                            }).show();
                     });
                 }
             } catch (Exception ignored) {
-                // Sin conexión o sin publicación nueva: la app sigue funcionando normalmente.
+                // La comprobación de actualización no debe impedir el inicio.
             } finally {
                 if (connection != null) connection.disconnect();
             }
@@ -212,40 +169,21 @@ public class MainActivity extends Activity {
     private void openExternalUrl(Uri uri) {
         if (uri == null) return;
         String scheme = uri.getScheme();
-        // Solo permitir enlaces web externos; bloquear esquemas inesperados.
         if (!"https".equalsIgnoreCase(scheme) && !"http".equalsIgnoreCase(scheme)) return;
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, uri));
-        } catch (Exception ignored) {
-            // No cerrar la app si no hay navegador disponible.
-        }
+        try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+        catch (Exception ignored) { }
     }
 
     private boolean isLocalAsset(Uri uri) {
-        return uri != null
-            && "file".equalsIgnoreCase(uri.getScheme())
-            && uri.toString().startsWith(LOCAL_ASSETS);
+        return uri != null && "file".equalsIgnoreCase(uri.getScheme()) && uri.toString().startsWith(LOCAL_ASSETS);
     }
 
     @Override
-    protected void onActivityResult(
-        int requestCode,
-        int resultCode,
-        Intent data
-    ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == FILE_REQUEST && fileCallback != null) {
             Uri[] results = null;
-
-            if (resultCode == RESULT_OK && data != null) {
-                Uri uri = data.getData();
-
-                if (uri != null) {
-                    results = new Uri[]{uri};
-                }
-            }
-
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) results = new Uri[]{data.getData()};
             fileCallback.onReceiveValue(results);
             fileCallback = null;
         }
@@ -254,17 +192,10 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (webView != null) {
-            webView.evaluateJavascript(
-                "(function(){return window.piraredHandleBack ? window.piraredHandleBack() : 'exit';})()",
-                value -> {
-                    if (value == null || value.contains("exit")) {
-                        finish();
-                    }
-                }
-            );
-        } else {
-            super.onBackPressed();
-        }
+            webView.evaluateJavascript("(function(){return window.piraredHandleBack ? window.piraredHandleBack() : 'exit';})()", value -> {
+                if (value == null || value.contains("exit")) finish();
+            });
+        } else super.onBackPressed();
     }
 
     @Override

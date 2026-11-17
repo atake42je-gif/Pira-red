@@ -15,6 +15,47 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
+      - name: Validar HTML, JavaScript y recursos locales
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import re
+          html_path = Path('app/src/main/assets/www/index.html')
+          html = html_path.read_text(encoding='utf-8')
+          class Audit(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.ids = []
+                  self.refs = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if attrs.get('id'):
+                      self.ids.append(attrs['id'])
+                  for key in ('src', 'href'):
+                      value = attrs.get(key, '')
+                      if value and not value.startswith(('http://', 'https://', 'data:', '#', 'mailto:')):
+                          self.refs.append(value.split('#', 1)[0].split('?', 1)[0])
+          audit = Audit()
+          audit.feed(html)
+          duplicates = sorted({x for x in audit.ids if audit.ids.count(x) > 1})
+          if duplicates:
+              raise SystemExit('IDs HTML duplicados: ' + ', '.join(duplicates))
+          missing = [ref for ref in audit.refs if ref and not (html_path.parent / ref).exists()]
+          if missing:
+              raise SystemExit('Recursos locales faltantes: ' + ', '.join(sorted(set(missing))))
+          scripts = re.findall(r'<script(?:\\s[^>]*)?>(.*?)</script>', html, re.S | re.I)
+          if not scripts:
+              raise SystemExit('No se encontró JavaScript en index.html')
+          Path('/tmp/pirared-check.js').write_text('\\n'.join(scripts), encoding='utf-8')
+          print(f'HTML válido; {len(audit.ids)} IDs únicos; {len(audit.refs)} recursos locales; {len(scripts)} scripts.')
+          PY
+          node --check /tmp/pirared-check.js
+          test -s app/src/main/assets/www/app/Img/01-inicio-pirared.png
+          test -s app/src/main/assets/www/app/Img/06-logo-pirared.png
+
       - name: Configurar Java 17
         uses: actions/setup-java@v4
         with:

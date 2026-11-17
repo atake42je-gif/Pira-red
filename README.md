@@ -65,3 +65,8 @@ La compilación genera `dist/PiraRed.apk` y la publica como artefacto. En builds
 - [x] Se corrigió el cierre de sesión para enviar a Supabase el token de acceso de la sesión antes de limpiar la sesión local.
 
 **Nota:** los cambios de código están guardados en GitHub. No se consideran verificados en dispositivo hasta completar las pruebas indicadas.
+
+
+## Auditoría técnica más reciente
+
+Consultar [revisión de pruebas del 17 de noviembre de 2026](docs/REVISION-PRUEBAS-2026-11-17.md). La compilación DEBUG fue exitosa, pero la app todavía no está aprobada para lanzamiento público: faltan pruebas reales en dispositivo/backend, carga de fotos, denuncias/bloqueos en la interfaz, eliminación de cuenta y firma release estable.

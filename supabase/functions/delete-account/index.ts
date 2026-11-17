@@ -1,4 +1,5 @@
-// Deletes the authenticated user's account. Service-role key stays server-side.
+// Deletes the authenticated user's account and its private storage objects.
+// Service-role credentials are used only on the server.
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
@@ -15,19 +16,41 @@ Deno.serve(async (req: Request) => {
   const auth = req.headers.get("Authorization") || "";
   if (!url || !serviceKey || !auth.startsWith("Bearer ")) return json({ error: "Configuración o sesión inválida" }, 401);
   try {
-    const userResponse = await fetch(`${url}/auth/v1/user`, {
-      headers: { apikey: serviceKey, Authorization: auth },
-    });
+    const userResponse = await fetch(`${url}/auth/v1/user`, { headers: { apikey: serviceKey, Authorization: auth } });
     if (!userResponse.ok) return json({ error: "La sesión no es válida o venció" }, 401);
     const user = await userResponse.json();
     if (!user?.id) return json({ error: "No se pudo identificar la cuenta" }, 401);
+
+    // Remove the user's files first, so account deletion does not leave orphaned photos.
+    const listResponse = await fetch(`${url}/storage/v1/object/list/community-images`, {
+      method: "POST",
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ prefix: user.id, limit: 1000, offset: 0 }),
+    });
+    if (!listResponse.ok) {
+      console.error("Could not list user images", listResponse.status, await listResponse.text());
+      return json({ error: "No se pudieron preparar los archivos para borrar la cuenta." }, 502);
+    }
+    const files = await listResponse.json();
+    const paths = (Array.isArray(files) ? files : []).map((file: { name?: string }) => file.name ? `${user.id}/${file.name}` : null).filter(Boolean);
+    if (paths.length) {
+      const removeResponse = await fetch(`${url}/storage/v1/object/community-images`, {
+        method: "DELETE",
+        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ prefixes: paths }),
+      });
+      if (!removeResponse.ok) {
+        console.error("Could not remove user images", removeResponse.status, await removeResponse.text());
+        return json({ error: "No se pudieron eliminar las fotos de tu cuenta." }, 502);
+      }
+    }
+
     const deleteResponse = await fetch(`${url}/auth/v1/admin/users/${encodeURIComponent(user.id)}`, {
       method: "DELETE",
       headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
     });
     if (!deleteResponse.ok) {
-      const detail = await deleteResponse.text();
-      console.error("Account deletion failed", deleteResponse.status, detail);
+      console.error("Account deletion failed", deleteResponse.status, await deleteResponse.text());
       return json({ error: "No se pudo eliminar la cuenta. Contactá al soporte." }, 502);
     }
     return json({ ok: true });
